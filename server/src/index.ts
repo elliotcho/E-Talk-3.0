@@ -7,6 +7,8 @@ import connectRedis from 'connect-redis';
 import { createConnection } from 'typeorm';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
+import { User } from './entities/User';
+import { UserResolver } from './resolvers/user';
 
 dotenv.config();
 
@@ -18,7 +20,7 @@ const main  = async () => {
         password: process.env.DB_PWD,
         logging: true,
         synchronize: true,
-        entities: []
+        entities: [User]
     });
 
     const app = express();
@@ -47,7 +49,7 @@ const main  = async () => {
 
     const apolloServer = new ApolloServer({
         schema: await buildSchema({
-            resolvers: ['HELLO'],
+            resolvers: [UserResolver],
             validate: false
         }),
         context: ({req, res}) => ({req, res})

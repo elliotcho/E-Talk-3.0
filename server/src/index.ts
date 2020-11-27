@@ -52,7 +52,7 @@ const main  = async () => {
             resolvers: [UserResolver],
             validate: false
         }),
-        context: ({req, res}) => ({req, res})
+        context: ({req, res}) => ({req, res, redis})
     });
 
     apolloServer.applyMiddleware({

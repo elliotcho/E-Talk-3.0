@@ -28,8 +28,12 @@ export class User extends BaseEntity{
     firstName!: string;
 
     @Field()
-    @Column()
+    @Column({ default: '' })
     lastName!: string;
+
+    @Field()
+    @Column()
+    profilePic: string;
 
     @Field(() => String)
     @CreateDateColumn()

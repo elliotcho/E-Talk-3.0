@@ -117,7 +117,7 @@ export class UserResolver{
         }
 
         req.session.uid = user.id;
-
+ 
         return { user };
     }
 }

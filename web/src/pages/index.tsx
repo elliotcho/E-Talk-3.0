@@ -1,3 +1,5 @@
+import React from 'reaact';
+
 const Index = () => (
     <div>
       HELLO

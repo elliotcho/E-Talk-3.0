@@ -8,7 +8,6 @@ import {
     UpdateDateColumn
 } from 'typeorm';
 
-
 @ObjectType()
 @Entity()
 export class User extends BaseEntity{
@@ -28,11 +27,11 @@ export class User extends BaseEntity{
     firstName!: string;
 
     @Field()
-    @Column({ default: '' })
+    @Column()
     lastName!: string;
 
     @Field()
-    @Column()
+    @Column({default: '' })
     profilePic: string;
 
     @Field(() => String)

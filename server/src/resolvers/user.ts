@@ -120,4 +120,21 @@ export class UserResolver{
  
         return { user };
     }
+
+    @Mutation(() => Boolean)
+    async logout(
+        @Ctx() { req, res } : MyContext
+    ) : Promise<Boolean> {
+        return new Promise(resolve => {
+            req.session.destroy(err => {
+                res.clearCookie('cid');
+
+                if(err){
+                    resolve(false);
+                }
+
+                resolve(true);
+            });
+        });
+    }
 }

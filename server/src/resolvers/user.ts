@@ -10,7 +10,9 @@ import {
     Ctx, 
 } from 'type-graphql';
 import { getConnection } from 'typeorm';
+import { v4 } from 'uuid';
 import { MyContext } from '../types';
+import { sendEmail } from '../utils/sendEmail';
 
 @InputType()
 class RegisterInput {
@@ -136,5 +138,26 @@ export class UserResolver{
                 resolve(true);
             });
         });
+    }
+
+    @Mutation(() => Boolean)
+    async forgotPassword(
+        @Arg('email') email: string,
+        @Ctx() { redis } : MyContext
+    ) : Promise<Boolean> {
+        const user = await User.findOne({ where : { email }});
+
+        if(!user){
+            return true;
+        }
+
+        const token = `forgot-password:${v4()}`;
+        const href = `<a href="http://localhost:3000/change-password/${token}">Reset Password</a>`;
+        const expiresIn = 1000 * 60 * 60 * 24 * 3; //3 days
+
+        await redis.set(token, user.id, 'ex', expiresIn);
+        await sendEmail(email, href);
+
+        return true;
     }
 }

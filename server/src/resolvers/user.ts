@@ -160,4 +160,41 @@ export class UserResolver{
 
         return true;
     }
+
+    @Mutation(() => Boolean)
+    async changePassword(
+        @Arg('token') token: string,
+        @Arg('newPassword') newPassword: string,
+        @Ctx() { req, redis } : MyContext
+    ) : Promise<UserResponse> {
+        const key = `forgot-password:${token}`;
+        const uid = await redis.get(key);
+
+        if(!uid){
+            return  {
+                errors: [{
+                    field: 'token',
+                    message: 'token expired'
+                }]
+            };
+        }
+
+        const user = await User.findOne(parseInt(uid));
+
+        if(!user){
+            return { 
+                errors: [{
+                    field: 'token',
+                    message: 'user no longer exists'
+                }]
+            }
+        }
+
+        await User.update({id: user.id}, {password: await argon2.hash(newPassword)});
+        await redis.del(key);
+
+        req.session.uid = user.id;
+
+        return { user }
+    }
 }

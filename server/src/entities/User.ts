@@ -30,7 +30,7 @@ export class User extends BaseEntity{
     @Column()
     lastName!: string;
 
-    @Column({default: '' })
+    @Column({ default: '' })
     profilePic: string;
 
     @Field(() => String)

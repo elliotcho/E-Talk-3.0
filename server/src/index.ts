@@ -2,14 +2,12 @@ import 'reflect-metadata';
 import 'dotenv/config';
 import express from 'express';
 import session from 'express-session';
-import Redis from 'ioredis';
 import connectRedis from 'connect-redis';
+import Redis from 'ioredis';
 import { createConnection } from 'typeorm';
 import { ApolloServer } from 'apollo-server-express';
-import { buildSchema } from 'type-graphql';
+import { createSchema } from './utils/createSchema';
 import { User } from './entities/User';
-import { UserResolver } from './resolvers/user';
-import { HelloResolver } from './resolvers/hello';
 
 const main  = async () => {
     await createConnection({
@@ -19,6 +17,14 @@ const main  = async () => {
         logging: true,
         entities: [User]
     });
+
+    const schema = await createSchema();
+
+    const apolloServer = new ApolloServer({
+        context: ({ req, res }) => ({ req, res, redis }),
+        schema
+    });
+
 
     const app = express();
 
@@ -39,25 +45,17 @@ const main  = async () => {
               secure: false //includes http
           },
           saveUninitialized: false,
-          secret: String(process.env.SESSION_SECRET),
+          secret: process.env.SESSION_SECRET as string,
           resave: false
         })
     );
 
-    const apolloServer = new ApolloServer({
-        schema: await buildSchema({
-            resolvers: [UserResolver, HelloResolver],
-            validate: false
-        }),
-        context: ({req, res}) => ({req, res, redis})
-    });
+    apolloServer.applyMiddleware({ app });
 
-    apolloServer.applyMiddleware({
-        app
-    });
+    const port = process.env.PORT;
 
-    app.listen(4000, () => {
-        console.log('server started on localhost:4000');
+    app.listen(port, () => {
+        console.log(`listening to port ${port}`);
     });
 }
 

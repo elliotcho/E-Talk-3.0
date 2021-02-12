@@ -1,5 +1,3 @@
-import { User } from '../entities/User';
-import argon2 from 'argon2';
 import {
     Arg,
     Field,
@@ -9,10 +7,12 @@ import {
     InputType,
     Ctx
 } from 'type-graphql';
+import argon2 from 'argon2';
 import { getConnection } from 'typeorm';
 import { v4 } from 'uuid';
-import { MyContext } from '../types';
 import { sendEmail } from '../utils/sendEmail';
+import { User } from '../entities/User';
+import { MyContext } from '../types';
 
 @InputType()
 class RegisterInput {
@@ -190,7 +190,7 @@ export class UserResolver{
             }
         }
 
-        await User.update({id: user.id}, {password: await argon2.hash(newPassword)});
+        await User.update({ id: user.id }, { password: await argon2.hash(newPassword) });
         await redis.del(key);
 
         req.session.uid = user.id;

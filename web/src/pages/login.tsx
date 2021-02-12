@@ -1,7 +1,35 @@
 import React from 'react';
 import { Form, Formik } from 'formik';
+import styled from 'styled-components';
 import { useLoginMutation } from '../generated/graphql';
 import { withApollo } from '../utils/withApollo';
+
+const Container = styled.div`
+    width: 400px;
+    text-align: center;
+    margin: 0 auto;
+`;
+
+const Input = styled.input`
+    width: 100%;
+    display: block;
+    margin-bottom: 5px;
+    padding: 6px;
+`;
+
+const Button = styled.button`
+    width: 50%;
+    font-size: 20px;
+    background: green;
+    cursor: pointer;
+    color: white;
+    padding: 15px;
+    outline: none;
+    border: none;
+    &:hover {
+        background: teal;
+    }
+`;
 
 const Login: React.FC<{}> = () => {
     const [login] = useLoginMutation();
@@ -21,29 +49,28 @@ const Login: React.FC<{}> = () => {
         >
             {({ values, handleChange }) => (
                 <Form>
-                    <div>
-                        <input
+                    <Container>
+                        <Input
                             type = 'text'
                             placeholder = 'Email'
                             onChange = {handleChange}
                             value = {values.email}
                             name = 'email'
                         />
-                    </div>
-
-                    <div>
-                        <input
+            
+                        <Input
                             type = 'password'
                             placeholder = 'Password'
                             onChange = {handleChange}
                             value = {values.password}
                             name = 'password'
                         />
-                    </div>
+                       
 
-                    <button type='submit'>
-                        Login
-                    </button>
+                        <Button type='submit'>
+                            Login
+                        </Button>
+                    </Container>
                 </Form>
             )}
         </Formik>

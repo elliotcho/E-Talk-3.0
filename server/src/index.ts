@@ -8,6 +8,7 @@ import { createConnection } from 'typeorm';
 import { ApolloServer } from 'apollo-server-express';
 import { createSchema } from './utils/createSchema';
 import { User } from './entities/User';
+import cors from 'cors';
 
 const main  = async () => {
     await createConnection({
@@ -32,6 +33,13 @@ const main  = async () => {
     const redis = new Redis();
 
     app.use(
+        cors({
+            origin: process.env.CORS_ORIGIN,
+            credentials: true
+        })
+    )
+
+    app.use(
         session({
           name: 'cid',
           store: new RedisStore({
@@ -50,7 +58,7 @@ const main  = async () => {
         })
     );
 
-    apolloServer.applyMiddleware({ app });
+    apolloServer.applyMiddleware({ app, cors: false });
 
     const port = process.env.PORT;
 

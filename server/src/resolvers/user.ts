@@ -7,7 +7,7 @@ import {
     Mutation,
     Resolver,
     InputType,
-    Ctx, 
+    Ctx
 } from 'type-graphql';
 import { getConnection } from 'typeorm';
 import { v4 } from 'uuid';

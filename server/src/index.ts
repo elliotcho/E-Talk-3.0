@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import dotenv from  'dotenv';
+import 'dotenv/config';
 import express from 'express';
 import session from 'express-session';
 import Redis from 'ioredis';
@@ -11,16 +11,12 @@ import { User } from './entities/User';
 import { UserResolver } from './resolvers/user';
 import { HelloResolver } from './resolvers/hello';
 
-dotenv.config();
-
 const main  = async () => {
     await createConnection({
         type: 'postgres',
-        database: process.env.DB,
-        username: process.env.DB_USER,
-        password: process.env.DB_PWD,
-        logging: true,
+        url: process.env.DB_URL,
         synchronize: true,
+        logging: true,
         entities: [User]
     });
 

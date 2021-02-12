@@ -3,6 +3,7 @@ import { Form, Formik } from 'formik';
 import styled from 'styled-components';
 import { useLoginMutation } from '../generated/graphql';
 import { withApollo } from '../utils/withApollo';
+import Layout from '../components/Layout';
 
 const Container = styled.div`
     width: 400px;
@@ -35,45 +36,45 @@ const Login: React.FC<{}> = () => {
     const [login] = useLoginMutation();
 
     return (
-        <Formik
-            initialValues = {{ email: '', password: '' }}
-            onSubmit = {async (values, { setValues }) => {
-                const response = await login({
-                    variables: { input: { ...values } }
-                });
+        <Layout>
+            <Formik
+                initialValues = {{ email: '', password: '' }}
+                onSubmit = {async (values, { setValues }) => {
+                    await login({
+                        variables: { input: { ...values } }
+                    });
 
-                console.log(response);
+                    setValues({ email: '' , password: ''});
+                }}
+            >
+                {({ values, handleChange }) => (
+                    <Form>
+                        <Container>
+                            <Input
+                                type = 'text'
+                                placeholder = 'Email'
+                                onChange = {handleChange}
+                                value = {values.email}
+                                name = 'email'
+                            />
+                
+                            <Input
+                                type = 'password'
+                                placeholder = 'Password'
+                                onChange = {handleChange}
+                                value = {values.password}
+                                name = 'password'
+                            />
+                        
 
-                setValues({ email: '' , password: ''});
-            }}
-        >
-            {({ values, handleChange }) => (
-                <Form>
-                    <Container>
-                        <Input
-                            type = 'text'
-                            placeholder = 'Email'
-                            onChange = {handleChange}
-                            value = {values.email}
-                            name = 'email'
-                        />
-            
-                        <Input
-                            type = 'password'
-                            placeholder = 'Password'
-                            onChange = {handleChange}
-                            value = {values.password}
-                            name = 'password'
-                        />
-                       
-
-                        <Button type='submit'>
-                            Login
-                        </Button>
-                    </Container>
-                </Form>
-            )}
-        </Formik>
+                            <Button type='submit'>
+                                Login
+                            </Button>
+                        </Container>
+                    </Form>
+                )}
+            </Formik>
+        </Layout>
     )
 }
 

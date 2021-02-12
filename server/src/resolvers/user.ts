@@ -5,7 +5,8 @@ import {
     Mutation,
     Resolver,
     InputType,
-    Ctx
+    Ctx,
+    Query
 } from 'type-graphql';
 import argon2 from 'argon2';
 import { getConnection } from 'typeorm';
@@ -52,6 +53,17 @@ class UserResponse {
 
 @Resolver()
 export class UserResolver{
+    @Query(() => User, { nullable: true })
+    async me(
+        @Ctx() { req } : MyContext
+    ) : Promise<User | undefined> {
+        if(!req.session.uid) {
+            return undefined;
+        }
+
+        return User.findOne(req.session.uid);
+    }
+
     @Mutation(() => UserResponse)
     async register(
         @Arg('input') input: RegisterInput,

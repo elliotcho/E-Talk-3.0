@@ -1,10 +1,9 @@
 import React from 'react';
 import { Form, Formik } from 'formik';
 import styled from 'styled-components';
-import { useLoginMutation } from '../generated/graphql';
+import { useForgotPasswordMutation } from '../generated/graphql';
 import { withApollo } from '../utils/withApollo';
 import Layout from '../components/Layout';
-import NextLink from 'next/link';
 
 const Container = styled.div`
     width: 400px;
@@ -33,28 +32,20 @@ const Button = styled.button`
     }
 `;
 
-const Link = styled.p`
-    cursor: pointer;
-    background: white;
-    text-align: left;
-    &:hover {
-        text-decoration: underline;
-    }
-`;
 
-const Login: React.FC<{}> = () => {
-    const [login] = useLoginMutation();
+const ForgotPassword: React.FC<{}> = () => {
+    const [forgotPassword] = useForgotPasswordMutation();
 
     return (
         <Layout>
             <Formik
-                initialValues = {{ email: '', password: '' }}
-                onSubmit = {async (values, { setValues }) => {
-                    await login({
-                        variables: { input: { ...values } }
+                initialValues = {{ email: '' }}
+                onSubmit = {async ({ email }, { setValues }) => {
+                    await forgotPassword({
+                        variables: { email }
                     });
 
-                    setValues({ email: '' , password: ''});
+                    setValues({ email: '' });
                 }}
             >
                 {({ values, handleChange }) => (
@@ -67,25 +58,10 @@ const Login: React.FC<{}> = () => {
                                 value = {values.email}
                                 name = 'email'
                             />
-                
-                            <Input
-                                type = 'password'
-                                placeholder = 'Password'
-                                onChange = {handleChange}
-                                value = {values.password}
-                                name = 'password'
-                            />
-                        
-
+    
                             <Button type='submit'>
-                                Login
+                                Submit
                             </Button>
-
-                            <NextLink href='forgot-password'>
-                                <Link>
-                                    Forgot password?
-                                </Link>
-                            </NextLink>
                         </Container>
                     </Form>
                 )}
@@ -94,4 +70,4 @@ const Login: React.FC<{}> = () => {
     )
 }
 
-export default withApollo({ ssr: false })(Login);
+export default withApollo({ ssr: false })(ForgotPassword);

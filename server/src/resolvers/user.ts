@@ -163,7 +163,7 @@ export class UserResolver{
             return true;
         }
 
-        const token = `forgot-password:${v4()}`;
+        const token = v4();
         const href = `<a href="http://localhost:3000/change-password/${token}">Reset Password</a>`;
         const expiresIn = 1000 * 60 * 60 * 24 * 3; //3 days
 
@@ -173,14 +173,15 @@ export class UserResolver{
         return true;
     }
 
-    @Mutation(() => Boolean)
+    @Mutation(() => UserResponse)
     async changePassword(
         @Arg('token') token: string,
         @Arg('newPassword') newPassword: string,
         @Ctx() { req, redis } : MyContext
     ) : Promise<UserResponse> {
-        const key = `forgot-password:${token}`;
-        const uid = await redis.get(key);
+        const uid = await redis.get(token);
+
+        console.log(uid)
 
         if(!uid){
             return  {
@@ -203,7 +204,7 @@ export class UserResolver{
         }
 
         await User.update({ id: user.id }, { password: await argon2.hash(newPassword) });
-        await redis.del(key);
+        await redis.del(token);
 
         req.session.uid = user.id;
 

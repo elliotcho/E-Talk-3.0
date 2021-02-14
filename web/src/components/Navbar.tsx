@@ -83,7 +83,9 @@ const Navbar: React.FC<{}> = () => {
     return (
         <Container>
             <Flex>
-                <Header>E-Talk</Header>
+                <NextLink href='/'>
+                    <Header>E-Talk</Header>
+                </NextLink>
 
                 <Box>
                    {body}

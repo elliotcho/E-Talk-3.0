@@ -9,7 +9,7 @@ import NextLink from 'next/link';
 const Container = styled.div`
     width: 400px;
     text-align: center;
-    margin: 0 auto;
+    margin: 50px auto;
 `;
 
 const Input = styled.input`
@@ -35,7 +35,6 @@ const Button = styled.button`
 
 const Link = styled.p`
     cursor: pointer;
-    background: white;
     text-align: left;
     &:hover {
         text-decoration: underline;

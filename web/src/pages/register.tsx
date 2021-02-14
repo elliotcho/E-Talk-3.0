@@ -8,7 +8,7 @@ import Layout from '../components/Layout';
 const Container = styled.div`
     width: 400px;
     text-align: center;
-    margin: 0 auto;
+    margin: 50px auto;
 `;
 
 const Input = styled.input`

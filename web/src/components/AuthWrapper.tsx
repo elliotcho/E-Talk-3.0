@@ -9,10 +9,7 @@ interface AuthWrapperProps {
 
 const AuthWrapper : React.FC<AuthWrapperProps> = ({ children, requiresAuth = false }) => {
     const router = useRouter();
-
-    const { data, loading } = useMeQuery({
-        skip: isServer()
-    });
+    const { data, loading } = useMeQuery();
 
     if(!loading) {
         if(data?.me && !requiresAuth) {

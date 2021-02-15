@@ -5,8 +5,10 @@ import {
     PrimaryGeneratedColumn,
     Column,
     CreateDateColumn,
-    UpdateDateColumn
+    UpdateDateColumn,
+    OneToMany
 } from 'typeorm';
+import { Post } from './Post';
 
 @ObjectType()
 @Entity()
@@ -32,6 +34,9 @@ export class User extends BaseEntity{
 
     @Column({ default: '' })
     profilePic: string;
+
+    @OneToMany(() => Post, (post) => post.user)
+    posts: Post[];
 
     @Field(() => String)
     @CreateDateColumn()

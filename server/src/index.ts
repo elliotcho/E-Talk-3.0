@@ -8,6 +8,7 @@ import { createConnection } from 'typeorm';
 import { ApolloServer } from 'apollo-server-express';
 import { createSchema } from './utils/createSchema';
 import { User } from './entities/User';
+import { Post } from './entities/Post';
 import cors from 'cors';
 
 const main  = async () => {
@@ -16,7 +17,10 @@ const main  = async () => {
         url: process.env.DB_URL,
         synchronize: true,
         logging: true,
-        entities: [User]
+        entities: [
+            Post,
+            User
+        ]
     });
 
     const schema = await createSchema();

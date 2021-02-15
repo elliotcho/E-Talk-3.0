@@ -1,7 +1,8 @@
 import React from 'react';
 import { Form, Formik } from 'formik';
 import styled from 'styled-components';
-import { useChangePasswordMutation } from '../../generated/graphql';
+import { MeDocument, MeQuery, useChangePasswordMutation } from '../../generated/graphql';
+import { toErrorMap } from '../../utils/toErrorMap';
 import { withApollo } from '../../utils/withApollo';
 import Layout from '../../components/Layout';
 import { useRouter } from 'next/router';
@@ -17,6 +18,11 @@ const Input = styled.input`
     display: block;
     margin-bottom: 5px;
     padding: 6px;
+`;
+
+const Error = styled.p`
+    text-align: left;
+    color: red;
 `;
 
 const Button = styled.button`
@@ -41,20 +47,33 @@ const ChangePassword: React.FC<{}> = () => {
         <Layout>
             <Formik
                 initialValues={{ newPassword: '' }}
-                onSubmit={async ({ newPassword }) => {
+                onSubmit={async ({ newPassword }, { setErrors }) => {
                     const { token } = router.query; 
 
                     const response = await changePassword({
                         variables: {
                             token: typeof token === 'string' ? token: '',
                             newPassword
+                        },
+                        update: (cache, { data }) => {
+                            cache.writeQuery<MeQuery>({
+                                query: MeDocument, 
+                                data: {
+                                    __typename: 'Query',
+                                    me: data?.changePassword.user
+                                }
+                            });
                         }
                     });
 
-                    console.log(response);
+                    if(!response.data.changePassword.user) {
+                        setErrors(toErrorMap(response.data.changePassword.errors));
+                    } else {
+                        router.push('/');
+                    }
                 }}
             >
-                {({ values, handleChange }) => (
+                {({ values, handleChange, errors }) => (
                     <Form>
                         <Container>
                             <Input
@@ -68,6 +87,12 @@ const ChangePassword: React.FC<{}> = () => {
                             <Button type='submit'>
                                 Submit
                             </Button>
+
+                            {Object.keys(errors).map(key => 
+                                <Error>
+                                    {`${key} error: ${errors[key]}`}
+                                </Error>    
+                            )}
                         </Container>
                     </Form>
                 )}

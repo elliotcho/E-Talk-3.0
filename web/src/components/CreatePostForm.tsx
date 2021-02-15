@@ -52,6 +52,11 @@ const CreatePostForm: React.FC<{}> = () => {
                                     id
                                     content
                                     createdAt
+                                    user {
+                                        id
+                                        firstName
+                                        lastName
+                                    }
                                 }
                             }
                         `

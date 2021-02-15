@@ -1,9 +1,11 @@
 import React from 'react';
 import { usePostsQuery } from '../generated/graphql';
+import { mapPostProps } from '../utils/mapPostProps';
 import { withApollo } from '../utils/withApollo';
 import CreatePostForm from '../components/CreatePostForm';
 import AuthWrapper from '../components/AuthWrapper';
 import Layout from '../components/Layout';
+import Post from '../components/Post';
 
 const Index : React.FC<{}> = () => {
    const { data } = usePostsQuery();
@@ -13,13 +15,9 @@ const Index : React.FC<{}> = () => {
          <Layout>
             <CreatePostForm />
 
-            <div style={{ textAlign: 'center' }}>
                {data?.posts.map(p => 
-                  <h2 key={p.id}>
-                     {p.content}
-                  </h2>
+                  <Post {...mapPostProps(p)}/>
                )}
-            </div>
          </Layout>
       </AuthWrapper>
    )

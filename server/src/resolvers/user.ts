@@ -51,7 +51,7 @@ class UserResponse {
     user? : User
 }
 
-@Resolver()
+@Resolver(User)
 export class UserResolver{
     @Query(() => User, { nullable: true })
     async me(

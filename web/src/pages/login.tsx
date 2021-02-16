@@ -37,7 +37,7 @@ const Button = styled.button`
     outline: none;
     border: none;
     &:hover {
-        background: teal;
+        box-shadow: 0 0 5px black;
     }
 `;
 

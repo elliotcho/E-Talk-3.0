@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useDeletePostMutation, useMeQuery } from '../generated/graphql';
+import { formatDate } from '../utils/formatDate';
+import { useRouter } from 'next/router';
 
 const Container = styled.div`
     width: 600px;
@@ -10,7 +12,7 @@ const Container = styled.div`
     color: black;
 `;
 
-const Header = styled.h2`
+const Primary = styled.h2`
     cursor: pointer;
     color: #0275d8;
     position: relative;
@@ -18,6 +20,11 @@ const Header = styled.h2`
     &:hover {
         text-decoration: underline;
     }
+`;
+
+const Muted = styled.p`
+    color: lightslategray;
+    margin-top: 0;
 `;
 
 const Flex = styled.div`
@@ -56,22 +63,35 @@ const Option = styled.div`
     }
 `;
 
-const Text = styled.div``;
+const Text = styled.div`
+    font-size: 1.4rem;
+    margin-left: 15px;
+    padding: 2rem 0;
+`;
 
 interface PostProps {
     postId: number;
     createdAt: string;
     content: string;
+    userURL: string;
     firstName: string;
     lastName: string;
     userId: number;
 }
 
-const Post : React.FC<PostProps> = ({ postId, content, firstName, lastName, userId }) => {
-    let isOwner = false;
-
-    const meResponse = useMeQuery();
+const Post : React.FC<PostProps> = ({ 
+    postId, 
+    createdAt,
+    content, 
+    firstName, 
+    lastName, 
+    userId 
+}) => {
+    const router = useRouter();
     const [deletePost] = useDeletePostMutation();
+    const meResponse = useMeQuery();
+
+    let isOwner = false;
 
     if(meResponse.data.me.id === userId) {
         isOwner = true;
@@ -80,9 +100,13 @@ const Post : React.FC<PostProps> = ({ postId, content, firstName, lastName, user
     return (
         <Container>
             <Flex>
-                <Header>
+                <Primary 
+                    onClick = {() => {
+                        router.push(`/profile/${userId}`)
+                    }}
+                >
                     {firstName} {lastName}
-                </Header>
+                </Primary>
 
                 {isOwner && (
                     <Box>
@@ -108,6 +132,10 @@ const Post : React.FC<PostProps> = ({ postId, content, firstName, lastName, user
                     </Box>
                 )}
             </Flex>
+
+            <Muted>
+                {formatDate(createdAt)}
+            </Muted>
 
             <Text>
                 {content}

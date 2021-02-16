@@ -2,6 +2,7 @@ import {
     Arg,
     Ctx,
     FieldResolver,
+    Int,
     Mutation,
     Query,
     Resolver, 
@@ -21,6 +22,18 @@ export class PostResolver {
         @Root() post: Post
     ) : Promise<User | undefined> {
         return User.findOne(post.userId);
+    }
+
+    @Mutation(() => Boolean)
+    @UseMiddleware(isAuth)
+    async deletePost(
+        @Arg("postId", () => Int) postId: number
+    ) {
+        await getConnection().query(
+            `delete from post where post.id = ${postId}`
+        );
+
+        return true;
     }
 
     @Query(() => [Post])

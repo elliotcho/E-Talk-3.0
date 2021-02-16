@@ -43,6 +43,10 @@ const CreatePostForm: React.FC<{}> = () => {
         <Formik
             initialValues = {{ content: '' }}
             onSubmit = {async ({ content }, { setValues }) => {
+                if(content.trim().length === 0) {
+                    return;
+                }
+
                 await createPost({
                     variables: { content },
                     update: (cache, { data }) => {

@@ -11,6 +11,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any;
 };
 
 export type Query = {
@@ -41,6 +43,7 @@ export type Post = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  updateProfilePic: Scalars['Boolean'];
   register: UserResponse;
   login: UserResponse;
   logout: Scalars['Boolean'];
@@ -48,6 +51,11 @@ export type Mutation = {
   changePassword: UserResponse;
   deletePost: Scalars['Boolean'];
   createPost: Post;
+};
+
+
+export type MutationUpdateProfilePicArgs = {
+  file: Scalars['Upload'];
 };
 
 
@@ -80,6 +88,7 @@ export type MutationDeletePostArgs = {
 export type MutationCreatePostArgs = {
   content: Scalars['String'];
 };
+
 
 export type UserResponse = {
   __typename?: 'UserResponse';
@@ -206,6 +215,16 @@ export type RegisterMutation = (
       & Pick<FieldError, 'field' | 'message'>
     )>> }
   ) }
+);
+
+export type UpdateProfilePicMutationVariables = Exact<{
+  file: Scalars['Upload'];
+}>;
+
+
+export type UpdateProfilePicMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'updateProfilePic'>
 );
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
@@ -481,6 +500,36 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const UpdateProfilePicDocument = gql`
+    mutation UpdateProfilePic($file: Upload!) {
+  updateProfilePic(file: $file)
+}
+    `;
+export type UpdateProfilePicMutationFn = Apollo.MutationFunction<UpdateProfilePicMutation, UpdateProfilePicMutationVariables>;
+
+/**
+ * __useUpdateProfilePicMutation__
+ *
+ * To run a mutation, you first call `useUpdateProfilePicMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProfilePicMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProfilePicMutation, { data, loading, error }] = useUpdateProfilePicMutation({
+ *   variables: {
+ *      file: // value for 'file'
+ *   },
+ * });
+ */
+export function useUpdateProfilePicMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProfilePicMutation, UpdateProfilePicMutationVariables>) {
+        return Apollo.useMutation<UpdateProfilePicMutation, UpdateProfilePicMutationVariables>(UpdateProfilePicDocument, baseOptions);
+      }
+export type UpdateProfilePicMutationHookResult = ReturnType<typeof useUpdateProfilePicMutation>;
+export type UpdateProfilePicMutationResult = Apollo.MutationResult<UpdateProfilePicMutation>;
+export type UpdateProfilePicMutationOptions = Apollo.BaseMutationOptions<UpdateProfilePicMutation, UpdateProfilePicMutationVariables>;
 export const MeDocument = gql`
     query Me {
   me {

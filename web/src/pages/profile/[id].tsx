@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useMeQuery } from '../../generated/graphql';
+import { useMeQuery, useUpdateProfilePicMutation } from '../../generated/graphql';
 import { withApollo } from '../../utils/withApollo';
 import Layout from '../../components/Layout';
 
@@ -18,6 +18,7 @@ const Box  = styled.div`
 
 const Profile : React.FC<{}> = () => {
     const { data } = useMeQuery();
+    const [upload] = useUpdateProfilePicMutation();
 
     return (
         <Layout>
@@ -25,10 +26,14 @@ const Profile : React.FC<{}> = () => {
                 <Box>
                     {data?.me?.firstName} {data?.me?.lastName}
 
-                    <input 
+                    <input
                         type = 'file'
-                        onChange = {(e) => {
+                        onChange = {async (e) => {
+                            const file = e.target.files[0];
 
+                            await upload({ 
+                                variables: { file } 
+                            });
                         }}
                     />
                 </Box>

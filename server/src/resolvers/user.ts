@@ -69,7 +69,7 @@ export class UserResolver{
 
         await getConnection().query(
             `
-                update user
+                update "user"
                 set "profilePic" = $1
                 where id = $2
             `, 
@@ -130,7 +130,6 @@ export class UserResolver{
         }
 
         req.session.uid = user.id;
-        
         return { user };
     }
 
@@ -162,7 +161,6 @@ export class UserResolver{
         }
 
         req.session.uid = user.id;
- 
         return { user };
     }
 
@@ -195,7 +193,7 @@ export class UserResolver{
         }
 
         const token = v4();
-        const href = `<a href="http://localhost:3000/change-password/${token}">Reset Password</a>`;
+        const href = `<a href="${process.env.CORS_ORIGIN}/change-password/${token}">Reset Password</a>`;
         const expiresIn = 1000 * 60 * 60 * 24 * 3; //3 days
 
         await redis.set(token, user.id, 'ex', expiresIn);
@@ -211,8 +209,6 @@ export class UserResolver{
         @Ctx() { req, redis } : MyContext
     ) : Promise<UserResponse> {
         const uid = await redis.get(token);
-
-        console.log(uid)
 
         if(!uid){
             return  {
@@ -238,7 +234,6 @@ export class UserResolver{
         await redis.del(token);
 
         req.session.uid = user.id;
-
         return { user }
     }
 }

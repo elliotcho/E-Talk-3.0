@@ -215,7 +215,7 @@ export type MeQuery = (
   { __typename?: 'Query' }
   & { me?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'email'>
+    & Pick<User, 'id' | 'firstName' | 'lastName'>
   )> }
 );
 
@@ -485,7 +485,8 @@ export const MeDocument = gql`
     query Me {
   me {
     id
-    email
+    firstName
+    lastName
   }
 }
     `;

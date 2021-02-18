@@ -6,14 +6,19 @@ import {
     Resolver,
     InputType,
     Ctx,
-    Query
+    Query,
+    UseMiddleware
 } from 'type-graphql';
+import { GraphQLUpload } from 'graphql-upload';
 import argon2 from 'argon2';
 import { getConnection } from 'typeorm';
 import { v4 } from 'uuid';
 import { sendEmail } from '../utils/sendEmail';
 import { User } from '../entities/User';
-import { MyContext } from '../types';
+import { MyContext, Upload } from '../types';
+import { isAuth } from '../middleware/isAuth';
+import { createWriteStream } from 'fs';
+import path from 'path';
 
 @InputType()
 class RegisterInput {
@@ -45,14 +50,40 @@ class FieldError {
 
 @ObjectType()
 class UserResponse {
-    @Field(() => [FieldError], {nullable: true})
+    @Field(() => [FieldError], { nullable: true })
     errors? : FieldError[]
-    @Field(() => User, {nullable: true})
+    @Field(() => User, { nullable: true })
     user? : User
 }
 
 @Resolver(User)
 export class UserResolver{
+    @Mutation(() => Boolean)
+    @UseMiddleware(isAuth)
+    async updateProfilePic (
+        @Arg('file', () => GraphQLUpload) { createReadStream, filename } : Upload,
+        @Ctx() { req } : MyContext
+    ) : Promise<boolean> {
+        const name = 'PROFILE-' + v4() + path.extname(filename);
+        const { uid } = req.session;
+
+        await getConnection().query(
+            `
+                update user
+                set "profilePic" = $1
+                where id = $2
+            `, 
+            [name, uid]
+        );
+
+        return new Promise(async (resolve, reject) => 
+            createReadStream()
+                .pipe(createWriteStream(path.join(__dirname, `../../images/${name}`)))
+                .on('finish', () => resolve(true))
+                .on('error', () => reject(false))
+        );
+    }
+
     @Query(() => User, { nullable: true })
     async me(
         @Ctx() { req } : MyContext

@@ -35,6 +35,9 @@ export class User extends BaseEntity{
     @Column({ default: '' })
     profilePic: string;
 
+    @Field()
+    profileURL: string;
+
     @OneToMany(() => Post, (post) => post.user)
     posts: Post[];
 

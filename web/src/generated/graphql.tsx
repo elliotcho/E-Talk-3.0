@@ -29,6 +29,7 @@ export type User = {
   lastName: Scalars['String'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
+  profileURL: Scalars['String'];
 };
 
 export type Post = {
@@ -234,7 +235,7 @@ export type MeQuery = (
   { __typename?: 'Query' }
   & { me?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'firstName' | 'lastName'>
+    & Pick<User, 'id' | 'firstName' | 'lastName' | 'profileURL'>
   )> }
 );
 
@@ -248,7 +249,7 @@ export type PostsQuery = (
     & Pick<Post, 'id' | 'content' | 'createdAt'>
     & { user: (
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'firstName' | 'lastName'>
+      & Pick<User, 'id' | 'firstName' | 'lastName' | 'profileURL'>
     ) }
   )> }
 );
@@ -536,6 +537,7 @@ export const MeDocument = gql`
     id
     firstName
     lastName
+    profileURL
   }
 }
     `;
@@ -574,6 +576,7 @@ export const PostsDocument = gql`
       id
       firstName
       lastName
+      profileURL
     }
   }
 }

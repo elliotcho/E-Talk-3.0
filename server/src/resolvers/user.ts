@@ -7,7 +7,8 @@ import {
     InputType,
     Ctx,
     Query,
-    UseMiddleware
+    UseMiddleware,
+    FieldResolver
 } from 'type-graphql';
 import { GraphQLUpload } from 'graphql-upload';
 import argon2 from 'argon2';
@@ -58,6 +59,22 @@ class UserResponse {
 
 @Resolver(User)
 export class UserResolver{
+    @FieldResolver(() => String)
+    async profileURL(
+        @Ctx() { req } : MyContext
+    ) : Promise<string> {
+        const user = await User.findOne(req.session.uid);
+        let imgURL;
+        
+        if(user && user.profilePic) {
+            imgURL = `${process.env.SERVER_URL}/images/${user.profilePic}`;
+        } else {
+            imgURL = `${process.env.SERVER_URL}/images/default.png`;
+        }
+
+        return imgURL;
+    }
+
     @Mutation(() => Boolean)
     @UseMiddleware(isAuth)
     async updateProfilePic (

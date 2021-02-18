@@ -3,5 +3,6 @@ query Me {
        id
        firstName
        lastName
+       profileURL
     }
 }

@@ -16,6 +16,13 @@ const Box  = styled.div`
     color: black;
 `;
 
+const Image = styled.img`
+    display: block;
+    border-radius: 50%;
+    width: 6rem;
+    height: 6rem;
+`
+
 const Profile : React.FC<{}> = () => {
     const { data } = useMeQuery();
     const [upload] = useUpdateProfilePicMutation();
@@ -25,6 +32,10 @@ const Profile : React.FC<{}> = () => {
             <Container>
                 <Box>
                     {data?.me?.firstName} {data?.me?.lastName}
+
+                    {data?.me?.profileURL && (
+                        <Image src={data.me.profileURL} alt ='Profile pic'/>
+                    )}
 
                     <input
                         type = 'file'

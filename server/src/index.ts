@@ -10,6 +10,7 @@ import { createSchema } from './utils/createSchema';
 import { User } from './entities/User';
 import { Post } from './entities/Post';
 import cors from 'cors';
+import path from 'path';
 
 const main  = async () => {
     await createConnection({
@@ -61,6 +62,8 @@ const main  = async () => {
           resave: false
         })
     );
+
+    app.use('/images', express.static(path.join(__dirname, '../images')));
 
     apolloServer.applyMiddleware({ app, cors: false });
 

@@ -15,10 +15,11 @@ import argon2 from 'argon2';
 import { getConnection } from 'typeorm';
 import { v4 } from 'uuid';
 import { sendEmail } from '../utils/sendEmail';
+import { uploadFile } from '../utils/uploadFile';
 import { User } from '../entities/User';
 import { MyContext, Upload } from '../types';
 import { isAuth } from '../middleware/isAuth';
-import { createWriteStream } from 'fs';
+import fs from 'fs';
 import path from 'path';
 
 @InputType()
@@ -75,30 +76,45 @@ export class UserResolver{
         return imgURL;
     }
 
-    @Mutation(() => Boolean)
+    @Mutation(() => UserResponse)
+    async removeProfilePic(
+        @Ctx() { req } : MyContext
+    ) : Promise<UserResponse> {
+        let user;
+        const { uid } = req.session;
+
+        user = await User.findOne(uid);
+
+        if(user && user.profilePic) {
+            const location = path.join(__dirname, `../../images/${user.profilePic}`);
+
+            fs.unlink(location, err => {
+                if(err) {
+                     console.log(err);
+                }
+            });
+
+            await User.update({ id: uid }, { profilePic: '' });
+        }
+
+        user = await User.findOne(uid);
+        return { user };
+    }
+
+    @Mutation(() => UserResponse)
     @UseMiddleware(isAuth)
     async updateProfilePic (
         @Arg('file', () => GraphQLUpload) { createReadStream, filename } : Upload,
         @Ctx() { req } : MyContext
-    ) : Promise<boolean> {
+    ) : Promise<UserResponse> {
         const name = 'PROFILE-' + v4() + path.extname(filename);
         const { uid } = req.session;
 
-        await getConnection().query(
-            `
-                update "user"
-                set "profilePic" = $1
-                where id = $2
-            `, 
-            [name, uid]
-        );
-
-        return new Promise(async (resolve, reject) => 
-            createReadStream()
-                .pipe(createWriteStream(path.join(__dirname, `../../images/${name}`)))
-                .on('finish', () => resolve(true))
-                .on('error', () => reject(false))
-        );
+        await User.update({ id: uid }, { profilePic: name });
+        await uploadFile(createReadStream, path.join(__dirname, `../../images/${name}`));
+        
+        const user = await User.findOne(uid);
+        return { user };
     }
 
     @Query(() => User, { nullable: true })

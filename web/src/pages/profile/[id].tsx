@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useMeQuery, useUpdateProfilePicMutation } from '../../generated/graphql';
+import { MeDocument, MeQuery, useMeQuery, useRemoveProfilePicMutation, useUpdateProfilePicMutation } from '../../generated/graphql';
 import { withApollo } from '../../utils/withApollo';
 import Layout from '../../components/Layout';
 
@@ -23,9 +23,14 @@ const Image = styled.img`
     height: 6rem;
 `
 
+const Remove = styled.button`
+    display: block;
+`;
+
 const Profile : React.FC<{}> = () => {
     const { data } = useMeQuery();
-    const [upload] = useUpdateProfilePicMutation();
+    const [uploadPic] = useUpdateProfilePicMutation();
+    const [removePic] = useRemoveProfilePicMutation();
 
     return (
         <Layout>
@@ -37,13 +42,40 @@ const Profile : React.FC<{}> = () => {
                         <Image src={data.me.profileURL} alt ='Profile pic'/>
                     )}
 
+                    <Remove 
+                        onClick={async () => {
+                            await removePic({
+                                update: (cache, { data }) => {
+                                    cache.writeQuery<MeQuery>({
+                                        query: MeDocument,
+                                        data: {
+                                            __typename: 'Query',
+                                            me: data?.removeProfilePic.user
+                                        }
+                                    })
+                                }
+                            });
+                        }}
+                    >
+                        Remove
+                    </Remove>
+
                     <input
                         type = 'file'
                         onChange = {async (e) => {
                             const file = e.target.files[0];
 
-                            await upload({ 
-                                variables: { file } 
+                            await uploadPic({ 
+                                variables: { file },
+                                update: (cache, { data }) => {
+                                    cache.writeQuery<MeQuery>({
+                                        query: MeDocument,
+                                        data: {
+                                            __typename: 'Query',
+                                            me: data?.updateProfilePic.user
+                                        }
+                                    });
+                                }
                             });
                         }}
                     />

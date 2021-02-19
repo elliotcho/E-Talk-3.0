@@ -27,9 +27,9 @@ export type User = {
   email: Scalars['String'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
+  profileURL: Scalars['String'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
-  profileURL: Scalars['String'];
 };
 
 export type Post = {
@@ -44,7 +44,8 @@ export type Post = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  updateProfilePic: Scalars['Boolean'];
+  removeProfilePic: UserResponse;
+  updateProfilePic: UserResponse;
   register: UserResponse;
   login: UserResponse;
   logout: Scalars['Boolean'];
@@ -90,7 +91,6 @@ export type MutationCreatePostArgs = {
   content: Scalars['String'];
 };
 
-
 export type UserResponse = {
   __typename?: 'UserResponse';
   errors?: Maybe<Array<FieldError>>;
@@ -102,6 +102,7 @@ export type FieldError = {
   field: Scalars['String'];
   message: Scalars['String'];
 };
+
 
 export type RegisterInput = {
   email: Scalars['String'];
@@ -218,6 +219,20 @@ export type RegisterMutation = (
   ) }
 );
 
+export type RemoveProfilePicMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RemoveProfilePicMutation = (
+  { __typename?: 'Mutation' }
+  & { removeProfilePic: (
+    { __typename?: 'UserResponse' }
+    & { user?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'firstName' | 'lastName' | 'profileURL'>
+    )> }
+  ) }
+);
+
 export type UpdateProfilePicMutationVariables = Exact<{
   file: Scalars['Upload'];
 }>;
@@ -225,7 +240,13 @@ export type UpdateProfilePicMutationVariables = Exact<{
 
 export type UpdateProfilePicMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, 'updateProfilePic'>
+  & { updateProfilePic: (
+    { __typename?: 'UserResponse' }
+    & { user?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'firstName' | 'lastName' | 'profileURL'>
+    )> }
+  ) }
 );
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
@@ -501,9 +522,52 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const RemoveProfilePicDocument = gql`
+    mutation RemoveProfilePic {
+  removeProfilePic {
+    user {
+      id
+      firstName
+      lastName
+      profileURL
+    }
+  }
+}
+    `;
+export type RemoveProfilePicMutationFn = Apollo.MutationFunction<RemoveProfilePicMutation, RemoveProfilePicMutationVariables>;
+
+/**
+ * __useRemoveProfilePicMutation__
+ *
+ * To run a mutation, you first call `useRemoveProfilePicMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveProfilePicMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeProfilePicMutation, { data, loading, error }] = useRemoveProfilePicMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useRemoveProfilePicMutation(baseOptions?: Apollo.MutationHookOptions<RemoveProfilePicMutation, RemoveProfilePicMutationVariables>) {
+        return Apollo.useMutation<RemoveProfilePicMutation, RemoveProfilePicMutationVariables>(RemoveProfilePicDocument, baseOptions);
+      }
+export type RemoveProfilePicMutationHookResult = ReturnType<typeof useRemoveProfilePicMutation>;
+export type RemoveProfilePicMutationResult = Apollo.MutationResult<RemoveProfilePicMutation>;
+export type RemoveProfilePicMutationOptions = Apollo.BaseMutationOptions<RemoveProfilePicMutation, RemoveProfilePicMutationVariables>;
 export const UpdateProfilePicDocument = gql`
     mutation UpdateProfilePic($file: Upload!) {
-  updateProfilePic(file: $file)
+  updateProfilePic(file: $file) {
+    user {
+      id
+      firstName
+      lastName
+      profileURL
+    }
+  }
 }
     `;
 export type UpdateProfilePicMutationFn = Apollo.MutationFunction<UpdateProfilePicMutation, UpdateProfilePicMutationVariables>;

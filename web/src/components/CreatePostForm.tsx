@@ -5,14 +5,15 @@ import { Form, Formik } from 'formik';
 import { Post, useCreatePostMutation } from '../generated/graphql';
 
 const Container = styled.div`
-    width: 600px;
+    width: 90%;
+    max-width: 600px;
     margin: 50px auto;
     text-align: center;
 `;
 
 const Header = styled.h2`
     text-align: left;
-    color: white;
+    color: black;
 `;
 
 const TextArea = styled.textarea`

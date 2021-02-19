@@ -5,9 +5,11 @@ import { formatDate } from '../utils/formatDate';
 import { useRouter } from 'next/router';
 
 const Container = styled.div`
-    width: 600px;
+    width: 90%;
+    max-width: 600px;
     margin: 30px auto;
     background: white;
+    border: 1px solid black;
     padding: 15px;
     color: black;
 `;

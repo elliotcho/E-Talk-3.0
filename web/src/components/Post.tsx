@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useDeletePostMutation, useMeQuery } from '../generated/graphql';
 import { formatDate } from '../utils/formatDate';
+import EditModal from './EditModal';
 import { useRouter } from 'next/router';
 
 const Container = styled.div`
@@ -89,6 +90,8 @@ const Post : React.FC<PostProps> = ({
     lastName, 
     userId 
 }) => {
+    const [isOpen, setIsOpen] = useState(false);
+
     const router = useRouter();
     const [deletePost] = useDeletePostMutation();
     const meResponse = useMeQuery();
@@ -126,7 +129,11 @@ const Post : React.FC<PostProps> = ({
                                 Delete
                             </Option>
 
-                            <Option>
+                            <Option 
+                                onClick = {() => {
+                                    setIsOpen(true);
+                                }}
+                            >
                                 Edit
                             </Option>
                         </Dropdown>   
@@ -142,6 +149,13 @@ const Post : React.FC<PostProps> = ({
             <Text>
                 {content}
             </Text>
+
+            <EditModal
+                open = {isOpen}
+                onClose = {() => setIsOpen(false)}
+                postId = {postId}
+                content = {content}
+            />
         </Container>
     )
 }

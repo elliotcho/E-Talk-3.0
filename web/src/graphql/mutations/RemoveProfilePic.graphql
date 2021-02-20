@@ -1,10 +1,5 @@
 mutation RemoveProfilePic {
     removeProfilePic {
-        user {
-            id
-            firstName
-            lastName
-            profileURL
-        }
+        ...RegularUserResponse
     }
 }

@@ -1,10 +1,5 @@
 mutation UpdateProfilePic($file: Upload!) {
     updateProfilePic(file: $file) {
-        user {
-            id
-            firstName
-            lastName
-            profileURL
-        }
+        ...RegularUserResponse
     }
 }

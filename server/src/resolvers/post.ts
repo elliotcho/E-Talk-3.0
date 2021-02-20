@@ -24,6 +24,24 @@ export class PostResolver {
         return User.findOne(post.userId);
     }
 
+    @Mutation(() => Post)
+    @UseMiddleware(isAuth)
+    async editPost(
+        @Arg('newContent') newContent: string,
+        @Arg('postId', () => Int) postId: number
+    ) : Promise<Post | undefined> { 
+        await getConnection().query(
+            `
+                update post 
+                set content = $1
+                where id = $2
+            `, [newContent, postId]
+        );
+
+        const post = await Post.findOne(postId);
+        return post;
+    }
+
     @Mutation(() => Boolean)
     @UseMiddleware(isAuth)
     async deletePost(

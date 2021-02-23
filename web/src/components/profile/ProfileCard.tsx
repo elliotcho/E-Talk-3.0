@@ -8,14 +8,6 @@ import {
     useUpdateProfilePicMutation 
 } from '../../generated/graphql';
 
-const Container = styled.div`
-    position: relative;
-    min-height: 460px;
-    background: white;
-    overflow: auto;
-    color: black;
-`;
-
 const Header = styled.h2`
     text-align: center;
 `;
@@ -70,7 +62,7 @@ const Remove = styled.button`
     outline: none;
 `;
 
-const Sidebar: React.FC<{}> = () => {
+const ProfileCard: React.FC<{}> = () => {
     const { data } = useMeQuery();
     const [removePic] = useRemoveProfilePicMutation();
     const [uploadPic] = useUpdateProfilePicMutation();
@@ -81,7 +73,7 @@ const Sidebar: React.FC<{}> = () => {
     let imgURL = data?.me?.profileURL;
  
     return (
-        <Container>
+        <>
             <Box>
                 {imgURL && (
                     <Image src={imgURL} alt='Profile pic'/>
@@ -134,8 +126,8 @@ const Sidebar: React.FC<{}> = () => {
                         X
                 </Remove>
             )}
-        </Container>
+        </>
     )
 }
 
-export default Sidebar;
+export default ProfileCard;

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useUserPostsQuery } from '../../generated/graphql';
 import { mapPostProps } from '../../utils/mapPostProps';
 import { withApollo } from '../../utils/withApollo';
-import Sidebar from '../../components/profile/Sidebar';
+import Sidebar from '../../containers/profile/Sidebar.tsx/Sidebar';
 import CreatePostForm from '../../components/CreatePostForm';
 import Layout from '../../components/shared/Layout';
 import Post from '../../components/Post';
@@ -22,8 +22,6 @@ const Box  = styled.div`
     overflow: auto;
     color: black;
 `;
-
-
 
 const Profile : React.FC<{}> = () => {
     const postsResponse = useUserPostsQuery();

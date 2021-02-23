@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import ProfileCard from '../../../components/profile/ProfileCard';
 import ProfileButtons from '../../../components/profile/ProfileButtons';
+import ProfileMenu from '../../../components/profile/ProfileMenu';
 
 const Container = styled.div`
     position: relative;
@@ -11,14 +12,6 @@ const Container = styled.div`
     color: black;
 `;
 
-const Menu = styled.ul`
-
-`;
-
-const Option = styled.li`
-    list-style-type: none;
-`;
-
 const Sidebar: React.FC<{}> = () => { 
     return (
         <Container>
@@ -26,15 +19,7 @@ const Sidebar: React.FC<{}> = () => {
 
             <ProfileButtons />
 
-            <Menu>
-                <Option>
-                    Friends
-                </Option>
-
-                <Option>
-                    Friends
-                </Option>
-            </Menu>
+            <ProfileMenu />            
         </Container>
     )
 }

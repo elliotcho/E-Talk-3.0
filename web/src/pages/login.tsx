@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import { MeDocument, MeQuery, useLoginMutation } from '../generated/graphql';
 import { withApollo } from '../utils/withApollo';
 import { toErrorMap } from '../utils/toErrorMap';
-import AuthWrapper from '../components/AuthWrapper';
-import Layout from '../components/Layout';
+import AuthWrapper from '../components/shared/AuthWrapper';
+import Layout from '../components/shared/Layout';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 

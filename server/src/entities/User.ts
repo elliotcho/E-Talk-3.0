@@ -32,6 +32,7 @@ export class User extends BaseEntity{
     @Column()
     lastName!: string;
 
+    @Field()
     @Column({ default: '' })
     profilePic: string;
 

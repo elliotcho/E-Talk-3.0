@@ -3,7 +3,7 @@ import { Form, Formik } from 'formik';
 import styled from 'styled-components';
 import { useForgotPasswordMutation } from '../generated/graphql';
 import { withApollo } from '../utils/withApollo';
-import Layout from '../components/Layout';
+import Layout from '../components/shared/Layout';
 
 const Container = styled.div`
     width: 400px;

@@ -28,6 +28,7 @@ export type User = {
   email: Scalars['String'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
+  profilePic: Scalars['String'];
   profileURL: Scalars['String'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
@@ -131,7 +132,7 @@ export type RegularErrorFragment = (
 
 export type RegularUserFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'id' | 'firstName' | 'lastName' | 'profileURL'>
+  & Pick<User, 'id' | 'firstName' | 'lastName' | 'profileURL' | 'profilePic'>
 );
 
 export type RegularUserResponseFragment = (
@@ -319,6 +320,7 @@ export const RegularUserFragmentDoc = gql`
   firstName
   lastName
   profileURL
+  profilePic
 }
     `;
 export const RegularErrorFragmentDoc = gql`

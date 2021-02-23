@@ -60,6 +60,19 @@ class UserResponse {
 
 @Resolver(User)
 export class UserResolver{
+    @FieldResolver(() => Boolean)
+    async profilePic(
+        @Ctx() { req } : MyContext
+    ) : Promise<string> {
+        const user = await User.findOne(req.session.uid);
+        
+        if(!user) {
+            return '';
+        }
+
+        return user.profilePic;
+    }
+
     @FieldResolver(() => String)
     async profileURL(
         @Ctx() { req } : MyContext

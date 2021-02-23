@@ -1,8 +1,8 @@
 import React from 'react';
 import { useApolloClient } from '@apollo/client';
 import styled from 'styled-components';
-import { useLogoutMutation, useMeQuery } from '../generated/graphql';
-import { isServer } from '../utils/isServer';
+import { useLogoutMutation, useMeQuery } from '../../generated/graphql';
+import { isServer } from '../../utils/isServer';
 import NextLink from 'next/link';
 
 const Container = styled.div`
@@ -66,6 +66,12 @@ const Navbar: React.FC<{}> = () => {
     } else {
         body = (
             <>
+                <NextLink href={`/profile/${data.me.id}`}>
+                    <Link>
+                        Profile
+                    </Link>
+                </NextLink>
+
                 <Link
                     onClick = {async (e) => {
                         e.preventDefault();

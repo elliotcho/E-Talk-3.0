@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import { MeDocument, MeQuery, useRegisterMutation } from '../generated/graphql';
 import { toErrorMap } from '../utils/toErrorMap';
 import { withApollo } from '../utils/withApollo';
-import AuthWrapper from '../components/AuthWrapper';
-import Layout from '../components/Layout';
+import AuthWrapper from '../components/shared/AuthWrapper';
+import Layout from '../components/shared/Layout';
 import { useRouter } from 'next/router';
 
 const Container = styled.div`

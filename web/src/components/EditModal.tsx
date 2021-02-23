@@ -1,9 +1,8 @@
 import React from 'react';
-import { gql } from '@apollo/client';
 import styled from 'styled-components';
 import { Formik, Form } from 'formik';
 import { Modal } from 'react-responsive-modal';
-import { Post, useEditPostMutation } from '../generated/graphql';
+import { useEditPostMutation } from '../generated/graphql';
 import 'react-responsive-modal/styles.css';
 
 const Container = styled.div`

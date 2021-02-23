@@ -1,6 +1,6 @@
 import React from 'react';
-import { useMeQuery } from '../generated/graphql';
-import { isServer } from '../utils/isServer';
+import { useMeQuery } from '../../generated/graphql';
+import { isServer } from '../../utils/isServer';
 import { useRouter } from 'next/router';
 
 interface AuthWrapperProps {

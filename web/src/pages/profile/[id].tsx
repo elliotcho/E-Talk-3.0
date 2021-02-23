@@ -15,7 +15,9 @@ const Container = styled.div`
 `;
 
 const Box  = styled.div`
+    width: 90%;
     min-height: 460px;
+    min-width: 600px;
     background: white;
     overflow: auto;
     color: black;

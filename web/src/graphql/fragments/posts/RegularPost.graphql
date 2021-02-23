@@ -1,5 +1,4 @@
-mutation CreatePost($content: String!) {
-    createPost(content: $content) {
+fragment RegularPost on Post {
         id
         content
         createdAt
@@ -8,5 +7,4 @@ mutation CreatePost($content: String!) {
             firstName
             lastName
         }
-    }
 }

@@ -1,0 +1,5 @@
+mutation EditPost($newContent: String!, $postId: Int!) {
+    editPost(newContent: $newContent, postId: $postId) {
+        ...RegularPost
+    }
+}

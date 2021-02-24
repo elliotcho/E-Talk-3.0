@@ -18,14 +18,14 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ userId }) => { 
-    const meResponse = useMeQuery();
+    let myId = useMeQuery().data?.me?.id;
 
     const { data } = useUserQuery({
         variables: { userId },
         skip: userId === -1
     });
 
-    let isOwner = meResponse?.data?.me?.id === userId;
+    let isOwner = (userId === myId);
     let firstName = data?.user.firstName || 'Loading...';
     let lastName = data?.user.lastName || 'User...';
     let hasProfilePic = !!data?.user?.profilePic;
@@ -41,7 +41,9 @@ const Sidebar: React.FC<SidebarProps> = ({ userId }) => {
                 imgURL = {imgURL}
             />
 
-            {!isOwner && <ProfileButtons />}
+            {!isOwner && myId && (
+                <ProfileButtons />
+            )}
 
             <ProfileMenu />            
         </Container>

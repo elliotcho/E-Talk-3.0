@@ -10,6 +10,7 @@ const Flex = styled.div`
 `;
 
 const Image = styled.img`
+    cursor: pointer;
     width: 6rem;
     height: 6rem;
 `;
@@ -29,7 +30,13 @@ const Primary = styled.h2`
 `;
 
 const Muted = styled.p`
+    cursor: pointer;
     color: lightslategray;
+    position: relative;
+    bottom: 10px;
+    &:hover {
+        text-decoration: underline;
+    }
 `;
 
 const Box = styled.div`
@@ -90,6 +97,8 @@ const PostHeader: React.FC<PostHeaderProps> = ({
     const [deletePost] = useDeletePostMutation();
     const meResponse = useMeQuery();
 
+    const toProfile = () => router.push(`/profile/${userId}`);
+
     let isOwner = false;
 
     if(meResponse.data.me.id === userId) {
@@ -99,14 +108,14 @@ const PostHeader: React.FC<PostHeaderProps> = ({
     return (
        <>
             <Flex>
-                <Image src={profileURL} alt='Profile pic'/>
+                <Image 
+                    src={profileURL} 
+                    alt='Profile pic'
+                    onClick = {toProfile}
+                />
 
                 <Stack>
-                    <Primary 
-                        onClick = {() => {
-                            router.push(`/profile/${userId}`)
-                        }}
-                    >
+                    <Primary onClick={toProfile}>
                         {firstName} {lastName}
                     </Primary>
 

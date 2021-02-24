@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useUserQuery } from '../../../generated/graphql'; 
+import { useMeQuery, useUserQuery } from '../../../generated/graphql'; 
 import ProfileCard from '../../../components/profile/ProfileCard';
 import ProfileButtons from '../../../components/profile/ProfileButtons';
 import ProfileMenu from '../../../components/profile/ProfileMenu';
@@ -18,11 +18,14 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ userId }) => { 
+    const meResponse = useMeQuery();
+
     const { data } = useUserQuery({
         variables: { userId },
         skip: userId === -1
     });
 
+    let isOwner = meResponse?.data?.me?.id === userId;
     let firstName = data?.user.firstName || 'Loading...';
     let lastName = data?.user.lastName || 'User...';
     let hasProfilePic = !!data?.user?.profilePic;
@@ -31,14 +34,14 @@ const Sidebar: React.FC<SidebarProps> = ({ userId }) => {
     return (
         <Container>
             <ProfileCard 
-                userId = {userId}
+                isOwner = {isOwner}
                 firstName = {firstName}
                 lastName = {lastName}
                 hasProfilePic ={hasProfilePic}
                 imgURL = {imgURL}
             />
 
-            <ProfileButtons />
+            {isOwner && <ProfileButtons />}
 
             <ProfileMenu />            
         </Container>

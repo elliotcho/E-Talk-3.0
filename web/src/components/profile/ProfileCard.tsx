@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { 
     MeDocument, 
     MeQuery, 
-    useMeQuery, 
     useRemoveProfilePicMutation, 
     useUpdateProfilePicMutation 
 } from '../../generated/graphql';
@@ -63,26 +62,23 @@ const Remove = styled.button`
 `;
 
 interface ProfileCardProps {
-    userId: number;
+    isOwner: boolean;
     firstName: string;
     lastName: string;
     hasProfilePic: boolean;
     imgURL: string;
 }
 
-const ProfileCard: React.FC<ProfileCardProps> = ({ 
-    userId, 
+const ProfileCard: React.FC<ProfileCardProps> = ({  
+    isOwner,
     firstName, 
     lastName, 
     hasProfilePic, 
     imgURL 
 }) => {
-    const { data } = useMeQuery();
     const [removePic] = useRemoveProfilePicMutation();
     const [uploadPic] = useUpdateProfilePicMutation();
 
-    let isOwner = data?.me?.id === userId;
- 
     return (
         <>
             <Box>

@@ -62,15 +62,26 @@ const Remove = styled.button`
     outline: none;
 `;
 
-const ProfileCard: React.FC<{}> = () => {
+interface ProfileCardProps {
+    userId: number;
+    firstName: string;
+    lastName: string;
+    hasProfilePic: boolean;
+    imgURL: string;
+}
+
+const ProfileCard: React.FC<ProfileCardProps> = ({ 
+    userId, 
+    firstName, 
+    lastName, 
+    hasProfilePic, 
+    imgURL 
+}) => {
     const { data } = useMeQuery();
     const [removePic] = useRemoveProfilePicMutation();
     const [uploadPic] = useUpdateProfilePicMutation();
 
-    let firstName = data?.me.firstName || 'Loading...';
-    let lastName = data?.me.lastName || 'User...';
-    let profilePic = data?.me?.profilePic;
-    let imgURL = data?.me?.profileURL;
+    let isOwner = data?.me?.id === userId;
  
     return (
         <>
@@ -79,9 +90,11 @@ const ProfileCard: React.FC<{}> = () => {
                     <Image src={imgURL} alt='Profile pic'/>
                 )}   
 
-                <Update htmlFor='profilePic'>
-                    Update
-                </Update>
+                {isOwner && (
+                    <Update htmlFor='profilePic'>
+                        Update
+                    </Update>
+                )}
             </Box>
 
             <Input
@@ -107,7 +120,7 @@ const ProfileCard: React.FC<{}> = () => {
 
             <Header>{firstName} {lastName}</Header>
 
-            {profilePic && (
+            {isOwner && hasProfilePic && (
                 <Remove 
                     onClick={async () => {
                             await removePic({

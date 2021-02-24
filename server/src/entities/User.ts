@@ -9,6 +9,7 @@ import {
     OneToMany
 } from 'typeorm';
 import { Post } from './Post';
+import { Like } from './Like';
 
 @ObjectType()
 @Entity()
@@ -41,6 +42,9 @@ export class User extends BaseEntity{
 
     @OneToMany(() => Post, (post) => post.user)
     posts: Post[];
+
+    @OneToMany(() => Like, (like) => like.post)
+    likes: Like[];
 
     @Field(() => String)
     @CreateDateColumn()

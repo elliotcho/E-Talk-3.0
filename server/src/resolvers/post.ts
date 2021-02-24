@@ -10,6 +10,7 @@ import {
     UseMiddleware
 } from "type-graphql";
 import { isAuth } from "../middleware/isAuth";
+import { Like } from '../entities/Like';
 import { Post } from '../entities/Post';
 import { User } from '../entities/User';
 import { MyContext } from '../types';
@@ -22,6 +23,30 @@ export class PostResolver {
         @Root() post: Post
     ) : Promise<User | undefined> {
         return User.findOne(post.userId);
+    }
+
+    @Mutation(() => Boolean)
+    @UseMiddleware(isAuth)
+    async likePost(
+        @Arg('postId', () => Int) postId: number,
+        @Ctx() { req } : MyContext
+    ) : Promise<boolean> {
+        const { uid } = req.session;
+        const like = await Like.find({ userId: uid, postId });
+
+        if(like) {
+            await Like.delete({ userId: uid, postId });
+            return true;
+        }
+
+        await getConnection().query(
+            `
+                insert into like ("postId", "userId")
+                values ($1, $2)
+            `, [postId, uid]
+        );
+
+        return true;
     }
 
     @Mutation(() => Post)

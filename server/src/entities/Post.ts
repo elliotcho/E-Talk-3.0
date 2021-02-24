@@ -6,9 +6,11 @@ import {
    Column,
    CreateDateColumn,
    UpdateDateColumn,
-   ManyToOne
+   ManyToOne,
+   OneToMany
 } from 'typeorm';
 import { User } from './User';
+import { Like } from './Like';
 
 @ObjectType()
 @Entity()
@@ -30,6 +32,9 @@ export class Post extends BaseEntity{
         onDelete: 'CASCADE'
     })
     user: User;
+
+    @OneToMany(() => Like, (like) => like.post)
+    likes: Like[];
 
     @Field(() => String)
     @CreateDateColumn()

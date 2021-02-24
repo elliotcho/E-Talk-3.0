@@ -13,7 +13,7 @@ const Container = styled.div`
 
 const Header = styled.h2`
     text-align: left;
-    color: black;
+    color: white;
 `;
 
 const TextArea = styled.textarea`

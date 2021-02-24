@@ -7,6 +7,7 @@ import Sidebar from '../../containers/profile/Sidebar.tsx/Sidebar';
 import CreatePostForm from '../../components/CreatePostForm';
 import Layout from '../../components/shared/Layout';
 import Post from '../../components/Post';
+import { useRouter } from 'next/router';
 
 const Container = styled.div`
    display: grid;
@@ -24,12 +25,15 @@ const Box  = styled.div`
 `;
 
 const Profile : React.FC<{}> = () => {
+    const { query: { id } } = useRouter();
+    const userId = (typeof id === 'string') ? parseInt(id) : -1;
+
     const postsResponse = useUserPostsQuery();
 
     return (
         <Layout>
             <Container>
-                <Sidebar/>
+                <Sidebar userId={userId}/>
 
                 <Box>
                     <CreatePostForm />

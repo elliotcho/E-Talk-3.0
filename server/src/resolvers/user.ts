@@ -8,7 +8,8 @@ import {
     Ctx,
     Query,
     UseMiddleware,
-    FieldResolver
+    FieldResolver,
+    Int
 } from 'type-graphql';
 import { GraphQLUpload } from 'graphql-upload';
 import argon2 from 'argon2';
@@ -87,6 +88,13 @@ export class UserResolver{
         }
 
         return imgURL;
+    }
+
+    @Query(() => User)
+    async user (
+        @Arg('userId', () => Int)  userId  : number
+    ) : Promise<User | undefined > {
+        return User.findOne(userId);
     }
 
     @Mutation(() => UserResponse)

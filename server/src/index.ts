@@ -9,6 +9,7 @@ import { ApolloServer } from 'apollo-server-express';
 import { createSchema } from './utils/createSchema';
 import { User } from './entities/User';
 import { Post } from './entities/Post';
+import { Like } from './entities/Like';
 import cors from 'cors';
 import path from 'path';
 
@@ -20,7 +21,8 @@ const main  = async () => {
         logging: true,
         entities: [
             Post,
-            User
+            User,
+            Like
         ]
     });
 

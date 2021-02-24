@@ -142,7 +142,7 @@ export type RegularPostFragment = (
   & Pick<Post, 'id' | 'content' | 'createdAt'>
   & { user: (
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'firstName' | 'lastName'>
+    & RegularUserFragment
   ) }
 );
 
@@ -303,11 +303,7 @@ export type PostsQuery = (
   { __typename?: 'Query' }
   & { posts: Array<(
     { __typename?: 'Post' }
-    & Pick<Post, 'id' | 'content' | 'createdAt'>
-    & { user: (
-      { __typename?: 'User' }
-      & Pick<User, 'id' | 'firstName' | 'lastName' | 'profileURL'>
-    ) }
+    & RegularPostFragment
   )> }
 );
 
@@ -318,11 +314,7 @@ export type UserPostsQuery = (
   { __typename?: 'Query' }
   & { userPosts: Array<(
     { __typename?: 'Post' }
-    & Pick<Post, 'id' | 'content' | 'createdAt'>
-    & { user: (
-      { __typename?: 'User' }
-      & Pick<User, 'id' | 'firstName' | 'lastName' | 'profileURL'>
-    ) }
+    & RegularPostFragment
   )> }
 );
 
@@ -350,18 +342,6 @@ export type UserQuery = (
   ) }
 );
 
-export const RegularPostFragmentDoc = gql`
-    fragment RegularPost on Post {
-  id
-  content
-  createdAt
-  user {
-    id
-    firstName
-    lastName
-  }
-}
-    `;
 export const RegularUserFragmentDoc = gql`
     fragment RegularUser on User {
   id
@@ -371,6 +351,16 @@ export const RegularUserFragmentDoc = gql`
   profilePic
 }
     `;
+export const RegularPostFragmentDoc = gql`
+    fragment RegularPost on Post {
+  id
+  content
+  createdAt
+  user {
+    ...RegularUser
+  }
+}
+    ${RegularUserFragmentDoc}`;
 export const RegularErrorFragmentDoc = gql`
     fragment RegularError on FieldError {
   field
@@ -735,18 +725,10 @@ export type UpdateProfilePicMutationOptions = Apollo.BaseMutationOptions<UpdateP
 export const PostsDocument = gql`
     query Posts {
   posts {
-    id
-    content
-    createdAt
-    user {
-      id
-      firstName
-      lastName
-      profileURL
-    }
+    ...RegularPost
   }
 }
-    `;
+    ${RegularPostFragmentDoc}`;
 
 /**
  * __usePostsQuery__
@@ -775,18 +757,10 @@ export type PostsQueryResult = Apollo.QueryResult<PostsQuery, PostsQueryVariable
 export const UserPostsDocument = gql`
     query UserPosts {
   userPosts {
-    id
-    content
-    createdAt
-    user {
-      id
-      firstName
-      lastName
-      profileURL
-    }
+    ...RegularPost
   }
 }
-    `;
+    ${RegularPostFragmentDoc}`;
 
 /**
  * __useUserPostsQuery__

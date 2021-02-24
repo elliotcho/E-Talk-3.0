@@ -1,13 +1,5 @@
 query UserPosts {
     userPosts {
-        id
-        content
-        createdAt
-        user {
-            id
-            firstName
-            lastName
-            profileURL
-        }
+        ...RegularPost
     }
 }

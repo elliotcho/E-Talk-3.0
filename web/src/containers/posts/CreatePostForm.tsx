@@ -2,7 +2,7 @@ import React from 'react';
 import { gql } from '@apollo/client';
 import styled from 'styled-components';
 import { Form, Formik } from 'formik';
-import { Post, useCreatePostMutation } from '../generated/graphql';
+import { Post, useCreatePostMutation } from '../../generated/graphql';
 
 const Container = styled.div`
     width: 90%;

@@ -3,8 +3,6 @@ fragment RegularPost on Post {
         content
         createdAt
         user {
-            id
-            firstName
-            lastName
+            ...RegularUser
         }
 }

@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useMeQuery, useUserQuery } from '../../../generated/graphql'; 
-import ProfileCard from '../../../components/profile/ProfileCard';
-import ProfileButtons from '../../../components/profile/ProfileButtons';
-import ProfileMenu from '../../../components/profile/ProfileMenu';
+import { useMeQuery, useUserQuery } from '../../generated/graphql'; 
+import ProfileCard from '../../components/profile/ProfileCard';
+import ProfileButtons from '../../components/profile/ProfileButtons';
+import ProfileMenu from '../../components/profile/ProfileMenu';
 
 const Container = styled.div`
     position: relative;
@@ -41,7 +41,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userId }) => {
                 imgURL = {imgURL}
             />
 
-            {isOwner && <ProfileButtons />}
+            {!isOwner && <ProfileButtons />}
 
             <ProfileMenu />            
         </Container>

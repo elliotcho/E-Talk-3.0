@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Formik, Form } from 'formik';
 import { Modal } from 'react-responsive-modal';
-import { useEditPostMutation } from '../generated/graphql';
+import { useEditPostMutation } from '../../generated/graphql';
 import 'react-responsive-modal/styles.css';
 
 const Container = styled.div`

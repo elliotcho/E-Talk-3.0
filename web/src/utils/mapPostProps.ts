@@ -1,11 +1,11 @@
 export const mapPostProps = (post: any) => {
-    const { id: userId, firstName, lastName, url } = post.user;
+    const { id: userId, firstName, lastName, profileURL } = post.user;
     
     const props = {
         ...post,
         key: post.id,
         postId: post.id,
-        userURL: url,
+        profileURL,
         firstName,
         lastName,
         userId

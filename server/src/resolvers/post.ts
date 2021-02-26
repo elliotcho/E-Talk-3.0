@@ -25,6 +25,13 @@ export class PostResolver {
         return User.findOne(post.userId);
     }
 
+    @Query(() => Post)
+    async post (
+        @Arg('postId', () => Int) postId: number
+    ) : Promise<Post | undefined> {
+        return Post.findOne(postId);
+    }
+
     @Mutation(() => Boolean)
     @UseMiddleware(isAuth)
     async likePost(

@@ -98,10 +98,11 @@ const PostHeader: React.FC<PostHeaderProps> = ({
     const meResponse = useMeQuery();
 
     const toProfile = () => router.push(`/profile/${userId}`);
+    const toPost = () => router.push(`/post/${postId}`);
 
     let isOwner = false;
 
-    if(meResponse.data.me.id === userId) {
+    if(meResponse?.data?.me?.id === userId) {
         isOwner = true;
     }
 
@@ -119,7 +120,7 @@ const PostHeader: React.FC<PostHeaderProps> = ({
                         {firstName} {lastName}
                     </Primary>
 
-                    <Muted>
+                    <Muted onClick={toPost}>
                         {formatDate(createdAt)}
                     </Muted>
                 </Stack>

@@ -4,42 +4,14 @@ import styled from 'styled-components';
 import { MeDocument, MeQuery, useLoginMutation } from '../generated/graphql';
 import { withApollo } from '../utils/withApollo';
 import { toErrorMap } from '../utils/toErrorMap';
+import FormContainer from '../containers/auth/FormContainer';
 import AuthWrapper from '../components/shared/AuthWrapper';
 import Layout from '../components/shared/Layout';
+import InputField from '../components/auth/InputField';
+import SubmitButton from '../components/auth/SubmitButton';
+import ErrorText from '../components/auth/ErrorText';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
-
-const Container = styled.div`
-    width: 400px;
-    text-align: center;
-    margin: 50px auto;
-`;
-
-const Input = styled.input`
-    width: 100%;
-    display: block;
-    margin-bottom: 5px;
-    padding: 6px;
-`;
-
-const Error = styled.p`
-    text-align: left;
-    color: red;
-`;
-
-const Button = styled.button`
-    width: 50%;
-    font-size: 20px;
-    background: green;
-    cursor: pointer;
-    color: white;
-    padding: 15px;
-    outline: none;
-    border: none;
-    &:hover {
-        box-shadow: 0 0 5px black;
-    }
-`;
 
 const Link = styled.p`
     cursor: pointer;
@@ -80,9 +52,9 @@ const Login: React.FC<{}> = () => {
                     }}
                 >
                     {({ values, handleChange, errors }) => (
-                        <Form>
-                            <Container>
-                                <Input
+                        <FormContainer>
+                            <Form>
+                                <InputField
                                     type = 'text'
                                     placeholder = 'Email'
                                     onChange = {handleChange}
@@ -90,18 +62,17 @@ const Login: React.FC<{}> = () => {
                                     name = 'email'
                                 />
                     
-                                <Input
+                                <InputField
                                     type = 'password'
                                     placeholder = 'Password'
                                     onChange = {handleChange}
                                     value = {values.password}
                                     name = 'password'
                                 />
-                            
 
-                                <Button type='submit'>
+                                <SubmitButton>
                                     Login
-                                </Button>
+                                </SubmitButton>
 
                                 <NextLink href='forgot-password'>
                                     <Link>
@@ -110,12 +81,12 @@ const Login: React.FC<{}> = () => {
                                 </NextLink>
 
                                 {Object.keys(errors).map(key => 
-                                    <Error>
+                                    <ErrorText>
                                         {`${key} error: ${errors[key]}`}
-                                    </Error>    
+                                    </ErrorText>    
                                 )}
-                            </Container>
-                        </Form>
+                            </Form>
+                        </FormContainer>
                     )}
                 </Formik>
             </Layout>

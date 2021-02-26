@@ -1,43 +1,14 @@
 import React from 'react';
 import { Form, Formik } from 'formik';
-import styled from 'styled-components';
 import { MeDocument, MeQuery, useChangePasswordMutation } from '../../generated/graphql';
 import { toErrorMap } from '../../utils/toErrorMap';
 import { withApollo } from '../../utils/withApollo';
+import FormContainer from '../../containers/auth/FormContainer';
 import Layout from '../../components/shared/Layout';
+import InputField from '../../components/auth/InputField';
+import SubmitButton from '../../components/auth/SubmitButton';
+import ErrorText from '../../components/auth/ErrorText';
 import { useRouter } from 'next/router';
-
-const Container = styled.div`
-    width: 400px;
-    text-align: center;
-    margin: 50px auto;
-`;
-
-const Input = styled.input`
-    width: 100%;
-    display: block;
-    margin-bottom: 5px;
-    padding: 6px;
-`;
-
-const Error = styled.p`
-    text-align: left;
-    color: red;
-`;
-
-const Button = styled.button`
-    width: 50%;
-    font-size: 20px;
-    background: green;
-    cursor: pointer;
-    color: white;
-    padding: 15px;
-    outline: none;
-    border: none;
-    &:hover {
-        background: teal;
-    }
-`;
 
 const ChangePassword: React.FC<{}> = () => {
     const router = useRouter();
@@ -74,9 +45,9 @@ const ChangePassword: React.FC<{}> = () => {
                 }}
             >
                 {({ values, handleChange, errors }) => (
-                    <Form>
-                        <Container>
-                            <Input
+                    <FormContainer>
+                        <Form>
+                            <InputField
                                  type = 'password'
                                  placeholder = 'New password'
                                  onChange = {handleChange}
@@ -84,17 +55,17 @@ const ChangePassword: React.FC<{}> = () => {
                                  name = 'newPassword'
                             />
 
-                            <Button type='submit'>
+                            <SubmitButton type='submit'>
                                 Submit
-                            </Button>
+                            </SubmitButton>
 
                             {Object.keys(errors).map(key => 
-                                <Error>
+                                <ErrorText>
                                     {`${key} error: ${errors[key]}`}
-                                </Error>    
+                                </ErrorText>    
                             )}
-                        </Container>
-                    </Form>
+                        </Form>
+                    </FormContainer>
                 )}
             </Formik>
         </Layout>

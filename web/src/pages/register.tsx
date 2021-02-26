@@ -1,44 +1,15 @@
 import React from 'react';
 import { Formik, Form } from 'formik';
-import styled from 'styled-components';
 import { MeDocument, MeQuery, useRegisterMutation } from '../generated/graphql';
 import { toErrorMap } from '../utils/toErrorMap';
 import { withApollo } from '../utils/withApollo';
+import FormContainer from '../containers/auth/FormContainer';
 import AuthWrapper from '../components/shared/AuthWrapper';
 import Layout from '../components/shared/Layout';
+import InputField from '../components/auth/InputField';
+import SubmitButton from '../components/auth/SubmitButton';
+import ErrorText from '../components/auth/ErrorText';
 import { useRouter } from 'next/router';
-
-const Container = styled.div`
-    width: 400px;
-    text-align: center;
-    margin: 50px auto;
-`;
-
-const Input = styled.input`
-    width: 100%;
-    display: block;
-    margin-bottom: 5px;
-    padding: 6px;
-`;
-
-const Error = styled.p`
-    text-align: left;
-    color: red;
-`;
-
-const Button = styled.button`
-    width: 50%;
-    font-size: 20px;
-    background: green;
-    cursor: pointer;
-    color: white;
-    padding: 15px;
-    outline: none;
-    border: none;
-    &:hover {
-        box-shadow: 0 0 5px black;
-    }
-`;
 
 const Register : React.FC<{}> = () => {
     const router = useRouter();
@@ -71,9 +42,9 @@ const Register : React.FC<{}> = () => {
                     }}
                 >
                     {({ values, handleChange, errors }) => (
-                        <Form>
-                            <Container>
-                                <Input
+                        <FormContainer>
+                            <Form>
+                                <InputField
                                     type = 'text'
                                     placeholder = 'Email'
                                     onChange = {handleChange}
@@ -81,7 +52,7 @@ const Register : React.FC<{}> = () => {
                                     name = 'email'
                                 />
                     
-                                <Input
+                                <InputField
                                     type = 'password'
                                     placeholder = 'Password'
                                     onChange = {handleChange}
@@ -89,7 +60,7 @@ const Register : React.FC<{}> = () => {
                                     name = 'password'
                                 />
 
-                                <Input
+                                <InputField
                                     type = 'text'
                                     placeholder = 'First name'
                                     onChange = {handleChange}
@@ -97,7 +68,7 @@ const Register : React.FC<{}> = () => {
                                     name = 'firstName'
                                 />
                     
-                                <Input 
+                                <InputField
                                     type = 'text'
                                     placeholder = 'Last name'
                                     onChange = {handleChange}
@@ -105,17 +76,17 @@ const Register : React.FC<{}> = () => {
                                     name = 'lastName'
                                 />
 
-                                <Button type='submit'>
+                                <SubmitButton type='submit'>
                                     Register
-                                </Button>
+                                </SubmitButton>
 
                                 {Object.keys(errors).map(key => 
-                                    <Error>
+                                    <ErrorText>
                                         {`${key} error: ${errors[key]}`}
-                                    </Error>    
+                                    </ErrorText>    
                                 )}
-                            </Container>
-                        </Form>
+                            </Form>
+                        </FormContainer>
                     )}
                 </Formik>
             </Layout>

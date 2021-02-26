@@ -23,7 +23,7 @@ const PostDetails : React.FC<{}> = () => {
     return (
         <Layout>
             {data?.post && (
-                <Post {...mapPostProps(data.post)}/>
+                <Post {...mapPostProps(data.post)} seeMore={true}/>
             )}
         </Layout>
     )

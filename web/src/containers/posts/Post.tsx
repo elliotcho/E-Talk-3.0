@@ -19,6 +19,7 @@ interface PostProps {
     postId: number;
     createdAt: string;
     content: string;
+    seeMore: boolean;
     profileURL: string;
     firstName: string;
     lastName: string;
@@ -26,11 +27,17 @@ interface PostProps {
 }
 
 const Post : React.FC<PostProps> = (props) => {
+    const { postId, content, seeMore } = props;
+
     return (
         <Container>
             <PostHeader {...props}/>
 
-            <PostBody content={props.content}/>
+            <PostBody 
+                postId={postId}
+                content={content} 
+                seeMore={seeMore}
+            />
         </Container>
     )
 }

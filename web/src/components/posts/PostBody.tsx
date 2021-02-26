@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useRouter } from 'next/router';
 
 const Container = styled.div`
     overflow-wrap: break-word;
@@ -9,11 +10,39 @@ const Container = styled.div`
     margin-top: 30px;
 `;
 
+const Span = styled.p`
+    color: darkblue;
+    cursor: pointer;
+    &:hover {
+        text-decoration: underline;
+    }
+`;
+
 interface PostBodyProps {
+    postId: number;
     content: string;
+    seeMore: boolean;
 }
 
-const PostBody: React.FC<PostBodyProps> = ({ content }) => {
+const PostBody: React.FC<PostBodyProps> = ({ postId, content, seeMore }) => {
+    const router = useRouter();
+
+    if(content.length > 300 && !seeMore) {
+        return (
+            <Container>
+                {content}...
+
+                <Span 
+                    onClick = {() => {
+                        router.push(`/post/${postId}`);
+                    }}
+                >
+                    See More
+                </Span>
+            </Container>
+        )
+    }
+
     return (
         <Container>
             {content}

@@ -156,8 +156,8 @@ const PostHeader: React.FC<PostHeaderProps> = ({
             
             <EditModal
                 open = {isOpen}
-                onClose = {() => setIsOpen(false)}
                 postId = {postId}
+                onClose = {() => setIsOpen(false)}
                 content = {content}
             />
        </>

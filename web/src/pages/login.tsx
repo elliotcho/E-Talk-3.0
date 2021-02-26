@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Form, Formik } from 'formik';
 import styled from 'styled-components';
 import { MeDocument, MeQuery, useLoginMutation } from '../generated/graphql';
@@ -7,6 +7,7 @@ import { toErrorMap } from '../utils/toErrorMap';
 import FormContainer from '../containers/auth/FormContainer';
 import AuthWrapper from '../components/shared/AuthWrapper';
 import Layout from '../components/shared/Layout';
+import Title from '../components/auth/Title';
 import InputField from '../components/auth/InputField';
 import SubmitButton from '../components/auth/SubmitButton';
 import ErrorText from '../components/auth/ErrorText';
@@ -23,6 +24,7 @@ const Link = styled.p`
 
 const Login: React.FC<{}> = () => {
     const router = useRouter();
+    const [isLoading, setIsLoading] = useState(false);
     const [login] = useLoginMutation();
 
     return (
@@ -31,6 +33,8 @@ const Login: React.FC<{}> = () => {
                 <Formik
                     initialValues = {{ email: '', password: '' }}
                     onSubmit = {async (values, { setErrors }) => {
+                        setIsLoading(true);
+
                         const response = await login({
                             variables: { input: { ...values } },
                             update: (cache, { data }) => {
@@ -49,10 +53,14 @@ const Login: React.FC<{}> = () => {
                         } else {
                             router.push('/');
                         }
+
+                        setIsLoading(false);
                     }}
                 >
                     {({ values, handleChange, errors }) => (
                         <FormContainer>
+                            <Title>Sign In</Title>
+
                             <Form>
                                 <InputField
                                     type = 'text'
@@ -70,7 +78,7 @@ const Login: React.FC<{}> = () => {
                                     name = 'password'
                                 />
 
-                                <SubmitButton>
+                                <SubmitButton isLoading={isLoading}>
                                     Login
                                 </SubmitButton>
 

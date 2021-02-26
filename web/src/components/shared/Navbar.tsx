@@ -47,43 +47,45 @@ const Navbar: React.FC<{}> = () => {
 
     let body = null;
 
-    if(!loading && !data?.me) {
-        body = (
-            <>
-                <NextLink href='/login'>
-                    <Link>
-                        Login
-                    </Link>
-                </NextLink>
+    if(!loading) {
+        if(!data?.me) {
+            body = (
+                <>
+                    <NextLink href='/login'>
+                        <Link>
+                            Login
+                        </Link>
+                    </NextLink>
 
-                <NextLink href='/register'>
-                    <Link>
-                        Register
-                    </Link>
-                </NextLink>
-            </>
-        )
-    } else {
-        body = (
-            <>
-                <NextLink href={`/profile/${data.me.id}`}>
-                    <Link>
-                        Profile
-                    </Link>
-                </NextLink>
+                    <NextLink href='/register'>
+                        <Link>
+                            Register
+                        </Link>
+                    </NextLink>
+                </>
+            )
+        } else {
+            body = (
+                <>
+                    <NextLink href={`/profile/${data.me.id}`}>
+                        <Link>
+                            Profile
+                        </Link>
+                    </NextLink>
 
-                <Link
-                    onClick = {async (e) => {
-                        e.preventDefault();
+                    <Link
+                        onClick = {async (e) => {
+                            e.preventDefault();
 
-                        await logout();
-                        await apolloClient.resetStore();
-                    }}
-                >
-                    Logout
-                </Link>
-            </>
-        )
+                            await logout();
+                            await apolloClient.resetStore();
+                        }}
+                    >
+                        Logout
+                    </Link>
+                </>
+            )
+        }
     }
 
     return (

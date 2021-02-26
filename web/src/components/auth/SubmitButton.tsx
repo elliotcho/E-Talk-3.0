@@ -5,9 +5,10 @@ const Button = styled.button`
     width: 50%;
     font-size: 20px;
     background: green;
-    cursor: pointer;
     color: white;
+    margin: 20px auto;
     padding: 15px;
+    cursor: pointer;
     outline: none;
     border: none;
     &:hover {
@@ -15,10 +16,24 @@ const Button = styled.button`
     }
 `;
 
-const SubmitButton : React.FC<{}> = ({ children }) => (
-    <Button type = 'submit'>
-        {children}
-    </Button>
-);
+interface SubmitButtonProps {
+    isLoading?: boolean;
+}
+
+const SubmitButton : React.FC<SubmitButtonProps> = ({ children, isLoading = false }) => {
+    let type : 'submit' | 'button' | 'reset';
+
+    if(isLoading) {
+        type = 'button';
+    } else {
+        type = 'submit';
+    }
+
+    return (
+        <Button type = {type}>
+            {isLoading? 'Loading...' : children}
+        </Button>
+    )
+}
 
 export default SubmitButton;

@@ -1,25 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Form, Formik } from 'formik';
 import { MeDocument, MeQuery, useChangePasswordMutation } from '../../generated/graphql';
 import { toErrorMap } from '../../utils/toErrorMap';
 import { withApollo } from '../../utils/withApollo';
 import FormContainer from '../../containers/auth/FormContainer';
 import Layout from '../../components/shared/Layout';
+import Title from '../../components/auth/Title';
 import InputField from '../../components/auth/InputField';
 import SubmitButton from '../../components/auth/SubmitButton';
 import ErrorText from '../../components/auth/ErrorText';
 import { useRouter } from 'next/router';
 
 const ChangePassword: React.FC<{}> = () => {
-    const router = useRouter();
+    const  router  = useRouter();
+    const [isLoading, setIsLoading] = useState(false);
     const [changePassword] = useChangePasswordMutation();
+
+    const { token } = router.query;
 
     return (
         <Layout>
             <Formik
                 initialValues={{ newPassword: '' }}
                 onSubmit={async ({ newPassword }, { setErrors }) => {
-                    const { token } = router.query; 
+                    setIsLoading(true);
 
                     const response = await changePassword({
                         variables: {
@@ -42,10 +46,14 @@ const ChangePassword: React.FC<{}> = () => {
                     } else {
                         router.push('/');
                     }
+
+                    setIsLoading(false);
                 }}
             >
                 {({ values, handleChange, errors }) => (
                     <FormContainer>
+                        <Title>Change Password</Title>
+
                         <Form>
                             <InputField
                                  type = 'password'
@@ -55,7 +63,7 @@ const ChangePassword: React.FC<{}> = () => {
                                  name = 'newPassword'
                             />
 
-                            <SubmitButton type='submit'>
+                            <SubmitButton isLoading={isLoading}>
                                 Submit
                             </SubmitButton>
 

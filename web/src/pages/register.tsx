@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik, Form } from 'formik';
 import { MeDocument, MeQuery, useRegisterMutation } from '../generated/graphql';
 import { toErrorMap } from '../utils/toErrorMap';
@@ -6,6 +6,7 @@ import { withApollo } from '../utils/withApollo';
 import FormContainer from '../containers/auth/FormContainer';
 import AuthWrapper from '../components/shared/AuthWrapper';
 import Layout from '../components/shared/Layout';
+import Title from '../components/auth/Title';
 import InputField from '../components/auth/InputField';
 import SubmitButton from '../components/auth/SubmitButton';
 import ErrorText from '../components/auth/ErrorText';
@@ -13,6 +14,7 @@ import { useRouter } from 'next/router';
 
 const Register : React.FC<{}> = () => {
     const router = useRouter();
+    const [isLoading, setIsLoading] = useState(false);
     const [register] = useRegisterMutation();
 
     return (
@@ -21,6 +23,8 @@ const Register : React.FC<{}> = () => {
                 <Formik
                     initialValues = {{ email: '', password: '', firstName: '', lastName: '' }}
                     onSubmit = {async (values, { setErrors }) => {
+                        setIsLoading(true);
+
                         const response = await register({
                             variables: { input: { ...values } },
                             update: (cache, { data }) => {
@@ -39,10 +43,14 @@ const Register : React.FC<{}> = () => {
                         } else {
                             router.push('/');
                         }
+
+                        setIsLoading(false);
                     }}
                 >
                     {({ values, handleChange, errors }) => (
                         <FormContainer>
+                            <Title>Register</Title>
+
                             <Form>
                                 <InputField
                                     type = 'text'
@@ -76,7 +84,7 @@ const Register : React.FC<{}> = () => {
                                     name = 'lastName'
                                 />
 
-                                <SubmitButton type='submit'>
+                                <SubmitButton isLoading={isLoading}>
                                     Register
                                 </SubmitButton>
 

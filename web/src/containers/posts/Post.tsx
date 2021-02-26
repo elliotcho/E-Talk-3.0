@@ -19,7 +19,7 @@ interface PostProps {
     postId: number;
     createdAt: string;
     content: string;
-    seeMore: boolean;
+    seeMore?: boolean;
     profileURL: string;
     firstName: string;
     lastName: string;

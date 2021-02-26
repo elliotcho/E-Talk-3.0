@@ -36,7 +36,7 @@ const Profile : React.FC<{}> = () => {
                 <Sidebar userId={userId}/>
 
                 <Box>
-                    <CreatePostForm />
+                    <CreatePostForm variant='black'/>
 
                     {postsResponse.data?.userPosts.map(p => 
                         <Post  {...mapPostProps(p)} />  

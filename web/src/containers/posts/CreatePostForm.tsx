@@ -13,7 +13,6 @@ const Container = styled.div`
 
 const Header = styled.h2`
     text-align: left;
-    color: white;
 `;
 
 const TextArea = styled.textarea`
@@ -37,8 +36,14 @@ const Button = styled.button`
     }
 `;
 
-const CreatePostForm: React.FC<{}> = () => {
+interface CreatePostFormProps {
+    variant?: string;
+}
+
+const CreatePostForm: React.FC<CreatePostFormProps> = ({ variant = 'white' }) => {
     const [createPost] = useCreatePostMutation();
+    
+    const headerColor = { color: variant };
 
     return (
         <Formik
@@ -82,7 +87,7 @@ const CreatePostForm: React.FC<{}> = () => {
             {({ values, handleChange }) => (
                 <Form>
                     <Container>
-                        <Header>
+                        <Header style={headerColor}>
                             What's on your mind?
                         </Header>
 

@@ -6,6 +6,7 @@ import {
     useRemoveProfilePicMutation, 
     useUpdateProfilePicMutation 
 } from '../../generated/graphql';
+import NextImage from 'next/image';
 
 const Header = styled.h2`
     text-align: center;
@@ -82,10 +83,8 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
     return (
         <>
             <Box>
-                {imgURL && (
-                    <Image src={imgURL} alt='Profile pic'/>
-                )}   
-
+                <Image src={imgURL} alt='Profile pic'/>
+               
                 {isOwner && (
                     <Update htmlFor='profilePic'>
                         Update

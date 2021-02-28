@@ -24,6 +24,11 @@ const Box  = styled.div`
     color: black;
 `;
 
+const Header = styled.h2`
+   text-align: center;
+   color: white;
+`;
+
 const Profile : React.FC<{}> = () => {
     const { query: { id } } = useRouter();
     const userId = (typeof id === 'string') ? parseInt(id) : -1;
@@ -37,6 +42,12 @@ const Profile : React.FC<{}> = () => {
 
                 <Box>
                     <CreatePostForm variant='black'/>
+
+                    {postsResponse.loading && (
+                        <Header>
+                            Loading...
+                        </Header>
+                    )}
 
                     {postsResponse.data?.userPosts.map(p => 
                         <Post  {...mapPostProps(p)} />  

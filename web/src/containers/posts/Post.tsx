@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import PostHeader from '../../components/posts/PostHeader';
 import PostBody from '../../components/posts/PostBody';
+import LikeSection from '../../components/posts/LikeSection';
+import CommentSection from '../../components/posts/CommentSection';
 
 const Container = styled.div`
     width: 90%;
@@ -13,6 +15,11 @@ const Container = styled.div`
     &:last-child {
         margin-bottom: 70px;
     }
+`;
+
+const Flex = styled.div`
+    margin-top: 20px;
+    display: flex;
 `;
 
 interface PostProps {
@@ -38,6 +45,11 @@ const Post : React.FC<PostProps> = (props) => {
                 content={content} 
                 seeMore={seeMore}
             />
+
+            <Flex>
+                <LikeSection />
+                <CommentSection />
+            </Flex>
         </Container>
     )
 }

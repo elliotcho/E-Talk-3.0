@@ -28,8 +28,8 @@ const Sidebar: React.FC<SidebarProps> = ({ userId }) => {
     let isOwner = (userId === myId);
     let firstName = data?.user.firstName || 'Loading...';
     let lastName = data?.user.lastName || 'User...';
+    let imgURL = data?.user?.profileURL || '/loading.jpg';
     let hasProfilePic = !!data?.user?.profilePic;
-    let imgURL = data?.user?.profileURL;
 
     return (
         <Container>

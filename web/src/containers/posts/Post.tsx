@@ -47,7 +47,7 @@ const Post : React.FC<PostProps> = (props) => {
             />
 
             <Flex>
-                <LikeSection />
+                <LikeSection postId={postId}/>
                 <CommentSection />
             </Flex>
         </Container>

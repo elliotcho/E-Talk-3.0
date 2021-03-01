@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { gql } from '@apollo/client';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { useLikePostMutation } from '../../generated/graphql';
 import { formatCount } from '../../utils/formatCount';
+import LikeModal from './LikeModal';
 
 const Flex = styled.div`
     display: flex;
@@ -48,7 +49,9 @@ interface LikeSectionProps {
 }
 
 const LikeSection : React.FC<LikeSectionProps> = ({ postId, likeStatus, likes }) => {
+    const [isOpen, setIsOpen] = useState(false);
     const [likePost] = useLikePostMutation();
+
     let numLikes = formatCount(likes);
 
     const onClick = async () => {
@@ -70,7 +73,6 @@ const LikeSection : React.FC<LikeSectionProps> = ({ postId, likeStatus, likes })
                
                  if(data) {
                     const { likeStatus, likes } = data;
-                     
                     let newData = {};
 
                     if(likeStatus) {
@@ -108,12 +110,24 @@ const LikeSection : React.FC<LikeSectionProps> = ({ postId, likeStatus, likes })
                 </RedBox>
             )}
 
-            <Span>
+            <Span
+                onClick = {() => {
+                    if(likes >= 1) {
+                        setIsOpen(true);
+                    }
+                }}
+            >
                 {likes !== 0 && (
                     likes > 1 ? `${numLikes} likes` :
                                 `${numLikes} like`
                 )}
             </Span>
+
+            <LikeModal
+                open = {isOpen}
+                onClose = {() => setIsOpen(false)}
+                postId = {postId}
+            />
         </Flex>
     )
 }

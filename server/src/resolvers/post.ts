@@ -37,6 +37,21 @@ export class PostResolver {
         return User.findOne(post.userId);
     }
 
+    @Query(() => [User])
+    async likers(
+        @Arg('postId', () => Int) postId: number
+    ) : Promise<[User]> {
+        const result = await getConnection().query(
+            `
+                select id, "firstName", "lastName", "profilePic" from "user" 
+                inner join rating on rating."userId" = "user".id
+                and rating."postId" = $1
+            `, [postId]
+        );
+
+        return result;
+    }   
+
     @Query(() => Post)
     async post (
         @Arg('postId', () => Int) postId: number

@@ -19,6 +19,7 @@ export type Query = {
   __typename?: 'Query';
   user: User;
   me?: Maybe<User>;
+  likers: Array<User>;
   post: Post;
   userPosts: Array<Post>;
   posts: Array<Post>;
@@ -27,6 +28,11 @@ export type Query = {
 
 export type QueryUserArgs = {
   userId: Scalars['Int'];
+};
+
+
+export type QueryLikersArgs = {
+  postId: Scalars['Int'];
 };
 
 
@@ -302,6 +308,19 @@ export type UpdateProfilePicMutation = (
     { __typename?: 'UserResponse' }
     & RegularUserResponseFragment
   ) }
+);
+
+export type LikersQueryVariables = Exact<{
+  postId: Scalars['Int'];
+}>;
+
+
+export type LikersQuery = (
+  { __typename?: 'Query' }
+  & { likers: Array<(
+    { __typename?: 'User' }
+    & RegularUserFragment
+  )> }
 );
 
 export type PostQueryVariables = Exact<{
@@ -745,6 +764,39 @@ export function useUpdateProfilePicMutation(baseOptions?: Apollo.MutationHookOpt
 export type UpdateProfilePicMutationHookResult = ReturnType<typeof useUpdateProfilePicMutation>;
 export type UpdateProfilePicMutationResult = Apollo.MutationResult<UpdateProfilePicMutation>;
 export type UpdateProfilePicMutationOptions = Apollo.BaseMutationOptions<UpdateProfilePicMutation, UpdateProfilePicMutationVariables>;
+export const LikersDocument = gql`
+    query Likers($postId: Int!) {
+  likers(postId: $postId) {
+    ...RegularUser
+  }
+}
+    ${RegularUserFragmentDoc}`;
+
+/**
+ * __useLikersQuery__
+ *
+ * To run a query within a React component, call `useLikersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLikersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLikersQuery({
+ *   variables: {
+ *      postId: // value for 'postId'
+ *   },
+ * });
+ */
+export function useLikersQuery(baseOptions: Apollo.QueryHookOptions<LikersQuery, LikersQueryVariables>) {
+        return Apollo.useQuery<LikersQuery, LikersQueryVariables>(LikersDocument, baseOptions);
+      }
+export function useLikersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LikersQuery, LikersQueryVariables>) {
+          return Apollo.useLazyQuery<LikersQuery, LikersQueryVariables>(LikersDocument, baseOptions);
+        }
+export type LikersQueryHookResult = ReturnType<typeof useLikersQuery>;
+export type LikersLazyQueryHookResult = ReturnType<typeof useLikersLazyQuery>;
+export type LikersQueryResult = Apollo.QueryResult<LikersQuery, LikersQueryVariables>;
 export const PostDocument = gql`
     query Post($postId: Int!) {
   post(postId: $postId) {

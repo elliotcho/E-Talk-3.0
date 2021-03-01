@@ -1,0 +1,5 @@
+query Likers($postId: Int!) {
+    likers(postId: $postId) {
+        ...RegularUser
+    }
+}

@@ -9,7 +9,9 @@ const Container = styled.div`
     width: 400px;
 `;
 
-const Header = styled.h2``;
+const Header = styled.h2`
+    color: black;
+`;
 
 const TextArea = styled.textarea`
     width: 100%;

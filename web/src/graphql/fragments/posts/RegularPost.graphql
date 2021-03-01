@@ -2,6 +2,8 @@ fragment RegularPost on Post {
         id
         content
         createdAt
+        likeStatus
+        likes
         user {
             ...RegularUser
         }

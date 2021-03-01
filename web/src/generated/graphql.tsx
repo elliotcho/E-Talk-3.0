@@ -52,8 +52,10 @@ export type Post = {
   content: Scalars['String'];
   userId: Scalars['Float'];
   user: User;
+  likes: Scalars['Float'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
+  likeStatus: Scalars['Boolean'];
 };
 
 export type Mutation = {
@@ -145,7 +147,7 @@ export type LoginInput = {
 
 export type RegularPostFragment = (
   { __typename?: 'Post' }
-  & Pick<Post, 'id' | 'content' | 'createdAt'>
+  & Pick<Post, 'id' | 'content' | 'createdAt' | 'likeStatus' | 'likes'>
   & { user: (
     { __typename?: 'User' }
     & RegularUserFragment
@@ -375,6 +377,8 @@ export const RegularPostFragmentDoc = gql`
   id
   content
   createdAt
+  likeStatus
+  likes
   user {
     ...RegularUser
   }

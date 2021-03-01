@@ -26,6 +26,8 @@ interface PostProps {
     postId: number;
     createdAt: string;
     content: string;
+    likeStatus: boolean;
+    likes: number;
     seeMore?: boolean;
     profileURL: string;
     firstName: string;
@@ -34,7 +36,7 @@ interface PostProps {
 }
 
 const Post : React.FC<PostProps> = (props) => {
-    const { postId, content, seeMore } = props;
+    const { postId } = props;
 
     return (
         <Container>
@@ -42,12 +44,17 @@ const Post : React.FC<PostProps> = (props) => {
 
             <PostBody 
                 postId={postId}
-                content={content} 
-                seeMore={seeMore}
+                content={props.content} 
+                seeMore={props.seeMore}
             />
 
             <Flex>
-                <LikeSection postId={postId}/>
+                <LikeSection 
+                    postId={postId} 
+                    likeStatus={props.likeStatus}
+                    likes={props.likes}
+                />
+                
                 <CommentSection />
             </Flex>
         </Container>

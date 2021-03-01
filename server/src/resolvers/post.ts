@@ -10,7 +10,7 @@ import {
     UseMiddleware
 } from "type-graphql";
 import { isAuth } from "../middleware/isAuth";
-import { Like } from '../entities/Like';
+import { Rating } from '../entities/Rating';
 import { Post } from '../entities/Post';
 import { User } from '../entities/User';
 import { MyContext } from '../types';
@@ -18,6 +18,18 @@ import { getConnection } from "typeorm";
 
 @Resolver(Post)
 export class PostResolver {
+    @FieldResolver(() => Boolean)
+    async likeStatus(
+        @Root() post: Post,
+        @Ctx() { req } : MyContext
+    ) : Promise<boolean> {
+        const { uid } = req.session;
+
+        const rating = await Rating.findOne({ userId: uid, postId: post.id });
+
+        return rating? true: false;
+    }
+
     @FieldResolver(() => User) 
     async user(
         @Root() post: Post
@@ -39,19 +51,46 @@ export class PostResolver {
         @Ctx() { req } : MyContext
     ) : Promise<boolean> {
         const { uid } = req.session;
-        const like = await Like.find({ userId: uid, postId });
+        const like = await Rating.findOne({ userId: uid, postId });
 
         if(like) {
-            await Like.delete({ userId: uid, postId });
+            await getConnection().transaction(async (tm) => {   
+                await tm.query(
+                    `
+                        delete from rating
+                        where "userId" = $1 and
+                        "postId" = $2
+                    `, [uid, postId]
+                );
+    
+                await tm.query(
+                    `
+                        update post
+                        set likes = likes - 1
+                        where id = $1
+                    `, [postId]
+                )
+            });
+
             return true;
         }
 
-        await getConnection().query(
-            `
-                insert into like ("postId", "userId")
-                values ($1, $2)
-            `, [postId, uid]
-        );
+        await getConnection().transaction(async (tm) => {   
+            await tm.query(
+                `
+                    insert into rating ("userId", "postId")
+                    values ($1, $2)
+                `, [uid, postId]
+            );
+
+            await tm.query(
+                `
+                    update post
+                    set likes = likes + 1
+                    where id = $1
+                `, [postId]
+            )
+        });
 
         return true;
     }

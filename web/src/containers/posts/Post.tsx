@@ -27,7 +27,7 @@ interface PostProps {
     createdAt: string;
     content: string;
     likeStatus: boolean;
-    likes: number;
+    numLikes: number;
     seeMore?: boolean;
     profileURL: string;
     firstName: string;
@@ -52,7 +52,7 @@ const Post : React.FC<PostProps> = (props) => {
                 <LikeSection 
                     postId={postId} 
                     likeStatus={props.likeStatus}
-                    likes={props.likes}
+                    numLikes={props.numLikes}
                 />
                 
                 <CommentSection />

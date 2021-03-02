@@ -10,17 +10,17 @@ import { User } from './User';
 import { Post } from './Post';
 
 @Entity()
-export class Rating extends BaseEntity {
+export class Like extends BaseEntity {
     @PrimaryColumn()
     userId: number;
 
     @PrimaryColumn()
     postId: number;
 
-    @ManyToOne(() => User, user => user.ratings)
+    @ManyToOne(() => User, user => user.likes)
     user: User;
 
-    @ManyToOne(() => Post, (post) => post.ratings, {
+    @ManyToOne(() => Post, (post) => post.likes, {
         onDelete: 'CASCADE'
     })
     post: Post;

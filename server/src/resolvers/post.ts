@@ -10,7 +10,7 @@ import {
     UseMiddleware
 } from "type-graphql";
 import { isAuth } from "../middleware/isAuth";
-import { Rating } from '../entities/Rating';
+import { Like } from '../entities/Like';
 import { Post } from '../entities/Post';
 import { User } from '../entities/User';
 import { MyContext } from '../types';
@@ -25,9 +25,9 @@ export class PostResolver {
     ) : Promise<boolean> {
         const { uid } = req.session;
 
-        const rating = await Rating.findOne({ userId: uid, postId: post.id });
+        const like = await Like.findOne({ userId: uid, postId: post.id });
 
-        return rating? true: false;
+        return like? true: false;
     }
 
     @FieldResolver(() => User) 
@@ -44,8 +44,8 @@ export class PostResolver {
         const result = await getConnection().query(
             `
                 select id, "firstName", "lastName", "profilePic" from "user" 
-                inner join rating on rating."userId" = "user".id
-                and rating."postId" = $1
+                inner join "like" on "like"."userId" = "user".id
+                and "like"."postId" = $1
             `, [postId]
         );
 
@@ -66,13 +66,13 @@ export class PostResolver {
         @Ctx() { req } : MyContext
     ) : Promise<boolean> {
         const { uid } = req.session;
-        const like = await Rating.findOne({ userId: uid, postId });
+        const like = await Like.findOne({ userId: uid, postId });
 
         if(like) {
             await getConnection().transaction(async (tm) => {   
                 await tm.query(
                     `
-                        delete from rating
+                        delete from "like"
                         where "userId" = $1 and
                         "postId" = $2
                     `, [uid, postId]
@@ -81,7 +81,7 @@ export class PostResolver {
                 await tm.query(
                     `
                         update post
-                        set likes = likes - 1
+                        set "numLikes" = "numLikes" - 1
                         where id = $1
                     `, [postId]
                 )
@@ -93,7 +93,7 @@ export class PostResolver {
         await getConnection().transaction(async (tm) => {   
             await tm.query(
                 `
-                    insert into rating ("userId", "postId")
+                    insert into "like" ("userId", "postId")
                     values ($1, $2)
                 `, [uid, postId]
             );
@@ -101,7 +101,7 @@ export class PostResolver {
             await tm.query(
                 `
                     update post
-                    set likes = likes + 1
+                    set "numLikes" = "numLikes" + 1
                     where id = $1
                 `, [postId]
             )

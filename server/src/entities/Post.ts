@@ -10,7 +10,7 @@ import {
    OneToMany
 } from 'typeorm';
 import { User } from './User';
-import { Rating } from './Rating';
+import { Like } from './Like';
 
 @ObjectType()
 @Entity()
@@ -35,10 +35,10 @@ export class Post extends BaseEntity{
 
     @Field()
     @Column({ default: 0 })
-    likes: number;
+    numLikes: number;
 
-    @OneToMany(() => Rating, (rating) => rating.post)
-    ratings: Rating[];
+    @OneToMany(() => Like, (like) => like.post)
+    likes: Like[];
 
     @Field(() => String)
     @CreateDateColumn()

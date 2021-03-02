@@ -3,7 +3,7 @@ import { gql } from '@apollo/client';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
-import { useLikePostMutation } from '../../generated/graphql';
+import { useLikePostMutation, LikersDocument } from '../../generated/graphql';
 import { formatCount } from '../../utils/formatCount';
 import LikeModal from './LikeModal';
 
@@ -45,14 +45,18 @@ const Span = styled.span`
 interface LikeSectionProps {
     postId: number;
     likeStatus: boolean;
-    likes: number;
+    numLikes: number;
 }
 
-const LikeSection : React.FC<LikeSectionProps> = ({ postId, likeStatus, likes }) => {
+const LikeSection : React.FC<LikeSectionProps> = ({ postId, likeStatus, numLikes }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [likePost] = useLikePostMutation();
 
-    let numLikes = formatCount(likes);
+    const [likePost] = useLikePostMutation({
+        refetchQueries: [{ 
+            query: LikersDocument, 
+            variables: { postId }
+        }]
+    });
 
     const onClick = async () => {
         await likePost({
@@ -60,25 +64,25 @@ const LikeSection : React.FC<LikeSectionProps> = ({ postId, likeStatus, likes })
             update: (cache) => {
                 const data = cache.readFragment<{
                     likeStatus: boolean,
-                    likes: number;
+                    numLikes: number;
                 }>({
                     id: 'Post:' + postId,
                     fragment: gql`
                        fragment _ on Post {
                           likeStatus
-                          likes
+                          numLikes
                        }
                     `
                 });
                
                  if(data) {
-                    const { likeStatus, likes } = data;
+                    const { likeStatus, numLikes } = data;
                     let newData = {};
 
                     if(likeStatus) {
-                       newData = { likes: likes - 1, likeStatus: false };
+                       newData = { numLikes: numLikes - 1, likeStatus: false };
                     } else {
-                       newData = { likes: likes + 1, likeStatus: true };
+                       newData = { numLikes: numLikes + 1, likeStatus: true };
                     }
                
                      cache.writeFragment({
@@ -86,7 +90,7 @@ const LikeSection : React.FC<LikeSectionProps> = ({ postId, likeStatus, likes })
                         fragment: gql`
                           fragment _ on Post {
                              likeStatus
-                             likes
+                             numLikes
                           }
                         `,
                         data: newData
@@ -112,14 +116,14 @@ const LikeSection : React.FC<LikeSectionProps> = ({ postId, likeStatus, likes })
 
             <Span
                 onClick = {() => {
-                    if(likes >= 1) {
+                    if(numLikes >= 1) {
                         setIsOpen(true);
                     }
                 }}
             >
-                {likes !== 0 && (
-                    likes > 1 ? `${numLikes} likes` :
-                                `${numLikes} like`
+                {numLikes !== 0 && (
+                    numLikes > 1 ? `${formatCount(numLikes)} likes` :
+                                   `${formatCount(numLikes)} like`
                 )}
             </Span>
 

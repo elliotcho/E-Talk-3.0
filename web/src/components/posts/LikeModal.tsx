@@ -8,13 +8,8 @@ const Container = styled.div`
     width: 400px;
 `;
 
-const Title = styled.h2`
+const Header = styled.h2`
     color: black;
-`;
-
-const Loading = styled.h2`
-   text-align: center;
-   color: white;
 `;
 
 const Card = styled.div`
@@ -57,12 +52,12 @@ const LikeModal: React.FC<LikeModalProps> = ({ postId, open, onClose }) => {
             onClose={onClose}
         >
             <Container>
-                <Title>Post liked by...</Title>
+                <Header>Post liked by...</Header>
 
                 {loading && (
-                    <Loading>
+                    <Header>
                         Loading...
-                    </Loading>
+                    </Header>
                 )}
 
                 {data?.likers.map(u => {

@@ -58,7 +58,7 @@ export type Post = {
   content: Scalars['String'];
   userId: Scalars['Float'];
   user: User;
-  likes: Scalars['Float'];
+  numLikes: Scalars['Float'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
   likeStatus: Scalars['Boolean'];
@@ -153,7 +153,7 @@ export type LoginInput = {
 
 export type RegularPostFragment = (
   { __typename?: 'Post' }
-  & Pick<Post, 'id' | 'content' | 'createdAt' | 'likeStatus' | 'likes'>
+  & Pick<Post, 'id' | 'content' | 'createdAt' | 'likeStatus' | 'numLikes'>
   & { user: (
     { __typename?: 'User' }
     & RegularUserFragment
@@ -397,7 +397,7 @@ export const RegularPostFragmentDoc = gql`
   content
   createdAt
   likeStatus
-  likes
+  numLikes
   user {
     ...RegularUser
   }

@@ -37,6 +37,35 @@ export class PostResolver {
         return User.findOne(post.userId);
     }
 
+    @Mutation(() => Boolean)
+    @UseMiddleware(isAuth)
+    async createComment(
+        @Arg('postId', () => Int) postId: number,
+        @Arg('text') text: string, 
+        @Ctx() { req } : MyContext
+    ) : Promise<boolean> {
+        const { uid } = req.session;
+
+        await getConnection().transaction(async (tm) => {
+            await tm.query(
+                `
+                    insert into comment ("userId", "postId", text)
+                    values ($1, $2, $3)
+                `, [uid, postId, text]
+            );
+
+            await tm.query(
+                `
+                    update post
+                    set "numComments" = "numComments" + 1
+                    where id = $1
+                `, [postId]
+            );
+        }) ;      
+
+        return true;
+    }
+
     @Query(() => [User])
     async likers(
         @Arg('postId', () => Int) postId: number

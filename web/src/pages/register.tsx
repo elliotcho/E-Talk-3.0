@@ -35,6 +35,8 @@ const Register : React.FC<{}> = () => {
                                         me: data?.register.user
                                     }
                                 });
+
+                                cache.evict({ fieldName: 'posts:{}' })
                             }
                         });
 

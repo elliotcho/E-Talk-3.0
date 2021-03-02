@@ -9,6 +9,7 @@ import {
    ManyToOne,
    OneToMany
 } from 'typeorm';
+import { Comment } from './Comment';
 import { User } from './User';
 import { Like } from './Like';
 
@@ -36,6 +37,13 @@ export class Post extends BaseEntity{
     @Field()
     @Column({ default: 0 })
     numLikes: number;
+
+    @Field()
+    @Column({ default: 0 })
+    numComments: number;
+
+    @OneToMany(() => Comment, (comment) => comment.post)
+    comments: Comment[];
 
     @OneToMany(() => Like, (like) => like.post)
     likes: Like[];

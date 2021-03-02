@@ -12,9 +12,18 @@ const Header = styled.h2`
     color: black;
 `;
 
+const Stack = styled.div`
+    max-height: 460px;
+    overflow: auto;
+`;
+
 const Card = styled.div`
     display: flex;
     align-items: center;
+    border-bottom: 1px solid gray;
+    &:last-child {
+        border-bottom: none;
+    }
 `;
 
 const Span = styled.span`
@@ -60,23 +69,25 @@ const LikeModal: React.FC<LikeModalProps> = ({ postId, open, onClose }) => {
                     </Header>
                 )}
 
-                {data?.likers.map(u => {
-                    let route = `/profile/${u.id}`;
+                <Stack>
+                    {data?.likers.map(u => {
+                        let route = `/profile/${u.id}`;
 
-                    return (
-                        <Card>
-                            <NextLink href={route}>
-                                <Image src={u.profileURL} alt='Profile pic'/>
-                            </NextLink>
+                        return (
+                            <Card>
+                                <NextLink href={route}>
+                                    <Image src={u.profileURL} alt='Profile pic'/>
+                                </NextLink>
 
-                            <NextLink href={route}>
-                                <Span>
-                                    {u.firstName} {u.lastName}
-                                </Span>
-                            </NextLink>
-                        </Card>
-                    )
-                })}
+                                <NextLink href={route}>
+                                    <Span>
+                                        {u.firstName} {u.lastName}
+                                    </Span>
+                                </NextLink>
+                            </Card>
+                        )
+                    })}
+                </Stack>
             </Container>
         </Modal>
     )

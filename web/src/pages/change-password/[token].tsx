@@ -38,6 +38,8 @@ const ChangePassword: React.FC<{}> = () => {
                                     me: data?.changePassword.user
                                 }
                             });
+
+                            cache.evict({ fieldName: 'posts:{}' })
                         }
                     });
 

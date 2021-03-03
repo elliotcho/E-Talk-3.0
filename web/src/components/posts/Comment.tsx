@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { useDeletePostMutation, useMeQuery } from '../../generated/graphql';
-import { formatDate } from '../../utils/formatDate';
-import EditModal from './EditModal';
+import { formatDate } from '../../utils/formatDate'; 
 import NextLink from 'next/link';
+import { useMeQuery } from '../../generated/graphql';
+import { isServer } from '../../utils/isServer';
+
+const Card = styled.div`
+    border: 1px solid black;
+    padding: 5px;
+`;
 
 const Flex = styled.div`
     display: flex;
@@ -11,17 +16,17 @@ const Flex = styled.div`
 
 const Image = styled.img`
     cursor: pointer;
-    width: 6rem;
-    height: 6rem;
+    width: 3rem;
+    height: 3rem;
 `;
 
 const Stack = styled.div`
     position: relative;
-    bottom: 15px;
+    bottom: 20px;
     left: 15px;
 `;
 
-const Primary = styled.h2`
+const Primary = styled.h3`
     cursor: pointer;
     color: #0275d8;
     &:hover {
@@ -30,19 +35,16 @@ const Primary = styled.h2`
 `;
 
 const Muted = styled.p`
-    cursor: pointer;
     color: lightslategray;
     position: relative;
     bottom: 10px;
-    &:hover {
-        text-decoration: underline;
-    }
 `;
 
 const Box = styled.div`
     cursor: pointer;
     position: relative;
-    bottom: 10px;
+    bottom: 15px;
+    right: 10px;
     margin-left: auto;
     font-weight: bold;
     font-size: 2rem;
@@ -72,32 +74,34 @@ const Option = styled.div`
     }
 `;
 
-interface PostHeaderProps {
-    postId: number;
+const Body = styled.div`
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+    margin-top: 0px;
+`;
+
+interface CommentProps {
+    text: string;
     createdAt: string;
-    content: string;
-    profileURL: string;
     firstName: string;
     lastName: string;
+    profileURL: string;
     userId: number;
 }
 
-const PostHeader: React.FC<PostHeaderProps> = ({
-    postId,
+const Comment: React.FC<CommentProps> = ({
+    text,
     createdAt,
-    content,
-    profileURL,
     firstName,
     lastName,
+    profileURL,
     userId
 }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [deletePost] = useDeletePostMutation();
-    const meResponse = useMeQuery();
+    const meResponse = useMeQuery({
+        skip: isServer()
+    });
 
     const toProfile = `/profile/${userId}`;
-    const toPost = `/post/${postId}`;
-
     let isOwner = false;
 
     if(meResponse?.data?.me?.id === userId) {
@@ -105,12 +109,12 @@ const PostHeader: React.FC<PostHeaderProps> = ({
     }
 
     return (
-       <>
+        <Card>
             <Flex>
                 <NextLink href={toProfile}>
                     <Image 
-                        src={profileURL || '/loading.jpg'} 
-                        alt='Profile pic'
+                        src = {profileURL || '/loading.jpg'}
+                        alt = 'profile pic'
                     />
                 </NextLink>
 
@@ -121,11 +125,9 @@ const PostHeader: React.FC<PostHeaderProps> = ({
                         </Primary>
                     </NextLink>
 
-                    <NextLink href={toPost}>
-                        <Muted>
-                            {formatDate(createdAt)}
-                        </Muted>
-                    </NextLink>
+                    <Muted>
+                        {formatDate(createdAt)}
+                    </Muted>
                 </Stack>
 
                 {isOwner && (
@@ -133,12 +135,7 @@ const PostHeader: React.FC<PostHeaderProps> = ({
                         <Dropdown>
                             <Option
                                 onClick = {async () => {
-                                    await deletePost({
-                                        variables: { postId },
-                                        update: (cache) => {
-                                            cache.evict({ id: 'Post:' + postId });
-                                        }
-                                    });
+                                   
                                 }}
                             >
                                 Delete
@@ -146,7 +143,7 @@ const PostHeader: React.FC<PostHeaderProps> = ({
 
                             <Option 
                                 onClick = {() => {
-                                    setIsOpen(true);
+                                  
                                 }}
                             >
                                 Edit
@@ -156,15 +153,10 @@ const PostHeader: React.FC<PostHeaderProps> = ({
                     </Box>
                 )}
             </Flex>
-            
-            <EditModal
-                open = {isOpen}
-                postId = {postId}
-                onClose = {() => setIsOpen(false)}
-                content = {content}
-            />
-       </>
+
+            <Body>{text}</Body>
+        </Card>
     )
 }
 
-export default PostHeader;
+export default Comment;

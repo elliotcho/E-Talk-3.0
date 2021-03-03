@@ -3,18 +3,15 @@ import styled from 'styled-components';
 import Modal from 'react-responsive-modal';
 import { 
     CommentsDocument, 
+    PostsDocument, 
     useCommentsQuery, 
     useCreateCommentMutation 
 } from '../../generated/graphql';
 import { handleEnterPress } from '../../utils/handleEnterPress';
+import Comment from './Comment';
 
 const Container = styled.div`
     width: 400px;
-`;
-
-const Stack = styled.div`
-    max-height: 460px;
-    overflow: auto;
 `;
 
 const Header = styled.h2`
@@ -26,6 +23,11 @@ const Text = styled.h2`
     margin-top: 50px;
     text-align: center;
     color: black;
+`;
+
+const Stack = styled.div`
+    max-height: 460px;
+    overflow: auto;
 `;
 
 const CreatePost = styled.textarea`
@@ -48,10 +50,10 @@ const CommentModal: React.FC<CommentModalProps> = ({ open, onClose, postId }) =>
     const [text, setText] = useState('');
 
     const [createComment] = useCreateCommentMutation({
-        refetchQueries: [{
-            query: CommentsDocument,
-            variables: { postId }
-        }]
+        refetchQueries: [
+            { query: CommentsDocument, variables: { postId } },
+            { query: PostsDocument }
+        ]
     });
 
     const { loading, data } = useCommentsQuery({
@@ -66,14 +68,23 @@ const CommentModal: React.FC<CommentModalProps> = ({ open, onClose, postId }) =>
             onClose={onClose}
         >
             <Container>
-                <Stack>
-                    <Header>Comments</Header>
+                <Header>Comments</Header>
 
-                    {loading && (
-                        <Text>
-                            Loading...
-                        </Text>
-                    )}
+                {loading && (
+                    <Text>
+                        Loading...
+                    </Text>
+                )}
+
+                <Stack>
+                    {data?.comments.map(c => {
+                        const props = { ...c, ...c.user };
+                        delete props.user;
+
+                        return (
+                            <Comment {...props} />
+                        )
+                    })}
 
                     {!loading && !data?.comments && (
                         <Text>No Comments</Text>

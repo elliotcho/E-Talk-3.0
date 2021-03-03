@@ -60,6 +60,7 @@ export type User = {
 
 export type Comment = {
   __typename?: 'Comment';
+  id: Scalars['Float'];
   userId: Scalars['Float'];
   postId: Scalars['Float'];
   user: User;
@@ -354,7 +355,7 @@ export type CommentsQuery = (
   { __typename?: 'Query' }
   & { comments: Array<(
     { __typename?: 'Comment' }
-    & Pick<Comment, 'createdAt' | 'userId' | 'postId' | 'text'>
+    & Pick<Comment, 'id' | 'createdAt' | 'userId' | 'postId' | 'text'>
     & { user: (
       { __typename?: 'User' }
       & Pick<User, 'id' | 'profileURL' | 'firstName' | 'lastName'>
@@ -851,6 +852,7 @@ export type UpdateProfilePicMutationOptions = Apollo.BaseMutationOptions<UpdateP
 export const CommentsDocument = gql`
     query Comments($postId: Int!) {
   comments(postId: $postId) {
+    id
     createdAt
     userId
     postId

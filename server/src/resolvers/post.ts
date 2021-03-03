@@ -17,6 +17,16 @@ import { User } from '../entities/User';
 import { MyContext } from '../types';
 import { getConnection } from "typeorm";
 
+@Resolver(Comment)
+export class CommentResolver {
+    @FieldResolver(() => User)
+    async user (
+        @Root() comment: Comment
+    ) : Promise <User | undefined > {
+        return User.findOne(comment.userId);
+    }
+}
+
 @Resolver(Post)
 export class PostResolver {
     @FieldResolver(() => Boolean)
@@ -46,7 +56,8 @@ export class PostResolver {
             `
                 select * from comment where
                 comment."postId" = $1
-                order by comment."createdAt"
+                order by comment."createdAt" 
+                DESC
 
             `, [postId]
         );

@@ -5,7 +5,7 @@ import {
     CreateDateColumn, 
     Entity, 
     ManyToOne, 
-    PrimaryColumn,
+    PrimaryGeneratedColumn, 
     UpdateDateColumn
 } from "typeorm";
 import { User } from './User';
@@ -15,11 +15,15 @@ import { Post } from './Post';
 @Entity()
 export class Comment extends BaseEntity {
     @Field()
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Field()
+    @Column()
     userId: number;
 
     @Field()
-    @PrimaryColumn()
+    @Column()
     postId: number;
 
     @Field(() => User)

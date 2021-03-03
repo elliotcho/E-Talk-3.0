@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Modal from 'react-responsive-modal';
-import { CommentsDocument, useCommentsQuery, useCreateCommentMutation } from '../../generated/graphql';
+import { 
+    CommentsDocument, 
+    useCommentsQuery, 
+    useCreateCommentMutation 
+} from '../../generated/graphql';
+import { handleEnterPress } from '../../utils/handleEnterPress';
 
 const Container = styled.div`
     width: 400px;
@@ -25,8 +30,11 @@ const Text = styled.h2`
 
 const CreatePost = styled.textarea`
     width: 100%;
-    font-size: 1.2rem;
+    max-height: 200px;
+    height: 25px;
+    font-size: 1.4rem;
     margin-top: 50px;
+    overflow: hidden;
     resize: none;
 `;
 
@@ -37,6 +45,8 @@ interface CommentModalProps {
 }
 
 const CommentModal: React.FC<CommentModalProps> = ({ open, onClose, postId }) => {
+    const [text, setText] = useState('');
+
     const [createComment] = useCreateCommentMutation({
         refetchQueries: [{
             query: CommentsDocument,
@@ -65,14 +75,29 @@ const CommentModal: React.FC<CommentModalProps> = ({ open, onClose, postId }) =>
                         </Text>
                     )}
 
-                    {!data?.comments && (
+                    {!loading && !data?.comments && (
                         <Text>No Comments</Text>
                     )}
                 </Stack>
             </Container>
             
             <CreatePost
+                value = {text}
+                placeholder = 'Write a comment...'
+                onChange = {(e) => setText(e.target.value)}
+                onKeyDown = {async (e) => {
+                    const submit = handleEnterPress(e);
 
+                    if(submit && text.trim().length !== 0) {
+
+                        await createComment({
+                            variables: { postId, text }
+                        });
+                        
+                        setText('');    
+                    
+                    }
+                }}
             />
         </Modal>
     )

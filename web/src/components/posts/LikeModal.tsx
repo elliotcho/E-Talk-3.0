@@ -81,7 +81,7 @@ const LikeModal: React.FC<LikeModalProps> = ({ postId, open, onClose }) => {
                         let route = `/profile/${u.id}`;
 
                         return (
-                            <Card>
+                            <Card key={u.id}>
                                 <NextLink href={route}>
                                     <Image src={u.profileURL} alt='Profile pic'/>
                                 </NextLink>

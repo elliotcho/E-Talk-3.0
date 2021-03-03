@@ -9,6 +9,13 @@ const Container = styled.div`
 `;
 
 const Header = styled.h2`
+    text-align: left;
+    color: black;
+`;
+
+const Text = styled.h2`
+    margin-top: 50px;
+    text-align: center;
     color: black;
 `;
 
@@ -64,9 +71,9 @@ const LikeModal: React.FC<LikeModalProps> = ({ postId, open, onClose }) => {
                 <Header>Post liked by...</Header>
 
                 {loading && (
-                    <Header>
+                    <Text>
                         Loading...
-                    </Header>
+                    </Text>
                 )}
 
                 <Stack>

@@ -26,6 +26,7 @@ interface PostProps {
     postId: number;
     createdAt: string;
     content: string;
+    numComments: number;
     likeStatus: boolean;
     numLikes: number;
     seeMore?: boolean;
@@ -36,7 +37,7 @@ interface PostProps {
 }
 
 const Post : React.FC<PostProps> = (props) => {
-    const { postId } = props;
+    const { postId, numComments } = props;
 
     return (
         <Container>
@@ -55,7 +56,7 @@ const Post : React.FC<PostProps> = (props) => {
                     numLikes={props.numLikes}
                 />
                 
-                <CommentSection />
+                <CommentSection postId={postId} numComments={numComments} />
             </Flex>
         </Container>
     )

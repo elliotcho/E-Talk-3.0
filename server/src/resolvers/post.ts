@@ -10,6 +10,7 @@ import {
     UseMiddleware
 } from "type-graphql";
 import { isAuth } from "../middleware/isAuth";
+import { Comment } from '../entities/Comment';
 import { Like } from '../entities/Like';
 import { Post } from '../entities/Post';
 import { User } from '../entities/User';
@@ -35,6 +36,26 @@ export class PostResolver {
         @Root() post: Post
     ) : Promise<User | undefined> {
         return User.findOne(post.userId);
+    }
+
+    @Query(() => [Comment])
+    async comments(
+        @Arg('postId', () => Int) postId: number
+    ) : Promise<[Comment] | undefined> {
+        const comments = await getConnection().query(
+            `
+                select * from comment where
+                comment."postId" = $1
+                order by comment."createdAt"
+
+            `, [postId]
+        );
+
+        if(comments.length === 0) {
+            return undefined;
+        }
+
+        return comments;
     }
 
     @Mutation(() => Boolean)

@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComment } from '@fortawesome/free-solid-svg-icons';
+import { formatCount } from '../../utils/formatCount';
+import CommentModal from './CommentModal';
 
 const Flex = styled.div`
     display: flex;
@@ -25,16 +27,32 @@ const Span = styled.span`
     }
 `;
 
-const CommentSection: React.FC<{}> = () => {
+interface CommentSectionProps {
+    postId: number;
+    numComments: number;
+}
+
+const CommentSection: React.FC<CommentSectionProps> = ({ postId, numComments }) => {
+    const [isOpen, setIsOpen] = useState(false);
+
     return (
         <Flex>
-            <Box>
+            <Box onClick = {() => setIsOpen(true)}>
                 <FontAwesomeIcon icon={faComment}/>
             </Box>
 
-            <Span>
-                1 Comment
+            <Span onClick = {() => setIsOpen(true)}>
+                {numComments !== 0 && (
+                    numComments > 1 ? `${formatCount(numComments)} comments` :
+                                      `${formatCount(numComments)} comment`
+                )}
             </Span>
+
+            <CommentModal
+                open = {isOpen}
+                onClose = {() => setIsOpen(false)}
+                postId = {postId}
+            />
         </Flex>
     )
 }

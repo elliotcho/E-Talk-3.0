@@ -3,6 +3,7 @@ fragment RegularPost on Post {
         content
         createdAt
         likeStatus
+        numComments
         numLikes
         user {
             ...RegularUser

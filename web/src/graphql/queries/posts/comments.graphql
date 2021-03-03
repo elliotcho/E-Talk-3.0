@@ -1,0 +1,14 @@
+query Comments($postId: Int!) {
+    comments(postId: $postId) {
+        createdAt
+        userId
+        postId
+        text
+        user {
+            id
+            profileURL
+            firstName
+            lastName
+        }
+    }
+}

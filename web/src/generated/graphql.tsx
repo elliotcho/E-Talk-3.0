@@ -19,6 +19,7 @@ export type Query = {
   __typename?: 'Query';
   user: User;
   me?: Maybe<User>;
+  comments: Array<Comment>;
   likers: Array<User>;
   post: Post;
   userPosts: Array<Post>;
@@ -28,6 +29,11 @@ export type Query = {
 
 export type QueryUserArgs = {
   userId: Scalars['Int'];
+};
+
+
+export type QueryCommentsArgs = {
+  postId: Scalars['Int'];
 };
 
 
@@ -48,6 +54,16 @@ export type User = {
   lastName: Scalars['String'];
   profilePic: Scalars['String'];
   profileURL: Scalars['String'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+};
+
+export type Comment = {
+  __typename?: 'Comment';
+  userId: Scalars['Float'];
+  postId: Scalars['Float'];
+  user: User;
+  text: Scalars['String'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -161,7 +177,7 @@ export type LoginInput = {
 
 export type RegularPostFragment = (
   { __typename?: 'Post' }
-  & Pick<Post, 'id' | 'content' | 'createdAt' | 'likeStatus' | 'numLikes'>
+  & Pick<Post, 'id' | 'content' | 'createdAt' | 'likeStatus' | 'numComments' | 'numLikes'>
   & { user: (
     { __typename?: 'User' }
     & RegularUserFragment
@@ -329,6 +345,23 @@ export type UpdateProfilePicMutation = (
   ) }
 );
 
+export type CommentsQueryVariables = Exact<{
+  postId: Scalars['Int'];
+}>;
+
+
+export type CommentsQuery = (
+  { __typename?: 'Query' }
+  & { comments: Array<(
+    { __typename?: 'Comment' }
+    & Pick<Comment, 'createdAt' | 'userId' | 'postId' | 'text'>
+    & { user: (
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'profileURL' | 'firstName' | 'lastName'>
+    ) }
+  )> }
+);
+
 export type LikersQueryVariables = Exact<{
   postId: Scalars['Int'];
 }>;
@@ -416,6 +449,7 @@ export const RegularPostFragmentDoc = gql`
   content
   createdAt
   likeStatus
+  numComments
   numLikes
   user {
     ...RegularUser
@@ -814,6 +848,48 @@ export function useUpdateProfilePicMutation(baseOptions?: Apollo.MutationHookOpt
 export type UpdateProfilePicMutationHookResult = ReturnType<typeof useUpdateProfilePicMutation>;
 export type UpdateProfilePicMutationResult = Apollo.MutationResult<UpdateProfilePicMutation>;
 export type UpdateProfilePicMutationOptions = Apollo.BaseMutationOptions<UpdateProfilePicMutation, UpdateProfilePicMutationVariables>;
+export const CommentsDocument = gql`
+    query Comments($postId: Int!) {
+  comments(postId: $postId) {
+    createdAt
+    userId
+    postId
+    text
+    user {
+      id
+      profileURL
+      firstName
+      lastName
+    }
+  }
+}
+    `;
+
+/**
+ * __useCommentsQuery__
+ *
+ * To run a query within a React component, call `useCommentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommentsQuery({
+ *   variables: {
+ *      postId: // value for 'postId'
+ *   },
+ * });
+ */
+export function useCommentsQuery(baseOptions: Apollo.QueryHookOptions<CommentsQuery, CommentsQueryVariables>) {
+        return Apollo.useQuery<CommentsQuery, CommentsQueryVariables>(CommentsDocument, baseOptions);
+      }
+export function useCommentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CommentsQuery, CommentsQueryVariables>) {
+          return Apollo.useLazyQuery<CommentsQuery, CommentsQueryVariables>(CommentsDocument, baseOptions);
+        }
+export type CommentsQueryHookResult = ReturnType<typeof useCommentsQuery>;
+export type CommentsLazyQueryHookResult = ReturnType<typeof useCommentsLazyQuery>;
+export type CommentsQueryResult = Apollo.QueryResult<CommentsQuery, CommentsQueryVariables>;
 export const LikersDocument = gql`
     query Likers($postId: Int!) {
   likers(postId: $postId) {

@@ -58,7 +58,7 @@ const LikeSection : React.FC<LikeSectionProps> = ({ postId, likeStatus, numLikes
         }]
     });
 
-    const onClick = async () => {
+    const handleClick = async () => {
         await likePost({
             variables: { postId },
             update: (cache) => {
@@ -103,13 +103,13 @@ const LikeSection : React.FC<LikeSectionProps> = ({ postId, likeStatus, numLikes
     return (
         <Flex>
             {!likeStatus && (
-                <WhiteBox onClick={onClick}>
+                <WhiteBox onClick={handleClick}>
                      <FontAwesomeIcon icon={faHeart}/>
                 </WhiteBox>
             )}
 
             {likeStatus && (
-                <RedBox onClick={onClick}>
+                <RedBox onClick={handleClick}>
                     <FontAwesomeIcon icon={faHeart}/>
                 </RedBox>
             )}

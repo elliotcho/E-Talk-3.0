@@ -1,9 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Formik, Form } from 'formik';
-import { Modal } from 'react-responsive-modal';
-import { useEditPostMutation } from '../../generated/graphql';
-import 'react-responsive-modal/styles.css';
+import Modal from 'react-responsive-modal';
 
 const Container = styled.div`
     width: 400px;
@@ -25,43 +22,50 @@ const Footer = styled.div`
     padding: 25px;
 `;
 
-const Close = styled.button`
+const ButtonStyles = `
     width: 50%;
     font-size: 20px;
-    background: gray;
     cursor: pointer;
     color: white;
     padding: 15px;
     outline: none;
     border: none;
+`;
+
+const Close = styled.button`
+    ${ButtonStyles}
+    background: gray;
     &:hover {
         background: silver;
     }
 `;
 
 const Submit = styled.button`
-    width: 50%;
-    font-size: 20px;
+    ${ButtonStyles}
     background: green;
-    cursor: pointer;
-    color: white;
-    padding: 15px;
-    outline: none;
-    border: none;
     &:hover {
         background: lightgreen;
     }
 `;
 
 interface EditModalProps {
-    postId: number;
-    onClose() : void;
-    content: string;
     open: boolean;
+    content: string;
+    title: string;
+    onSubmit(s: string): void;
+    onClose(): void;
 }
 
-const EditModal : React.FC<EditModalProps> = ({ postId, onClose, content, open }) => {
-    const [editPost] = useEditPostMutation();
+const EditModal : React.FC<EditModalProps> = ({ open, content, title, onSubmit, onClose }) => {
+    const [newContent, setNewContent] = useState(content);
+
+    const onSave = () => {
+        if(newContent.trim().length !== 0) {
+            onSubmit(newContent);
+        }
+
+        onClose();
+    }
 
     return (
         <Modal 
@@ -71,42 +75,24 @@ const EditModal : React.FC<EditModalProps> = ({ postId, onClose, content, open }
             onClose={onClose}
         >
             <Container>
-                <Formik
-                    initialValues = {{ newContent: content }}
-                    onSubmit = {async ({ newContent }) => {
-                        if(newContent.trim().length === 0) {
-                            return;
-                        }
+                <Header>{title}</Header>
 
-                        await editPost({
-                            variables: { newContent, postId }
-                        });
-
-                        onClose();
+                <TextArea
+                    value = {newContent}
+                    onChange = {(e) => {
+                        setNewContent(e.target.value);
                     }}
-                >
-                   {({ values, handleChange }) => (
-                       <Form>
-                            <Header>Edit Post</Header>
+                />
 
-                            <TextArea
-                                onChange = {handleChange}
-                                value = {values.newContent}
-                                name = 'newContent'
-                            />
+                <Footer>
+                    <Close onClick={onClose}>
+                        Close
+                    </Close>
 
-                            <Footer>
-                                <Close onClick={onClose}>
-                                    Close
-                                </Close>
-
-                                <Submit type='submit'>
-                                    Save
-                                </Submit>
-                            </Footer>
-                       </Form>
-                   )}
-                </Formik>
+                    <Submit onClick={onSave}>
+                        Save
+                    </Submit>
+                </Footer> 
             </Container>
         </Modal>
     )

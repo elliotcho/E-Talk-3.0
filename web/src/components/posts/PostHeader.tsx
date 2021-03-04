@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useDeletePostMutation, useMeQuery } from '../../generated/graphql';
+import { 
+    useDeletePostMutation, 
+    useEditPostMutation,
+    useMeQuery 
+} from '../../generated/graphql';
 import { formatDate } from '../../utils/formatDate';
 import ConfirmModal from '../shared/ConfirmModal';
 import EditModal from './EditModal';
@@ -94,6 +98,8 @@ const PostHeader: React.FC<PostHeaderProps> = ({
 }) => {
     const [editting, setEditting] = useState(false);
     const [deleting, setDeleting] = useState(false);
+
+    const [editPost] = useEditPostMutation();
     const [deletePost] = useDeletePostMutation();
     const meResponse = useMeQuery();
 
@@ -170,9 +176,14 @@ const PostHeader: React.FC<PostHeaderProps> = ({
             
             <EditModal
                 open = {editting}
-                postId = {postId}
-                onClose = {() => setEditting(false)}
                 content = {content}
+                title = 'Edit Post'
+                onClose = {() => setEditting(false)}
+                onSubmit = {async (newContent) => {
+                    await editPost({ 
+                        variables: { postId, newContent }
+                    });
+                }}
             />
        </>
     )

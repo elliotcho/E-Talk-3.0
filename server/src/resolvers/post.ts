@@ -48,6 +48,32 @@ export class PostResolver {
         return User.findOne(post.userId);
     }
 
+    @Mutation(() => Boolean)
+    async deleteComment(
+        @Arg('commentId', () => Int) commentId: number,
+        @Arg('postId', () => Int) postId: number
+    ) : Promise<boolean> {
+        await getConnection().transaction(async tm => {
+            await tm.query(
+                `
+                    delete from comment where 
+                    id = $1
+                `, [commentId]
+            );
+            
+            await tm.query(
+
+                `
+                    update post
+                    set "numComments" = "numComments" - 1
+                    where id = $1
+                `, [postId]
+            )
+        });
+        
+        return true;
+    }
+
     @Query(() => [Comment])
     async comments(
         @Arg('postId', () => Int) postId: number

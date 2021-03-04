@@ -1,0 +1,3 @@
+mutation DeleteComment($commentId: Int!, $postId: Int!) {
+    deleteComment(commentId: $commentId, postId: $postId)
+}

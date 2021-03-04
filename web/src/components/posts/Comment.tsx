@@ -1,9 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
+import { 
+    useMeQuery,
+    useDeleteCommentMutation,
+    PostsDocument
+} from '../../generated/graphql'
 import { formatDate } from '../../utils/formatDate'; 
 import NextLink from 'next/link';
-import { useMeQuery } from '../../generated/graphql';
-import { isServer } from '../../utils/isServer';
 
 const Card = styled.div`
     border: 1px solid black;
@@ -81,8 +84,10 @@ const Body = styled.div`
 `;
 
 interface CommentProps {
-    text: string;
+    commentId: number;
     createdAt: string;
+    postId: number;
+    text: string;
     firstName: string;
     lastName: string;
     profileURL: string;
@@ -90,15 +95,21 @@ interface CommentProps {
 }
 
 const Comment: React.FC<CommentProps> = ({
-    text,
+    commentId,
     createdAt,
+    postId,
+    text,
     firstName,
     lastName,
     profileURL,
     userId
 }) => {
-    const meResponse = useMeQuery({
-        skip: isServer()
+    const meResponse = useMeQuery();
+
+    const [deleteComment] = useDeleteCommentMutation({
+        refetchQueries: [
+            { query: PostsDocument }
+        ]
     });
 
     const toProfile = `/profile/${userId}`;
@@ -135,7 +146,12 @@ const Comment: React.FC<CommentProps> = ({
                         <Dropdown>
                             <Option
                                 onClick = {async () => {
-                                   
+                                   await deleteComment({
+                                       variables: { commentId, postId },
+                                       update: (cache) => {
+                                           cache.evict({ id: 'Comment:' + commentId })
+                                       }
+                                   });
                                 }}
                             >
                                 Delete

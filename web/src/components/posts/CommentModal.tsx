@@ -82,7 +82,11 @@ const CommentModal: React.FC<CommentModalProps> = ({ open, onClose, postId }) =>
                         delete props.user;
 
                         return (
-                            <Comment {...props} />
+                            <Comment  
+                                key = {c.id}
+                                commentId = {c.id}
+                                {...props} 
+                            />
                         )
                     })}
 

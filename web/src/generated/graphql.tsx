@@ -91,6 +91,7 @@ export type Mutation = {
   logout: Scalars['Boolean'];
   forgotPassword: Scalars['Boolean'];
   changePassword: UserResponse;
+  editComment: Scalars['Boolean'];
   deleteComment: Scalars['Boolean'];
   createComment: Scalars['Boolean'];
   likePost: Scalars['Boolean'];
@@ -123,6 +124,12 @@ export type MutationForgotPasswordArgs = {
 export type MutationChangePasswordArgs = {
   newPassword: Scalars['String'];
   token: Scalars['String'];
+};
+
+
+export type MutationEditCommentArgs = {
+  newContent: Scalars['String'];
+  commentId: Scalars['Int'];
 };
 
 
@@ -256,6 +263,17 @@ export type DeletePostMutationVariables = Exact<{
 export type DeletePostMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'deletePost'>
+);
+
+export type EditCommentMutationVariables = Exact<{
+  commentId: Scalars['Int'];
+  newContent: Scalars['String'];
+}>;
+
+
+export type EditCommentMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'editComment'>
 );
 
 export type EditPostMutationVariables = Exact<{
@@ -616,6 +634,37 @@ export function useDeletePostMutation(baseOptions?: Apollo.MutationHookOptions<D
 export type DeletePostMutationHookResult = ReturnType<typeof useDeletePostMutation>;
 export type DeletePostMutationResult = Apollo.MutationResult<DeletePostMutation>;
 export type DeletePostMutationOptions = Apollo.BaseMutationOptions<DeletePostMutation, DeletePostMutationVariables>;
+export const EditCommentDocument = gql`
+    mutation EditComment($commentId: Int!, $newContent: String!) {
+  editComment(commentId: $commentId, newContent: $newContent)
+}
+    `;
+export type EditCommentMutationFn = Apollo.MutationFunction<EditCommentMutation, EditCommentMutationVariables>;
+
+/**
+ * __useEditCommentMutation__
+ *
+ * To run a mutation, you first call `useEditCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editCommentMutation, { data, loading, error }] = useEditCommentMutation({
+ *   variables: {
+ *      commentId: // value for 'commentId'
+ *      newContent: // value for 'newContent'
+ *   },
+ * });
+ */
+export function useEditCommentMutation(baseOptions?: Apollo.MutationHookOptions<EditCommentMutation, EditCommentMutationVariables>) {
+        return Apollo.useMutation<EditCommentMutation, EditCommentMutationVariables>(EditCommentDocument, baseOptions);
+      }
+export type EditCommentMutationHookResult = ReturnType<typeof useEditCommentMutation>;
+export type EditCommentMutationResult = Apollo.MutationResult<EditCommentMutation>;
+export type EditCommentMutationOptions = Apollo.BaseMutationOptions<EditCommentMutation, EditCommentMutationVariables>;
 export const EditPostDocument = gql`
     mutation EditPost($newContent: String!, $postId: Int!) {
   editPost(newContent: $newContent, postId: $postId) {

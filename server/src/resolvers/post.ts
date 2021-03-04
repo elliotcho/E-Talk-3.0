@@ -49,6 +49,24 @@ export class PostResolver {
     }
 
     @Mutation(() => Boolean)
+    async editComment(
+        @Arg('commentId', () => Int) commentId: number,
+        @Arg('newContent') newContent: string
+    ) : Promise<boolean> {
+        const replacements = [newContent, commentId];
+
+        await getConnection().query(
+            `
+                update comment 
+                set text = $1
+                where id = $2
+            `, replacements
+        );
+
+        return true;
+    }
+
+    @Mutation(() => Boolean)
     async deleteComment(
         @Arg('commentId', () => Int) commentId: number,
         @Arg('postId', () => Int) postId: number

@@ -3,10 +3,13 @@ import styled from 'styled-components';
 import { 
     useMeQuery,
     useDeleteCommentMutation,
-    PostsDocument
+    PostsDocument,
+    useEditCommentMutation,
+    CommentsDocument
 } from '../../generated/graphql'
 import { formatDate } from '../../utils/formatDate'; 
 import ConfirmModal from '../shared/ConfirmModal';
+import EditModal from './EditModal';
 import NextLink from 'next/link';
 
 const Card = styled.div`
@@ -106,8 +109,15 @@ const Comment: React.FC<CommentProps> = ({
     profileURL,
     userId
 }) => {
+    const [editting, setEditting] = useState(false);
     const [deleting, setDeleting] = useState(false);
     const meResponse = useMeQuery();
+
+    const [editComment] = useEditCommentMutation({
+        refetchQueries: [
+            { query: CommentsDocument, variables: { postId } }
+        ]
+    });
 
     const [deleteComment] = useDeleteCommentMutation({
         refetchQueries: [
@@ -157,7 +167,7 @@ const Comment: React.FC<CommentProps> = ({
 
                             <Option 
                                 onClick = {() => {
-                                  
+                                   setEditting(true);
                                 }}
                             >
                                 Edit
@@ -183,6 +193,18 @@ const Comment: React.FC<CommentProps> = ({
                     });
                 }}
             />
+
+            <EditModal
+                open = {editting}
+                content = {text}
+                title = 'Edit Comment'
+                onClose = {() => setEditting(false)}
+                onSubmit = {async (newContent) => {
+                    await editComment({
+                        variables: { commentId, newContent }
+                    });
+                }}
+            /> 
         </Card>
     )
 }

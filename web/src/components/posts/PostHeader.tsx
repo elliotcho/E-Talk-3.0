@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useDeletePostMutation, useMeQuery } from '../../generated/graphql';
 import { formatDate } from '../../utils/formatDate';
+import ConfirmModal from '../shared/ConfirmModal';
 import EditModal from './EditModal';
 import NextLink from 'next/link';
 
@@ -91,7 +92,8 @@ const PostHeader: React.FC<PostHeaderProps> = ({
     lastName,
     userId
 }) => {
-    const [isOpen, setIsOpen] = useState(false);
+    const [editting, setEditting] = useState(false);
+    const [deleting, setDeleting] = useState(false);
     const [deletePost] = useDeletePostMutation();
     const meResponse = useMeQuery();
 
@@ -132,13 +134,8 @@ const PostHeader: React.FC<PostHeaderProps> = ({
                     <Box>
                         <Dropdown>
                             <Option
-                                onClick = {async () => {
-                                    await deletePost({
-                                        variables: { postId },
-                                        update: (cache) => {
-                                            cache.evict({ id: 'Post:' + postId });
-                                        }
-                                    });
+                                onClick = {() => {
+                                   setDeleting(true)
                                 }}
                             >
                                 Delete
@@ -146,7 +143,7 @@ const PostHeader: React.FC<PostHeaderProps> = ({
 
                             <Option 
                                 onClick = {() => {
-                                    setIsOpen(true);
+                                    setEditting(true);
                                 }}
                             >
                                 Edit
@@ -156,11 +153,25 @@ const PostHeader: React.FC<PostHeaderProps> = ({
                     </Box>
                 )}
             </Flex>
+
+            <ConfirmModal
+                open = {deleting}
+                body = 'Are you sure you want to delete this post?'
+                onClose = {() => setDeleting(false)}
+                onSubmit = {async () => {
+                    await deletePost({
+                        variables: { postId },
+                        update: (cache) => {
+                            cache.evict({ id: 'Post:' + postId });
+                        }
+                    });
+                }} 
+            />
             
             <EditModal
-                open = {isOpen}
+                open = {editting}
                 postId = {postId}
-                onClose = {() => setIsOpen(false)}
+                onClose = {() => setEditting(false)}
                 content = {content}
             />
        </>

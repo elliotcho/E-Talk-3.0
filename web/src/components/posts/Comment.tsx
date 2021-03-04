@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { 
     useMeQuery,
@@ -6,6 +6,7 @@ import {
     PostsDocument
 } from '../../generated/graphql'
 import { formatDate } from '../../utils/formatDate'; 
+import ConfirmModal from '../shared/ConfirmModal';
 import NextLink from 'next/link';
 
 const Card = styled.div`
@@ -80,7 +81,8 @@ const Option = styled.div`
 const Body = styled.div`
     overflow-wrap: break-word;
     white-space: pre-wrap;
-    margin-top: 0px;
+    font-size: 1.3rem;
+    padding: 5px;
 `;
 
 interface CommentProps {
@@ -104,6 +106,7 @@ const Comment: React.FC<CommentProps> = ({
     profileURL,
     userId
 }) => {
+    const [deleting, setDeleting] = useState(false);
     const meResponse = useMeQuery();
 
     const [deleteComment] = useDeleteCommentMutation({
@@ -145,13 +148,8 @@ const Comment: React.FC<CommentProps> = ({
                     <Box>
                         <Dropdown>
                             <Option
-                                onClick = {async () => {
-                                   await deleteComment({
-                                       variables: { commentId, postId },
-                                       update: (cache) => {
-                                           cache.evict({ id: 'Comment:' + commentId })
-                                       }
-                                   });
+                                onClick = {() => {
+                                    setDeleting(true);
                                 }}
                             >
                                 Delete
@@ -171,6 +169,20 @@ const Comment: React.FC<CommentProps> = ({
             </Flex>
 
             <Body>{text}</Body>
+
+            <ConfirmModal
+                open = {deleting}
+                onClose = {() => setDeleting(false)}
+                body = 'Are you sure you want to delete this comment?'
+                onSubmit = {async () => {
+                    await deleteComment({
+                        variables: { commentId, postId },
+                        update: (cache) => {
+                            cache.evict({ id: 'Comment:' + commentId })
+                        }
+                    });
+                }}
+            />
         </Card>
     )
 }

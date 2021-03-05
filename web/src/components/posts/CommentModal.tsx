@@ -3,9 +3,11 @@ import styled from 'styled-components';
 import Modal from 'react-responsive-modal';
 import { 
     CommentsDocument, 
+    PostDocument, 
     PostsDocument, 
     useCommentsQuery, 
-    useCreateCommentMutation 
+    useCreateCommentMutation, 
+    UserPostsDocument
 } from '../../generated/graphql';
 import { handleEnterPress } from '../../utils/handleEnterPress';
 import Comment from './Comment';
@@ -52,7 +54,9 @@ const CommentModal: React.FC<CommentModalProps> = ({ open, onClose, postId }) =>
     const [createComment] = useCreateCommentMutation({
         refetchQueries: [
             { query: CommentsDocument, variables: { postId } },
-            { query: PostsDocument }
+            { query: PostDocument, variables: { postId } },
+            { query: UserPostsDocument },
+            { query: PostsDocument },
         ]
     });
 

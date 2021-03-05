@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { gql } from '@apollo/client';
 import styled from 'styled-components';
 import { 
     useDeletePostMutation, 
@@ -181,7 +182,20 @@ const PostHeader: React.FC<PostHeaderProps> = ({
                 onClose = {() => setEditting(false)}
                 onSubmit = {async (newContent) => {
                     await editPost({ 
-                        variables: { postId, newContent }
+                        variables: { postId, newContent },
+                        update: (cache) => {
+                            const data ={ content: newContent };
+
+                            cache.writeFragment({
+                                data,
+                                id: 'Post:' + postId,
+                                fragment: gql`
+                                  fragment _ on Post {
+                                     content
+                                  }
+                                `
+                            });
+                        }
                     });
                 }}
             />

@@ -28,7 +28,7 @@ const PostDetails : React.FC<{}> = () => {
 
     return (
         <Layout>
-            {loading && (
+            {!data?.post && (
                 <Header>
                     Loading...
                 </Header>

@@ -97,7 +97,7 @@ export type Mutation = {
   likePost: Scalars['Boolean'];
   editPost: Post;
   deletePost: Scalars['Boolean'];
-  createPost: Post;
+  createPost: Scalars['Boolean'];
 };
 
 
@@ -238,10 +238,7 @@ export type CreatePostMutationVariables = Exact<{
 
 export type CreatePostMutation = (
   { __typename?: 'Mutation' }
-  & { createPost: (
-    { __typename?: 'Post' }
-    & RegularPostFragment
-  ) }
+  & Pick<Mutation, 'createPost'>
 );
 
 export type DeleteCommentMutationVariables = Exact<{
@@ -543,11 +540,9 @@ export type CreateCommentMutationResult = Apollo.MutationResult<CreateCommentMut
 export type CreateCommentMutationOptions = Apollo.BaseMutationOptions<CreateCommentMutation, CreateCommentMutationVariables>;
 export const CreatePostDocument = gql`
     mutation CreatePost($content: String!) {
-  createPost(content: $content) {
-    ...RegularPost
-  }
+  createPost(content: $content)
 }
-    ${RegularPostFragmentDoc}`;
+    `;
 export type CreatePostMutationFn = Apollo.MutationFunction<CreatePostMutation, CreatePostMutationVariables>;
 
 /**

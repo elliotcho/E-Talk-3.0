@@ -1,8 +1,11 @@
 import React from 'react';
-import { gql } from '@apollo/client';
 import styled from 'styled-components';
 import { Form, Formik } from 'formik';
-import { Post, useCreatePostMutation } from '../../generated/graphql';
+import { 
+    PostsDocument,
+    useCreatePostMutation, 
+    UserPostsDocument
+} from '../../generated/graphql';
 
 const Container = styled.div`
     width: 90%;
@@ -41,7 +44,12 @@ interface CreatePostFormProps {
 }
 
 const CreatePostForm: React.FC<CreatePostFormProps> = ({ variant = 'white' }) => {
-    const [createPost] = useCreatePostMutation();
+    const [createPost] = useCreatePostMutation({
+        refetchQueries: [
+            { query: UserPostsDocument },
+            { query: PostsDocument }
+        ]
+    })
     
     const headerColor = { color: variant };
 
@@ -54,31 +62,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ variant = 'white' }) =>
                 }
 
                 await createPost({
-                    variables: { content },
-                    update: (cache, { data }) => {
-                        const query = gql`
-                            query Posts {
-                                posts {
-                                    id
-                                    content
-                                    createdAt
-                                    user {
-                                        id
-                                        firstName
-                                        lastName
-                                    }
-                                }
-                            }
-                        `
-
-                        const prevQuery = cache.readQuery({ query }) as { posts: Post[] };
-                        const newPost = data.createPost;
-
-                        cache.writeQuery({
-                            data: { posts: [newPost, ...prevQuery.posts] },
-                            query
-                        });
-                    }
+                    variables: { content }
                 });
 
                 setValues({ content: '' });

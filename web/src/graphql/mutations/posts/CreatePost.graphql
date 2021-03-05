@@ -1,5 +1,3 @@
 mutation CreatePost($content: String!) {
-    createPost(content: $content) {
-        ...RegularPost
-    }
+    createPost(content: $content) 
 }

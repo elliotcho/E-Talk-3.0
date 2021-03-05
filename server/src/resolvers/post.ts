@@ -272,24 +272,21 @@ export class PostResolver {
         return posts;
     }
 
-    @Mutation(() => Post)
+    @Mutation(() => Boolean)
     @UseMiddleware(isAuth)
     async createPost(
         @Arg('content') content: string,
         @Ctx() { req } : MyContext
-    ) : Promise<Post> {
-       let post;
-       const { uid } = req.session;
+    ) : Promise<boolean> {
+        const { uid } = req.session;
 
-       const result = await getConnection()
-            .createQueryBuilder()
-            .insert()
-            .into(Post)
-            .values({ content, userId: uid })
-            .returning('*')
-            .execute();
+       await getConnection().query(
+           `
+            insert into post ("userId", content)
+            values ($1, $2)
+           `,[uid, content]
+        );
 
-        post = result.raw[0];
-        return post;
+        return true;
     }
 }

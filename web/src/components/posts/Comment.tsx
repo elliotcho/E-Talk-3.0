@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
+import { gql } from '@apollo/client';
 import styled from 'styled-components';
 import { 
     useMeQuery,
     useDeleteCommentMutation,
     PostsDocument,
     useEditCommentMutation,
-    CommentsDocument
+    UserPostsDocument
 } from '../../generated/graphql'
 import { formatDate } from '../../utils/formatDate'; 
 import ConfirmModal from '../shared/ConfirmModal';
@@ -111,16 +112,12 @@ const Comment: React.FC<CommentProps> = ({
 }) => {
     const [editting, setEditting] = useState(false);
     const [deleting, setDeleting] = useState(false);
+    const [editComment] = useEditCommentMutation();
     const meResponse = useMeQuery();
-
-    const [editComment] = useEditCommentMutation({
-        refetchQueries: [
-            { query: CommentsDocument, variables: { postId } }
-        ]
-    });
 
     const [deleteComment] = useDeleteCommentMutation({
         refetchQueries: [
+            { query: UserPostsDocument },
             { query: PostsDocument }
         ]
     });
@@ -201,7 +198,20 @@ const Comment: React.FC<CommentProps> = ({
                 onClose = {() => setEditting(false)}
                 onSubmit = {async (newContent) => {
                     await editComment({
-                        variables: { commentId, newContent }
+                        variables: { commentId, newContent },
+                        update: (cache) => {
+                            const data ={ text: newContent };
+
+                            cache.writeFragment({
+                                data,
+                                id: 'Comment:' + commentId,
+                                fragment: gql`
+                                  fragment _ on Comment {
+                                     text
+                                  }
+                                `
+                            });
+                        }
                     });
                 }}
             /> 

@@ -9,6 +9,7 @@ const Container = styled.div`
     width: 90%;
     max-width: 600px;
     margin: 30px auto;
+    border: 1px solid black;
     background: white;
     padding: 15px;
     color: black;

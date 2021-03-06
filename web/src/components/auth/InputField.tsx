@@ -4,7 +4,6 @@ import styled from 'styled-components';
 const Input= styled.input`
     width: 100%;
     display: block;
-    font-size: 1.2rem;
     margin-bottom: 5px;
     padding: 10px;
 `;

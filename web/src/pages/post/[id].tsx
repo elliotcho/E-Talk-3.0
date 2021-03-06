@@ -7,7 +7,7 @@ import Post from '../../containers/posts/Post';
 import Layout from '../../components/shared/Layout';
 import { useRouter } from 'next/router';
 
-const Header = styled.h2`
+const Header = styled.h3`
    text-align: center;
    color: white;
 `;

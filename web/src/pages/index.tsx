@@ -8,7 +8,7 @@ import Post from '../containers/posts/Post';
 import AuthWrapper from '../components/shared/AuthWrapper';
 import Layout from '../components/shared/Layout';
 
-const Header = styled.h2`
+const Header = styled.h3`
    text-align: center;
    color: white;
 `;

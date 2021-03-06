@@ -1,35 +1,32 @@
 import React from 'react';
 import { useApolloClient } from '@apollo/client';
 import styled from 'styled-components';
+import { Navbar } from 'react-bootstrap';
 import { useLogoutMutation, useMeQuery } from '../../generated/graphql';
 import { isServer } from '../../utils/isServer';
 import NextLink from 'next/link';
 
-const Container = styled.div`
+const Container = styled(Navbar)`
     height: 8vh;
+    font-family: 'Arial';
     background: #6262b4;
 `;
 
-const Flex = styled.div`
-    display: flex;
-`;
-
-const Header = styled.h2`
-    cursor: pointer;
+const Header = styled.h3`
+    align: top;
+    display: inline-block;
     margin-left: 15px;
-    position: relative;
-    bottom: 5px;
+    cursor: pointer;
     color: white;
 `;
 
 const Box = styled.div`
     margin-left: auto;
-    margin-top: 15px;
 `;
 
 const Link = styled.span`
     font-size: 1.3rem;
-    margin-right: 10px;
+    margin-right: 15px;
     cursor: pointer;
     color: white;
     &:hover {
@@ -37,7 +34,7 @@ const Link = styled.span`
     }
 `;
 
-const Navbar: React.FC<{}> = () => {
+const Index: React.FC<{}> = () => {
     const [logout] = useLogoutMutation();
     const apolloClient = useApolloClient();
 
@@ -89,18 +86,20 @@ const Navbar: React.FC<{}> = () => {
     }
 
     return (
-        <Container>
-            <Flex>
-                <NextLink href='/'>
-                    <Header>E-Talk</Header>
-                </NextLink>
+        <Container expand='lg'>
+            <Navbar.Brand href='/'>
+                <Header>E-Talk</Header>
+            </Navbar.Brand>
 
+            <Navbar.Toggle aria-controls='basic-navbar-nav'/>
+
+            <Navbar.Collapse id='basic-navbar-nav'>
                 <Box>
-                   {body}
+                    {body}
                 </Box>
-            </Flex>
+            </Navbar.Collapse>
         </Container>
     )
 }
 
-export default Navbar;
+export default Index;

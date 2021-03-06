@@ -23,11 +23,10 @@ const Image = styled.img`
 
 const Stack = styled.div`
     position: relative;
-    bottom: 15px;
     left: 15px;
 `;
 
-const Primary = styled.h2`
+const Primary = styled.h3`
     cursor: pointer;
     color: #0275d8;
     &:hover {
@@ -38,8 +37,6 @@ const Primary = styled.h2`
 const Muted = styled.p`
     cursor: pointer;
     color: lightslategray;
-    position: relative;
-    bottom: 10px;
     &:hover {
         text-decoration: underline;
     }

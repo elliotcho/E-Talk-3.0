@@ -5,21 +5,23 @@ import { useLikersQuery } from '../../generated/graphql';
 import NextLink from 'next/link';
 
 const Container = styled.div`
+    font-family: 'Arial';
     width: 400px;
 `;
 
-const Header = styled.h2`
+const Header = styled.h3`
     text-align: left;
     color: black;
 `;
 
-const Text = styled.h2`
+const Text = styled.h3`
     margin-top: 50px;
     text-align: center;
     color: black;
 `;
 
 const Stack = styled.div`
+    margin-top: 30px;
     max-height: 460px;
     overflow: auto;
 `;

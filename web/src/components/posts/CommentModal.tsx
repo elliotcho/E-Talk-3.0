@@ -13,15 +13,16 @@ import { handleEnterPress } from '../../utils/handleEnterPress';
 import Comment from './Comment';
 
 const Container = styled.div`
+    font-family: 'Arial';
     width: 400px;
 `;
 
-const Header = styled.h2`
+const Header = styled.h3`
     text-align: left;
     color: black;
 `;
 
-const Text = styled.h2`
+const Text = styled.h3`
     margin-top: 50px;
     text-align: center;
     color: black;
@@ -35,8 +36,8 @@ const Stack = styled.div`
 const CreatePost = styled.textarea`
     width: 100%;
     max-height: 200px;
-    height: 25px;
-    font-size: 1.4rem;
+    height: 35px;
+    font-size: 1.3rem;
     margin-top: 50px;
     overflow: hidden;
     resize: none;
@@ -94,7 +95,7 @@ const CommentModal: React.FC<CommentModalProps> = ({ open, onClose, postId }) =>
                         )
                     })}
 
-                    {!loading && !data?.comments && (
+                    {!loading && !data?.comments.length && (
                         <Text>No Comments</Text>
                     )}
                 </Stack>

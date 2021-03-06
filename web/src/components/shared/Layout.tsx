@@ -6,6 +6,7 @@ const Container = styled.div`
     height: 92vh;
     position: relative;
     background: #5a535a;
+    font-family: 'Arial';
     overflow: auto;
     color: white;
 `;

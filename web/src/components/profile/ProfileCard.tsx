@@ -6,9 +6,8 @@ import {
     useRemoveProfilePicMutation, 
     useUpdateProfilePicMutation 
 } from '../../generated/graphql';
-import NextImage from 'next/image';
 
-const Header = styled.h2`
+const Header = styled.h3`
     text-align: center;
 `;
 

@@ -9,12 +9,13 @@ import {
 
 const Container = styled.div`
     width: 90%;
-    max-width: 600px;
     margin: 50px auto;
     text-align: center;
+    max-width: 600px;
 `;
 
-const Header = styled.h2`
+const Header = styled.h3`
+    font-family: 'Arial';
     text-align: left;
 `;
 

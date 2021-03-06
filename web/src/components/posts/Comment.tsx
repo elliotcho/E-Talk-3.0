@@ -30,11 +30,10 @@ const Image = styled.img`
 
 const Stack = styled.div`
     position: relative;
-    bottom: 20px;
     left: 15px;
 `;
 
-const Primary = styled.h3`
+const Primary = styled.h4`
     cursor: pointer;
     color: #0275d8;
     &:hover {

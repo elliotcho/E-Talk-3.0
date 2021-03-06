@@ -95,7 +95,7 @@ export class PostResolver {
     @Query(() => [Comment])
     async comments(
         @Arg('postId', () => Int) postId: number
-    ) : Promise<[Comment] | undefined> {
+    ) : Promise<[Comment]> {
         const comments = await getConnection().query(
             `
                 select * from comment where
@@ -105,10 +105,6 @@ export class PostResolver {
 
             `, [postId]
         );
-
-        if(comments.length === 0) {
-            return undefined;
-        }
 
         return comments;
     }

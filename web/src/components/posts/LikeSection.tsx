@@ -13,9 +13,10 @@ const Flex = styled.div`
 
 const BoxStyles = `
     padding: 5px;
+    height: 90%;
     margin-left: 10px;
-    cursor: pointer;
     background: black;
+    cursor: pointer;
 `;
 
 const WhiteBox = styled.div`

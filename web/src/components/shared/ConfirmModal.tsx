@@ -3,10 +3,11 @@ import styled from 'styled-components';
 import Modal from 'react-responsive-modal';
 
 const Container = styled.div`
+    font-family: 'Arial';
     width: 400px;
 `;
 
-const Header = styled.h2`
+const Header = styled.h3`
     text-align: left;
     color: black;
 `;

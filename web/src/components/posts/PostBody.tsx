@@ -6,7 +6,7 @@ const Container = styled.div`
     overflow-wrap: break-word;
     white-space: pre-wrap;
     font-size: 1.6rem;
-    padding: 20px 10px;
+    padding: 10px 10px;
     margin-top: 30px;
 `;
 

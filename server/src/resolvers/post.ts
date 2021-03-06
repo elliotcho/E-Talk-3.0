@@ -243,14 +243,14 @@ export class PostResolver {
 
     @Query(() => [Post])
     async userPosts(
-        @Ctx() { req } : MyContext
+        @Arg('userId', () => Int) userId: number
     ) : Promise<Post[]> {
         const posts = await getConnection().query(
             `
                 select * from post
                 where post."userId" = $1
                 order by post."createdAt" DESC
-            `, [req.session.uid]
+            `, [userId]
         );
 
         return posts;

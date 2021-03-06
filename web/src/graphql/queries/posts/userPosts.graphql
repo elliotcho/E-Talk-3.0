@@ -1,5 +1,5 @@
-query UserPosts {
-    userPosts {
+query UserPosts($userId: Int!) {
+    userPosts(userId: $userId) {
         ...RegularPost
     }
 }

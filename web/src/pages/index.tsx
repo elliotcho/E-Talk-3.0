@@ -9,6 +9,7 @@ import CreatePostForm from '../containers/posts/CreatePostForm';
 import Post from '../containers/posts/Post';
 
 const Header = styled.h3`
+   margin-top: 20px;
    text-align: center;
    color: white;
 `;

@@ -46,17 +46,18 @@ const CreatePost = styled.textarea`
 interface CommentModalProps {
     open: boolean;
     onClose() : void;
+    postOwner: number;
     postId: number;
 }
 
-const CommentModal: React.FC<CommentModalProps> = ({ open, onClose, postId }) => {
+const CommentModal: React.FC<CommentModalProps> = ({ open, onClose, postId, postOwner }) => {
     const [text, setText] = useState('');
 
     const [createComment] = useCreateCommentMutation({
         refetchQueries: [
             { query: CommentsDocument, variables: { postId } },
+            { query: UserPostsDocument, variables: { userId: postOwner } },
             { query: PostDocument, variables: { postId } },
-            { query: UserPostsDocument },
             { query: PostsDocument },
         ]
     });
@@ -90,6 +91,7 @@ const CommentModal: React.FC<CommentModalProps> = ({ open, onClose, postId }) =>
                             <Comment  
                                 key = {c.id}
                                 commentId = {c.id}
+                                postOwner = {postOwner}
                                 {...props} 
                             />
                         )

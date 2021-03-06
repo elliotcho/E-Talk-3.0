@@ -25,6 +25,7 @@ const Box  = styled.div`
 `;
 
 const Header = styled.h3`
+   margin-top: 20px;
    text-align: center;
    color: white;
 `;
@@ -33,7 +34,9 @@ const Profile : React.FC<{}> = () => {
     const { query: { id } } = useRouter();
     const userId = (typeof id === 'string') ? parseInt(id) : -1;
 
-    const postsResponse = useUserPostsQuery();
+    const postsResponse = useUserPostsQuery({
+        variables: { userId }
+    });
 
     return (
         <Layout>

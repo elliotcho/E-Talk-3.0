@@ -46,6 +46,11 @@ export type QueryPostArgs = {
   postId: Scalars['Int'];
 };
 
+
+export type QueryUserPostsArgs = {
+  userId: Scalars['Int'];
+};
+
 export type User = {
   __typename?: 'User';
   id: Scalars['Float'];
@@ -433,7 +438,9 @@ export type PostsQuery = (
   )> }
 );
 
-export type UserPostsQueryVariables = Exact<{ [key: string]: never; }>;
+export type UserPostsQueryVariables = Exact<{
+  userId: Scalars['Int'];
+}>;
 
 
 export type UserPostsQuery = (
@@ -1084,8 +1091,8 @@ export type PostsQueryHookResult = ReturnType<typeof usePostsQuery>;
 export type PostsLazyQueryHookResult = ReturnType<typeof usePostsLazyQuery>;
 export type PostsQueryResult = Apollo.QueryResult<PostsQuery, PostsQueryVariables>;
 export const UserPostsDocument = gql`
-    query UserPosts {
-  userPosts {
+    query UserPosts($userId: Int!) {
+  userPosts(userId: $userId) {
     ...RegularPost
   }
 }
@@ -1103,10 +1110,11 @@ export const UserPostsDocument = gql`
  * @example
  * const { data, loading, error } = useUserPostsQuery({
  *   variables: {
+ *      userId: // value for 'userId'
  *   },
  * });
  */
-export function useUserPostsQuery(baseOptions?: Apollo.QueryHookOptions<UserPostsQuery, UserPostsQueryVariables>) {
+export function useUserPostsQuery(baseOptions: Apollo.QueryHookOptions<UserPostsQuery, UserPostsQueryVariables>) {
         return Apollo.useQuery<UserPostsQuery, UserPostsQueryVariables>(UserPostsDocument, baseOptions);
       }
 export function useUserPostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserPostsQuery, UserPostsQueryVariables>) {

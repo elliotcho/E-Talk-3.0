@@ -4,6 +4,7 @@ import { Form, Formik } from 'formik';
 import { 
     PostsDocument,
     useCreatePostMutation, 
+    useMeQuery, 
     UserPostsDocument
 } from '../../generated/graphql';
 
@@ -46,9 +47,11 @@ interface CreatePostFormProps {
 }
 
 const CreatePostForm: React.FC<CreatePostFormProps> = ({ variant = 'white' }) => {
+    const userId = useMeQuery()?.data?.me?.id;
+
     const [createPost] = useCreatePostMutation({
         refetchQueries: [
-            { query: UserPostsDocument },
+            { query: UserPostsDocument, variables: { userId } },
             { query: PostsDocument }
         ]
     })

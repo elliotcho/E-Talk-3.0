@@ -1,8 +1,6 @@
 import React from 'react';
 import { useApolloClient } from '@apollo/client';
 import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserFriends } from '@fortawesome/free-solid-svg-icons';
 import { Nav } from 'react-bootstrap';
 import { useLogoutMutation } from '../../generated/graphql';
 import NextLink from 'next/link';

@@ -8,6 +8,7 @@ import Post from '../../containers/posts/Post';
 import { useRouter } from 'next/router';
 
 const Header = styled.h3`
+   margin-top: 20px;
    text-align: center;
    color: white;
 `;

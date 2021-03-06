@@ -115,7 +115,7 @@ const PostHeader: React.FC<PostHeaderProps> = ({
             <Flex>
                 <NextLink href={toProfile}>
                     <Image 
-                        src={profileURL || '/loading.jpg'} 
+                        src={profileURL} 
                         alt='Profile pic'
                     />
                 </NextLink>

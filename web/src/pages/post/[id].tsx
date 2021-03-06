@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { usePostQuery } from '../../generated/graphql';
 import { mapPostProps } from '../../utils/mapPostProps';
 import { withApollo } from '../../utils/withApollo';
+import Layout from '../../containers/shared/Layout';
 import Post from '../../containers/posts/Post';
-import Layout from '../../components/shared/Layout';
 import { useRouter } from 'next/router';
 
 const Header = styled.h3`

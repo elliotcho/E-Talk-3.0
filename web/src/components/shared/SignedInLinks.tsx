@@ -1,17 +1,37 @@
 import React from 'react';
 import { useApolloClient } from '@apollo/client';
 import styled from 'styled-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUserFriends } from '@fortawesome/free-solid-svg-icons';
 import { Nav } from 'react-bootstrap';
 import { useLogoutMutation } from '../../generated/graphql';
 import NextLink from 'next/link';
 
+const Item = styled.div`
+    @media screen and (max-width: 768px) {
+        cursor: pointer;
+        margin-top: 20px;
+        padding: 12px;
+        &:hover {
+            background: azure;
+        }
+    }
+`;
+
 const Link = styled.span`
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     margin-right: 15px;
     cursor: pointer;
     color: white;
     &:hover {
         text-decoration: underline;
+    }
+    
+    @media screen and (max-width: 768px) {
+        ${Item}:hover & {
+            text-decoration: underline;
+            color: black;
+        }
     }
 `;
 
@@ -25,15 +45,15 @@ const SignedInLinks : React.FC<SignedInLinksProps> = ({ userId }) => {
 
     return (
         <Nav>
-            <Nav.Item>
-                <NextLink href={`/profile/${userId}`}>
+            <NextLink href={`/profile/${userId}`}>
+                <Item>
                     <Link>
                         Profile
                     </Link>
-                </NextLink>
-            </Nav.Item>
+                </Item>
+            </NextLink>
 
-            <Nav.Item>
+            <Item>
                 <Link
                         onClick = {async (e) => {
                             e.preventDefault();
@@ -44,7 +64,7 @@ const SignedInLinks : React.FC<SignedInLinksProps> = ({ userId }) => {
                     >
                         Logout
                 </Link>
-            </Nav.Item>
+            </Item>
         </Nav>
     )
 }

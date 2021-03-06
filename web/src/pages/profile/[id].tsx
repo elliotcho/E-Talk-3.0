@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import { useUserPostsQuery } from '../../generated/graphql';
 import { mapPostProps } from '../../utils/mapPostProps';
 import { withApollo } from '../../utils/withApollo';
+import Layout from '../../containers/shared/Layout';
 import Sidebar from '../../containers/profile/Sidebar';
 import CreatePostForm from '../../containers/posts/CreatePostForm';
 import Post from '../../containers/posts/Post';
-import Layout from '../../components/shared/Layout';
 import { useRouter } from 'next/router';
 
 const Container = styled.div`

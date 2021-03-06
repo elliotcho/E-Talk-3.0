@@ -3,19 +3,18 @@ import styled from 'styled-components';
 import { Navbar } from 'react-bootstrap';
 import { useMeQuery } from '../../generated/graphql';
 import { isServer } from '../../utils/isServer';
-import SignedOutLinks from './SignedOutLinks';
-import SignedInLinks from './SignedInLinks';
+import SignedOutLinks from '../../components/shared/SignedOutLinks';
+import SignedInLinks from '../../components/shared/SignedInLinks';
+import Searchbar from '../../components/shared/Searchbar';
 import NextLink from 'next/link';
 
 const Container = styled(Navbar)`
-    height: 8vh;
     font-family: 'Arial';
     background: #6262b4;
 `;
 
-const Header = styled.h3`
-    align: top;
-    display: inline-block;
+const Header = styled.span`
+    font-size: 1.4rem;
     margin-left: 15px;
     cursor: pointer;
     color: white;
@@ -37,7 +36,9 @@ const Index: React.FC<{}> = () => {
             body =  (
                 <SignedOutLinks />
             );
-        } else {
+        } 
+        
+        else {
             let userId = data?.me?.id || -1;
 
             body = (
@@ -47,7 +48,10 @@ const Index: React.FC<{}> = () => {
     }
 
     return (
-        <Container expand='lg'>
+        <Container 
+            collapseOnSelect
+            expand = 'md'
+        >
             <Navbar.Brand>
                 <NextLink href='/'>
                     <Header>
@@ -59,6 +63,10 @@ const Index: React.FC<{}> = () => {
             <Navbar.Toggle aria-controls='basic-navbar-nav'/>
 
             <Navbar.Collapse id='basic-navbar-nav'>
+                {data?.me && (
+                    <Searchbar />
+                )}
+                
                 <Box>
                     {body}
                 </Box>

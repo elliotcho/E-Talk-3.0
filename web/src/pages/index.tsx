@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import { usePostsQuery } from '../generated/graphql';
 import { mapPostProps } from '../utils/mapPostProps';
 import { withApollo } from '../utils/withApollo';
+import AuthWrapper from '../containers/shared/AuthWrapper';
+import Layout from '../containers/shared/Layout';
 import CreatePostForm from '../containers/posts/CreatePostForm';
 import Post from '../containers/posts/Post';
-import AuthWrapper from '../components/shared/AuthWrapper';
-import Layout from '../components/shared/Layout';
 
 const Header = styled.h3`
    text-align: center;

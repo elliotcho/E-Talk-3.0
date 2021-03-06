@@ -1,9 +1,10 @@
 import React from 'react';
-import { useApolloClient } from '@apollo/client';
 import styled from 'styled-components';
 import { Navbar } from 'react-bootstrap';
-import { useLogoutMutation, useMeQuery } from '../../generated/graphql';
+import { useMeQuery } from '../../generated/graphql';
 import { isServer } from '../../utils/isServer';
+import SignedOutLinks from './SignedOutLinks';
+import SignedInLinks from './SignedInLinks';
 import NextLink from 'next/link';
 
 const Container = styled(Navbar)`
@@ -24,20 +25,7 @@ const Box = styled.div`
     margin-left: auto;
 `;
 
-const Link = styled.span`
-    font-size: 1.3rem;
-    margin-right: 15px;
-    cursor: pointer;
-    color: white;
-    &:hover {
-        text-decoration: underline;
-    }
-`;
-
 const Index: React.FC<{}> = () => {
-    const [logout] = useLogoutMutation();
-    const apolloClient = useApolloClient();
-
     const { data, loading } = useMeQuery({
         skip: isServer()
     });
@@ -46,49 +34,26 @@ const Index: React.FC<{}> = () => {
 
     if(!loading) {
         if(!data?.me) {
-            body = (
-                <>
-                    <NextLink href='/login'>
-                        <Link>
-                            Login
-                        </Link>
-                    </NextLink>
-
-                    <NextLink href='/register'>
-                        <Link>
-                            Register
-                        </Link>
-                    </NextLink>
-                </>
-            )
+            body =  (
+                <SignedOutLinks />
+            );
         } else {
+            let userId = data?.me?.id || -1;
+
             body = (
-                <>
-                    <NextLink href={`/profile/${data.me.id}`}>
-                        <Link>
-                            Profile
-                        </Link>
-                    </NextLink>
-
-                    <Link
-                        onClick = {async (e) => {
-                            e.preventDefault();
-
-                            await logout();
-                            await apolloClient.resetStore();
-                        }}
-                    >
-                        Logout
-                    </Link>
-                </>
-            )
+                <SignedInLinks userId={userId}/>
+            );
         }
     }
 
     return (
         <Container expand='lg'>
-            <Navbar.Brand href='/'>
-                <Header>E-Talk</Header>
+            <Navbar.Brand>
+                <NextLink href='/'>
+                    <Header>
+                        E-Talk
+                    </Header>
+                </NextLink>
             </Navbar.Brand>
 
             <Navbar.Toggle aria-controls='basic-navbar-nav'/>

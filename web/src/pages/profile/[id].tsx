@@ -12,17 +12,25 @@ const Container = styled.div`
    grid-gap: 50px;
 `;
 
+const types = [
+    'posts', 
+    'friends', 
+    'bio'
+];
+
 const Profile : React.FC<{}> = () => {
     const { query: { id, type } } = useRouter();
-    
+
+    let contentType = '';
     let userId = -1;
-    let contentType = type;
 
     if(typeof id === 'string') {
         userId = parseInt(id);
-    }
-
-    if(type !== 'posts' && type !== 'friends' && type !== 'bio') {
+    } 
+    
+    if(typeof type === 'string' && types.includes(type)) {
+        contentType = type;
+    } else {
         contentType = 'posts';
     }
 
@@ -34,11 +42,13 @@ const Profile : React.FC<{}> = () => {
                     type={contentType}
                 />
                 
-                <ProfileContent type={contentType}/>
+                <ProfileContent 
+                    userId = {userId}
+                    type={contentType}
+                />
             </Container>
         </Layout>
     )
 }
-
 
 export default withApollo({ ssr: false })(Profile);

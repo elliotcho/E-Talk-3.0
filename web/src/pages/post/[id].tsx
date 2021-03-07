@@ -42,4 +42,4 @@ const PostDetails : React.FC<{}> = () => {
     )
 }
 
-export default withApollo({ ssr: true })(PostDetails);
+export default withApollo({ ssr: false })(PostDetails);

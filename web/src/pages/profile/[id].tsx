@@ -1,12 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useUserPostsQuery } from '../../generated/graphql';
-import { mapPostProps } from '../../utils/mapPostProps';
 import { withApollo } from '../../utils/withApollo';
 import Layout from '../../containers/shared/Layout';
 import Sidebar from '../../containers/profile/Sidebar';
-import CreatePostForm from '../../containers/posts/CreatePostForm';
-import Post from '../../containers/posts/Post';
+import ProfileContent from '../../containers/profile/ProfileContent';
 import { useRouter } from 'next/router';
 
 const Container = styled.div`
@@ -15,51 +12,33 @@ const Container = styled.div`
    grid-gap: 50px;
 `;
 
-const Box  = styled.div`
-    width: 90%;
-    min-height: 460px;
-    min-width: 600px;
-    background: white;
-    overflow: auto;
-    color: black;
-`;
-
-const Header = styled.h3`
-   margin-top: 20px;
-   text-align: center;
-   color: white;
-`;
-
 const Profile : React.FC<{}> = () => {
-    const { query: { id } } = useRouter();
-    const userId = (typeof id === 'string') ? parseInt(id) : -1;
+    const { query: { id, type } } = useRouter();
+    
+    let userId = -1;
+    let contentType = type;
 
-    const postsResponse = useUserPostsQuery({
-        variables: { userId }
-    });
+    if(typeof id === 'string') {
+        userId = parseInt(id);
+    }
+
+    if(type !== 'posts' && type !== 'friends' && type !== 'bio') {
+        contentType = 'posts';
+    }
 
     return (
         <Layout>
             <Container>
-                <Sidebar userId={userId}/>
-
-                <Box>
-                    <CreatePostForm variant='black'/>
-
-                    {postsResponse.loading && (
-                        <Header>
-                            Loading...
-                        </Header>
-                    )}
-
-                    {postsResponse.data?.userPosts.map(p => 
-                        <Post  {...mapPostProps(p)} />  
-                    )}
-                </Box>
+                <Sidebar 
+                    userId={userId} 
+                    type={contentType}
+                />
+                
+                <ProfileContent type={contentType}/>
             </Container>
         </Layout>
     )
 }
 
 
-export default withApollo({ ssr: true })(Profile);
+export default withApollo({ ssr: false })(Profile);

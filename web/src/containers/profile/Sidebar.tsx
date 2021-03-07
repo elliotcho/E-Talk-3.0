@@ -15,9 +15,10 @@ const Container = styled.div`
 
 interface SidebarProps {
     userId: number;
+    type: string;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ userId }) => { 
+const Sidebar: React.FC<SidebarProps> = ({ userId, type }) => { 
     let myId = useMeQuery().data?.me?.id;
 
     const { data } = useUserQuery({
@@ -45,7 +46,10 @@ const Sidebar: React.FC<SidebarProps> = ({ userId }) => {
                 <ProfileButtons />
             )}
 
-            <ProfileMenu />            
+            <ProfileMenu 
+                userId = {userId}
+                type = {type}
+            />            
         </Container>
     )
 }

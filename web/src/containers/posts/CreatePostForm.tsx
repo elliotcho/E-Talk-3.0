@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Form, Formik } from 'formik';
 import { 
@@ -7,6 +7,7 @@ import {
     useMeQuery, 
     UserPostsDocument
 } from '../../generated/graphql';
+import SubmitButton from '../../components/shared/SubmitButton';
 
 const Container = styled.div`
     width: 90%;
@@ -23,23 +24,8 @@ const Header = styled.h3`
 const TextArea = styled.textarea`
     width: 100%;
     height: 100px;
-    margin-bottom: 20px;
     font-size: 1.3rem;
     resize: none;
-`;
-
-const Button = styled.button`
-    width: 50%;
-    font-size: 20px;
-    background: green;
-    cursor: pointer;
-    color: white;
-    padding: 15px;
-    outline: none;
-    border: none;
-    &:hover {
-        box-shadow: 0 0 5px black;
-    }
 `;
 
 interface CreatePostFormProps {
@@ -47,6 +33,7 @@ interface CreatePostFormProps {
 }
 
 const CreatePostForm: React.FC<CreatePostFormProps> = ({ variant = 'white' }) => {
+    const [isLoading, setIsLoading] = useState(false);
     const userId = useMeQuery()?.data?.me?.id;
 
     const [createPost] = useCreatePostMutation({
@@ -66,11 +53,14 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ variant = 'white' }) =>
                     return;
                 }
 
+                setIsLoading(true);
+
                 await createPost({
                     variables: { content }
                 });
 
                 setValues({ content: '' });
+                setIsLoading(false);
             }}
         >
             {({ values, handleChange }) => (
@@ -86,9 +76,9 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ variant = 'white' }) =>
                             name = 'content'
                         />
 
-                        <Button type='submit'>
+                        <SubmitButton isLoading={isLoading}>
                             Submit
-                        </Button>
+                        </SubmitButton>
                     </Container>
                 </Form>
             )}

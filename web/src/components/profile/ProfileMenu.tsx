@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import NextLink from 'next/link';
 
 const Menu = styled.ul`
     margin: 30px auto;
@@ -19,15 +20,34 @@ const Option = styled.li`
     &:last-child { border-bottom: none; }
 `;
 
-const ProfileMenu : React.FC<{}> = () => {
+interface ProfileMenuProps {
+    userId: number;
+    type: string;
+}
+
+const ProfileMenu : React.FC<ProfileMenuProps> = ({ userId, type }) => {
+    let options = ['Posts', 'Friends', 'Bio'];
+
     return (
         <>
             <Menu>
-                <Option>Posts</Option>
+                {options.map(option => {
+                    let choice = option.toLowerCase();
+                    let route = `/profile/${userId}/${choice}`;
+                    let style = {};
 
-                <Option>Friends</Option>
+                    if(type === choice) {
+                        style = { textDecoration: 'underline' };
+                    }
 
-                <Option>Bio</Option>
+                    return (
+                        <NextLink key={option} href={route}>
+                            <Option style={style}>
+                                {option}
+                            </Option>
+                        </NextLink>
+                    )
+                })}
             </Menu>
         </>
     )

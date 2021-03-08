@@ -180,6 +180,31 @@ const Comment: React.FC<CommentProps> = ({
                         variables: { commentId, postId },
                         update: (cache) => {
                             cache.evict({ id: 'Comment:' + commentId });
+
+                            const data = cache.readFragment<{
+                                numComments: number
+                            }>({
+                                id: 'Post:' + postId,
+                                fragment: gql`
+                                   fragment _ on Post {
+                                        numComments
+                                   }
+                                `
+                            });
+
+                            if(data) {
+                                const newData = { numComments: data.numComments - 1 };
+
+                                cache.writeFragment({
+                                    id: 'Post:' + postId,
+                                    fragment: gql`
+                                        fragment _ on Post {
+                                            numComments
+                                        }
+                                    `,
+                                    data: newData
+                                });
+                            }
                         }
                     });
                 }}

@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Form, Formik } from 'formik';
 import { 
-    useCreatePostMutation, 
-    useMeQuery, 
+    useCreatePostMutation
 } from '../../generated/graphql';
 import Button from '../../components/shared/Button';
 
@@ -32,8 +31,6 @@ interface CreatePostFormProps {
 
 const CreatePostForm: React.FC<CreatePostFormProps> = ({ variant = 'white' }) => {
     const [isLoading, setIsLoading] = useState(false);
-    const userId = useMeQuery()?.data?.me?.id;
-
     const [createPost] = useCreatePostMutation();
     
     const headerColor = { color: variant };
@@ -51,7 +48,8 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ variant = 'white' }) =>
                 await createPost({
                     variables: { content },
                     update: (cache) => {
-                        
+                        cache.evict({ fieldName: 'posts' });  
+                        cache.evict({ fieldName: 'userPosts' });   
                     }
                 });
 

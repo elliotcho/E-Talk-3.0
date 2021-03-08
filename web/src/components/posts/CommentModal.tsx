@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { gql } from '@apollo/client';
 import styled from 'styled-components';
 import Modal from 'react-responsive-modal';
 import { 
@@ -109,7 +110,30 @@ const CommentModal: React.FC<CommentModalProps> = ({ open, onClose, postId, post
                         await createComment({
                             variables: { postId, text },
                             update: (cache) => {
-                              
+                                const data = cache.readFragment<{
+                                    numComments: number
+                                }>({
+                                    id: 'Post:' + postId,
+                                    fragment: gql`
+                                       fragment _ on Post {
+                                            numComments
+                                       }
+                                    `
+                                });
+
+                                if(data) {
+                                    const newData = { numComments: data.numComments + 1 };
+
+                                    cache.writeFragment({
+                                        id: 'Post:' + postId,
+                                        fragment: gql`
+                                            fragment _ on Post {
+                                                numComments
+                                            }
+                                        `,
+                                        data: newData
+                                    });
+                                }
                             }
                         });
                         

@@ -51,8 +51,12 @@ const UserPosts: React.FC<UserPostsProps> = ({ userId }) => {
                      bg = 'lightslategray'
                      isLoading={loading}
                      onClick = {async () => {
-                        const cursor = data.userPosts.posts[data.userPosts.posts.length - 1].createdAt;
+                        let cursor = data.userPosts.posts[data.userPosts.posts.length - 1]?.createdAt;
                         const limit = variables?.limit;
+
+                        if(!cursor) {
+                            cursor = null;
+                        }
 
                         await fetchMore({
                            variables: { userId, cursor, limit }

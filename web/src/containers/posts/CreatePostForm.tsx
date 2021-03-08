@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Form, Formik } from 'formik';
-import { 
-    useCreatePostMutation
-} from '../../generated/graphql';
+import { useCreatePostMutation } from '../../generated/graphql';
 import Button from '../../components/shared/Button';
 
 const Container = styled.div`

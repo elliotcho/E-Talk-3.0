@@ -90,7 +90,6 @@ interface CommentProps {
     commentId: number;
     createdAt: string;
     postId: number;
-    postOwner: number;
     text: string;
     firstName: string;
     lastName: string;
@@ -102,7 +101,6 @@ const Comment: React.FC<CommentProps> = ({
     commentId,
     createdAt,
     postId,
-    postOwner,
     text,
     firstName,
     lastName,

@@ -60,7 +60,6 @@ const Post : React.FC<PostProps> = (props) => {
                 <CommentSection 
                     postId={postId} 
                     numComments={numComments} 
-                    postOwner = {props.userId}
                 />
             </Flex>
         </Container>

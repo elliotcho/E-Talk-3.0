@@ -30,10 +30,9 @@ const Span = styled.span`
 interface CommentSectionProps {
     postId: number;
     numComments: number;
-    postOwner: number;
 }
 
-const CommentSection: React.FC<CommentSectionProps> = ({ postId, numComments, postOwner }) => {
+const CommentSection: React.FC<CommentSectionProps> = ({ postId, numComments }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -52,7 +51,6 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, numComments, po
             <CommentModal
                 open = {isOpen}
                 onClose = {() => setIsOpen(false)}
-                postOwner = {postOwner}
                 postId = {postId}
             />
         </Flex>

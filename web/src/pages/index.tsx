@@ -47,8 +47,12 @@ const Index : React.FC<{}> = () => {
                      bg = 'lightslategray'
                      isLoading={loading}
                      onClick = {async () => {
-                        const cursor = data.posts.posts[data.posts.posts.length - 1].createdAt;
+                        let cursor = data.posts.posts[data.posts.posts.length - 1]?.createdAt;
                         const limit = variables?.limit;
+
+                        if(!cursor) {
+                           cursor = null;
+                        }
 
                         await fetchMore({
                            variables: { cursor, limit }

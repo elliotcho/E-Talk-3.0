@@ -44,11 +44,10 @@ const CreatePost = styled.textarea`
 interface CommentModalProps {
     open: boolean;
     onClose() : void;
-    postOwner: number;
     postId: number;
 }
 
-const CommentModal: React.FC<CommentModalProps> = ({ open, onClose, postId, postOwner }) => {
+const CommentModal: React.FC<CommentModalProps> = ({ open, onClose, postId }) => {
     const [text, setText] = useState('');
 
     const [createComment] = useCreateCommentMutation({
@@ -86,7 +85,6 @@ const CommentModal: React.FC<CommentModalProps> = ({ open, onClose, postId, post
                             <Comment  
                                 key = {c.id}
                                 commentId = {c.id}
-                                postOwner = {postOwner}
                                 {...props} 
                             />
                         )

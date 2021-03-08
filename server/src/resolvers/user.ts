@@ -91,6 +91,23 @@ export class UserResolver{
         return imgURL;
     }
 
+    @Query(() => [User])
+    async searchResults(
+        @Arg('query') query: string 
+    ) : Promise<User[]> {
+        let pattern = query.toLowerCase();
+
+        const users = await getConnection().query(
+            `
+                select * from "user" where
+                LOWER("user"."firstName") LIKE '${pattern}%' or
+                LOWER("user"."lastName") LIKE '${pattern}%'
+            `
+        );
+
+        return users;
+    }
+
     @Query(() => User)
     async user (
         @Arg('userId', () => Int)  userId  : number

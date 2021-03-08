@@ -1,0 +1,8 @@
+TODOS:
+
+Paginate likers
+Paginate comments
+Connect search result mutation to frontend
+Query posts that you post or your friend does
+Handle friend request on backend
+Connect friend backend to frontend

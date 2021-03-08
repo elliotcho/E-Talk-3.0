@@ -1,5 +1,8 @@
-query UserPosts($userId: Int!) {
-    userPosts(userId: $userId) {
-        ...RegularPost
+query UserPosts($userId: Int!, $cursor: String, $limit: Int!) {
+    userPosts(userId: $userId, cursor: $cursor, limit: $limit) {
+        hasMore
+        posts {
+            ...RegularPost
+        }
     }
 }

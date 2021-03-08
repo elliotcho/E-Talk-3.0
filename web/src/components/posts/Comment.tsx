@@ -4,9 +4,7 @@ import styled from 'styled-components';
 import { 
     useMeQuery,
     useDeleteCommentMutation,
-    PostsDocument,
-    useEditCommentMutation,
-    UserPostsDocument
+    useEditCommentMutation
 } from '../../generated/graphql'
 import { formatDate } from '../../utils/formatDate'; 
 import ConfirmModal from '../shared/ConfirmModal';
@@ -116,12 +114,7 @@ const Comment: React.FC<CommentProps> = ({
     const [editComment] = useEditCommentMutation();
     const meResponse = useMeQuery();
 
-    const [deleteComment] = useDeleteCommentMutation({
-        refetchQueries: [
-            { query: UserPostsDocument, variables: { userId: postOwner } },
-            { query: PostsDocument }
-        ]
-    });
+    const [deleteComment] = useDeleteCommentMutation();
 
     const toProfile = `/profile/${userId}`;
     let isOwner = false;
@@ -186,7 +179,7 @@ const Comment: React.FC<CommentProps> = ({
                     await deleteComment({
                         variables: { commentId, postId },
                         update: (cache) => {
-                            cache.evict({ id: 'Comment:' + commentId })
+                            cache.evict({ id: 'Comment:' + commentId });
                         }
                     });
                 }}

@@ -8,7 +8,7 @@ import Layout from '../containers/shared/Layout';
 import FormContainer from '../containers/auth/FormContainer';
 import Title from '../components/auth/Title';
 import InputField from '../components/auth/InputField';
-import SubmitButton from '../components/shared/SubmitButton';
+import Button from '../components/shared/Button';
 import ErrorText from '../components/auth/ErrorText';
 import { useRouter } from 'next/router';
 
@@ -36,7 +36,7 @@ const Register : React.FC<{}> = () => {
                                     }
                                 });
 
-                                cache.evict({ fieldName: 'posts:{}' })
+                                cache.evict({ fieldName: 'posts' })
                             }
                         });
 
@@ -86,9 +86,9 @@ const Register : React.FC<{}> = () => {
                                     name = 'lastName'
                                 />
 
-                                <SubmitButton isLoading={isLoading}>
+                                <Button isLoading={isLoading}>
                                     Register
-                                </SubmitButton>
+                                </Button>
 
                                 {Object.keys(errors).map(key => 
                                     <ErrorText>

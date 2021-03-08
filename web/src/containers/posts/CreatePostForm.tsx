@@ -2,16 +2,14 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Form, Formik } from 'formik';
 import { 
-    PostsDocument,
     useCreatePostMutation, 
     useMeQuery, 
-    UserPostsDocument
 } from '../../generated/graphql';
-import SubmitButton from '../../components/shared/SubmitButton';
+import Button from '../../components/shared/Button';
 
 const Container = styled.div`
     width: 90%;
-    margin: 50px auto;
+    margin: 40px auto;
     text-align: center;
     max-width: 600px;
 `;
@@ -36,12 +34,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ variant = 'white' }) =>
     const [isLoading, setIsLoading] = useState(false);
     const userId = useMeQuery()?.data?.me?.id;
 
-    const [createPost] = useCreatePostMutation({
-        refetchQueries: [
-            { query: UserPostsDocument, variables: { userId } },
-            { query: PostsDocument }
-        ]
-    })
+    const [createPost] = useCreatePostMutation();
     
     const headerColor = { color: variant };
 
@@ -56,7 +49,10 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ variant = 'white' }) =>
                 setIsLoading(true);
 
                 await createPost({
-                    variables: { content }
+                    variables: { content },
+                    update: (cache) => {
+                        
+                    }
                 });
 
                 setValues({ content: '' });
@@ -76,9 +72,9 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ variant = 'white' }) =>
                             name = 'content'
                         />
 
-                        <SubmitButton isLoading={isLoading}>
+                        <Button isLoading={isLoading}>
                             Submit
-                        </SubmitButton>
+                        </Button>
                     </Container>
                 </Form>
             )}

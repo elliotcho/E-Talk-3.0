@@ -17,10 +17,19 @@ const Button = styled.button`
 `;
 
 interface SubmitButtonProps {
+    onClick? : () => void;
     isLoading?: boolean;
+    color? : string;
+    bg? : string;
 }
 
-const SubmitButton : React.FC<SubmitButtonProps> = ({ children, isLoading = false }) => {
+const Index : React.FC<SubmitButtonProps> = ({ 
+    children, 
+    onClick,
+    isLoading = false,
+    color,
+    bg
+}) => {
     let type : 'submit' | 'button' | 'reset';
 
     if(isLoading) {
@@ -30,10 +39,17 @@ const SubmitButton : React.FC<SubmitButtonProps> = ({ children, isLoading = fals
     }
 
     return (
-        <Button type = {type}>
+        <Button 
+            type = {type}
+            onClick = {onClick}
+            style = {{ 
+                background: bg, 
+                color 
+            }}
+        >
             {isLoading? 'Loading...' : children}
         </Button>
     )
 }
 
-export default SubmitButton;
+export default Index;

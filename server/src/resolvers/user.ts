@@ -9,7 +9,8 @@ import {
     Query,
     UseMiddleware,
     FieldResolver,
-    Int
+    Int,
+    Root
 } from 'type-graphql';
 import { GraphQLUpload } from 'graphql-upload';
 import argon2 from 'argon2';
@@ -63,9 +64,9 @@ class UserResponse {
 export class UserResolver{
     @FieldResolver(() => Boolean)
     async profilePic(
-        @Ctx() { req } : MyContext
+        @Root() { id } : User
     ) : Promise<string> {
-        const user = await User.findOne(req.session.uid);
+        const user = await User.findOne(id);
         
         if(!user) {
             return '';
@@ -76,9 +77,9 @@ export class UserResolver{
 
     @FieldResolver(() => String)
     async profileURL(
-        @Ctx() { req } : MyContext
+        @Root() { id } : User
     ) : Promise<string> {
-        const user = await User.findOne(req.session.uid);
+        const user = await User.findOne(id);
         let imgURL;
         
         if(user && user.profilePic) {

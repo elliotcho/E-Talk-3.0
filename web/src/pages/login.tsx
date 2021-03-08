@@ -9,7 +9,7 @@ import Layout from '../containers/shared/Layout';
 import FormContainer from '../containers/auth/FormContainer';
 import Title from '../components/auth/Title';
 import InputField from '../components/auth/InputField';
-import SubmitButton from '../components/shared/SubmitButton';
+import Button from '../components/shared/Button';
 import ErrorText from '../components/auth/ErrorText';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
@@ -46,7 +46,7 @@ const Login: React.FC<{}> = () => {
                                     }
                                 });
 
-                                cache.evict({ fieldName: 'posts:{}' })
+                                cache.evict({ fieldName: 'posts' })
                             }
                         });
 
@@ -80,9 +80,9 @@ const Login: React.FC<{}> = () => {
                                     name = 'password'
                                 />
 
-                                <SubmitButton isLoading={isLoading}>
+                                <Button isLoading={isLoading}>
                                     Login
-                                </SubmitButton>
+                                </Button>
 
                                 <NextLink href='forgot-password'>
                                     <Link>

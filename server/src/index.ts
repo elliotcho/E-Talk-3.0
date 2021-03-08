@@ -7,6 +7,7 @@ import Redis from 'ioredis';
 import { createConnection } from 'typeorm';
 import { ApolloServer } from 'apollo-server-express';
 import { createSchema } from './utils/createSchema';
+import { Friend } from './entities/Friend';
 import { Comment } from './entities/Comment';
 import { User } from './entities/User';
 import { Post } from './entities/Post';
@@ -21,6 +22,7 @@ const main  = async () => {
         synchronize: true,
         logging: true,
         entities: [
+            Friend,
             Comment,
             Post,
             User,

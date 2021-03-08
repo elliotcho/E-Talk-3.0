@@ -1,8 +1,13 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { createUploadLink }from 'apollo-upload-client';
+import {
+    getPaginatedPostsPolicy
+} from './getPaginationPolicies';
 import { createWithApollo } from './createWithApollo';
 import { isServer } from './isServer';
 import { NextPageContext } from 'next';
+
+const postsPolicy = getPaginatedPostsPolicy();
 
 const client = (ctx: NextPageContext) => (
     new ApolloClient({
@@ -17,7 +22,16 @@ const client = (ctx: NextPageContext) => (
                     )
             }
         }) as any,
-        cache: new InMemoryCache
+        cache: new InMemoryCache({
+            typePolicies: {
+                Query: {
+                    fields: {
+                        userPosts: postsPolicy,
+                        posts: postsPolicy
+                    }
+                }
+            }
+        })
     })
 );
 

@@ -22,8 +22,8 @@ export type Query = {
   comments: Array<Comment>;
   likers: Array<User>;
   post: Post;
-  userPosts: Array<Post>;
-  posts: Array<Post>;
+  userPosts: PaginatedPosts;
+  posts: PaginatedPosts;
 };
 
 
@@ -48,7 +48,15 @@ export type QueryPostArgs = {
 
 
 export type QueryUserPostsArgs = {
+  limit: Scalars['Int'];
+  cursor?: Maybe<Scalars['String']>;
   userId: Scalars['Int'];
+};
+
+
+export type QueryPostsArgs = {
+  limit: Scalars['Int'];
+  cursor?: Maybe<Scalars['String']>;
 };
 
 export type User = {
@@ -85,6 +93,12 @@ export type Post = {
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
   likeStatus: Scalars['Boolean'];
+};
+
+export type PaginatedPosts = {
+  __typename?: 'PaginatedPosts';
+  posts: Array<Post>;
+  hasMore: Scalars['Boolean'];
 };
 
 export type Mutation = {
@@ -427,28 +441,41 @@ export type PostQuery = (
   ) }
 );
 
-export type PostsQueryVariables = Exact<{ [key: string]: never; }>;
+export type PostsQueryVariables = Exact<{
+  cursor?: Maybe<Scalars['String']>;
+  limit: Scalars['Int'];
+}>;
 
 
 export type PostsQuery = (
   { __typename?: 'Query' }
-  & { posts: Array<(
-    { __typename?: 'Post' }
-    & RegularPostFragment
-  )> }
+  & { posts: (
+    { __typename?: 'PaginatedPosts' }
+    & Pick<PaginatedPosts, 'hasMore'>
+    & { posts: Array<(
+      { __typename?: 'Post' }
+      & RegularPostFragment
+    )> }
+  ) }
 );
 
 export type UserPostsQueryVariables = Exact<{
   userId: Scalars['Int'];
+  cursor?: Maybe<Scalars['String']>;
+  limit: Scalars['Int'];
 }>;
 
 
 export type UserPostsQuery = (
   { __typename?: 'Query' }
-  & { userPosts: Array<(
-    { __typename?: 'Post' }
-    & RegularPostFragment
-  )> }
+  & { userPosts: (
+    { __typename?: 'PaginatedPosts' }
+    & Pick<PaginatedPosts, 'hasMore'>
+    & { posts: Array<(
+      { __typename?: 'Post' }
+      & RegularPostFragment
+    )> }
+  ) }
 );
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
@@ -1059,9 +1086,12 @@ export type PostQueryHookResult = ReturnType<typeof usePostQuery>;
 export type PostLazyQueryHookResult = ReturnType<typeof usePostLazyQuery>;
 export type PostQueryResult = Apollo.QueryResult<PostQuery, PostQueryVariables>;
 export const PostsDocument = gql`
-    query Posts {
-  posts {
-    ...RegularPost
+    query Posts($cursor: String, $limit: Int!) {
+  posts(cursor: $cursor, limit: $limit) {
+    hasMore
+    posts {
+      ...RegularPost
+    }
   }
 }
     ${RegularPostFragmentDoc}`;
@@ -1078,10 +1108,12 @@ export const PostsDocument = gql`
  * @example
  * const { data, loading, error } = usePostsQuery({
  *   variables: {
+ *      cursor: // value for 'cursor'
+ *      limit: // value for 'limit'
  *   },
  * });
  */
-export function usePostsQuery(baseOptions?: Apollo.QueryHookOptions<PostsQuery, PostsQueryVariables>) {
+export function usePostsQuery(baseOptions: Apollo.QueryHookOptions<PostsQuery, PostsQueryVariables>) {
         return Apollo.useQuery<PostsQuery, PostsQueryVariables>(PostsDocument, baseOptions);
       }
 export function usePostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PostsQuery, PostsQueryVariables>) {
@@ -1091,9 +1123,12 @@ export type PostsQueryHookResult = ReturnType<typeof usePostsQuery>;
 export type PostsLazyQueryHookResult = ReturnType<typeof usePostsLazyQuery>;
 export type PostsQueryResult = Apollo.QueryResult<PostsQuery, PostsQueryVariables>;
 export const UserPostsDocument = gql`
-    query UserPosts($userId: Int!) {
-  userPosts(userId: $userId) {
-    ...RegularPost
+    query UserPosts($userId: Int!, $cursor: String, $limit: Int!) {
+  userPosts(userId: $userId, cursor: $cursor, limit: $limit) {
+    hasMore
+    posts {
+      ...RegularPost
+    }
   }
 }
     ${RegularPostFragmentDoc}`;
@@ -1111,6 +1146,8 @@ export const UserPostsDocument = gql`
  * const { data, loading, error } = useUserPostsQuery({
  *   variables: {
  *      userId: // value for 'userId'
+ *      cursor: // value for 'cursor'
+ *      limit: // value for 'limit'
  *   },
  * });
  */

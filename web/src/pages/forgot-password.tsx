@@ -7,7 +7,7 @@ import Layout from '../containers/shared/Layout';
 import FormContainer from '../containers/auth/FormContainer';
 import Title from '../components/auth/Title';
 import InputField from '../components/auth/InputField';
-import SubmitButton from '../components/shared/SubmitButton';
+import Button from '../components/shared/Button';
 
 const ForgotPassword: React.FC<{}> = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -42,9 +42,9 @@ const ForgotPassword: React.FC<{}> = () => {
                                     name = 'email'
                                 />
         
-                                <SubmitButton isLoading={isLoading}>
+                                <Button isLoading={isLoading}>
                                     Submit
-                                </SubmitButton>
+                                </Button>
                             </Form>
                         </FormContainer>
                     )}

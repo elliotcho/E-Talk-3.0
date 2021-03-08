@@ -7,6 +7,7 @@ import AuthWrapper from '../containers/shared/AuthWrapper';
 import Layout from '../containers/shared/Layout';
 import CreatePostForm from '../containers/posts/CreatePostForm';
 import Post from '../containers/posts/Post';
+import Button from '../components/shared/Button';
 
 const Header = styled.h3`
    margin-top: 20px;
@@ -14,8 +15,16 @@ const Header = styled.h3`
    color: white;
 `;
 
+const Container = styled.div`
+   max-width: 600px;
+   text-align: center;
+   margin: 30px auto;
+`;
+
 const Index : React.FC<{}> = () => {
-   const { data, loading } = usePostsQuery();
+   const { loading, data, fetchMore, variables } = usePostsQuery({
+      variables: { limit: 5, cursor: null }
+   });
 
    return (
       <AuthWrapper requiresAuth>
@@ -28,8 +37,27 @@ const Index : React.FC<{}> = () => {
                </Header>
             )}
 
-            {data?.posts.map(p => 
+            {data?.posts?.posts?.map(p => 
                <Post {...mapPostProps(p)}/>
+            )}
+
+            {data?.posts?.hasMore && (
+               <Container>
+                  <Button 
+                     bg = 'lightslategray'
+                     isLoading={loading}
+                     onClick = {async () => {
+                        const cursor = data.posts.posts[data.posts.posts.length - 1].createdAt;
+                        const limit = variables?.limit;
+
+                        await fetchMore({
+                           variables: { cursor, limit }
+                        });
+                     }}
+                  >
+                     Load More
+                  </Button>
+               </Container>
             )}
          </Layout>
       </AuthWrapper>

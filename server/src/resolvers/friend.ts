@@ -15,7 +15,7 @@ export class FriendResolver {
     async acceptFriendRequest(
         @Arg('senderId', () => Int) senderId: number,
         @Ctx() { req } : MyContext
-    ) {
+    ) : Promise<boolean> {
         const { uid } = req.session;
         
         await getConnection().transaction(async tm => {

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useApolloClient } from '@apollo/client';
 import styled from 'styled-components';
 import { useMeQuery, useUserPostsQuery } from '../../generated/graphql';
 import { mapPostProps } from '../../utils/mapPostProps';
@@ -23,12 +24,20 @@ interface UserPostsProps {
 }
 
 const UserPosts: React.FC<UserPostsProps> = ({ userId }) => {
+    const apolloClient = useApolloClient();
     const myId = useMeQuery()?.data?.me?.id;
 
     const { loading, data, fetchMore, variables } = useUserPostsQuery({
         variables: { userId, limit: 5, cursor: null },
-        fetchPolicy: 'no-cache'
     });
+
+    useEffect(() => {
+        const resetData = async () => {
+            await apolloClient.resetStore();
+        }
+        
+        resetData();
+    }, [userId])
 
     return (
         <>

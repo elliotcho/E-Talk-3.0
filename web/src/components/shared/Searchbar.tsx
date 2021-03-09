@@ -17,26 +17,27 @@ const Container = styled.div`
 
 const Searchbar : React.FC<{}> = () => {
     const router = useRouter();
+    let isProfile = router.pathname.includes('profile');
     let searchQuery = router.query.query as string;
     let userId = router.query.id as string;
 
-    if(router.pathname.includes('profile') && userId) {
-        const { data } = useUserQuery({
-            variables: { userId: parseInt(userId) }
-        });
+    const { data } = useUserQuery({
+        variables: { userId: parseInt(userId) },
+        fetchPolicy: 'network-only',
+        skip: !isProfile
+    });
 
-        if(data?.user) {
-            let firstName = data.user.firstName;
-            let lastName = data.user.lastName;
+    if(isProfile && userId) {
+        const firstName = data?.user?.firstName || 'Loading...';
+        const lastName = data?.user?.lastName || 'User...';
 
-            searchQuery = `${firstName} ${lastName}`;
-        }
+        searchQuery = `${firstName} ${lastName}`;
     }
-
+   
     return (
         <Container>
             <Formik
-                initialValues = {{ query: searchQuery }}
+                initialValues = {{ query: '' }}
                 onSubmit = {async ({ query }) => {
                     if(query.trim().length === 0) {
                         return;
@@ -45,13 +46,13 @@ const Searchbar : React.FC<{}> = () => {
                     router.push(`/search/${query}`);
                 }}
             >
-                {({ values, handleChange }) => (
+                {({ handleChange }) => (
                     <Form>
                          <FormControl
                             type = 'text'
                             placeholder = 'Search'
                             onChange = {handleChange}
-                            value = {values.query}
+                            value = {searchQuery}
                             name = 'query'
                         />
                     </Form>

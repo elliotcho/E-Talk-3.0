@@ -26,8 +26,9 @@ const UserPosts: React.FC<UserPostsProps> = ({ userId }) => {
     const myId = useMeQuery()?.data?.me?.id;
 
     const { loading, data, fetchMore, variables } = useUserPostsQuery({
-        variables: { userId, limit: 5, cursor: null }
-     })
+        variables: { userId, limit: 5, cursor: null },
+        fetchPolicy: 'no-cache'
+    });
 
     return (
         <>
@@ -41,7 +42,7 @@ const UserPosts: React.FC<UserPostsProps> = ({ userId }) => {
                 </Header>
             )}
 
-            {data?.userPosts?.posts?.map(p => 
+            {data?.userPosts?.posts.map(p => 
                <Post {...mapPostProps(p)}/>
             )}
 

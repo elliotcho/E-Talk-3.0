@@ -17,6 +17,7 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
+  searchResults: Array<User>;
   user: User;
   me?: Maybe<User>;
   comments: Array<Comment>;
@@ -24,6 +25,11 @@ export type Query = {
   post: Post;
   userPosts: PaginatedPosts;
   posts: PaginatedPosts;
+};
+
+
+export type QuerySearchResultsArgs = {
+  query: Scalars['String'];
 };
 
 
@@ -487,6 +493,19 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 export type MeQuery = (
   { __typename?: 'Query' }
   & { me?: Maybe<(
+    { __typename?: 'User' }
+    & RegularUserFragment
+  )> }
+);
+
+export type SearchResultsQueryVariables = Exact<{
+  query: Scalars['String'];
+}>;
+
+
+export type SearchResultsQuery = (
+  { __typename?: 'Query' }
+  & { searchResults: Array<(
     { __typename?: 'User' }
     & RegularUserFragment
   )> }
@@ -1197,6 +1216,39 @@ export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const SearchResultsDocument = gql`
+    query SearchResults($query: String!) {
+  searchResults(query: $query) {
+    ...RegularUser
+  }
+}
+    ${RegularUserFragmentDoc}`;
+
+/**
+ * __useSearchResultsQuery__
+ *
+ * To run a query within a React component, call `useSearchResultsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchResultsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchResultsQuery({
+ *   variables: {
+ *      query: // value for 'query'
+ *   },
+ * });
+ */
+export function useSearchResultsQuery(baseOptions: Apollo.QueryHookOptions<SearchResultsQuery, SearchResultsQueryVariables>) {
+        return Apollo.useQuery<SearchResultsQuery, SearchResultsQueryVariables>(SearchResultsDocument, baseOptions);
+      }
+export function useSearchResultsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchResultsQuery, SearchResultsQueryVariables>) {
+          return Apollo.useLazyQuery<SearchResultsQuery, SearchResultsQueryVariables>(SearchResultsDocument, baseOptions);
+        }
+export type SearchResultsQueryHookResult = ReturnType<typeof useSearchResultsQuery>;
+export type SearchResultsLazyQueryHookResult = ReturnType<typeof useSearchResultsLazyQuery>;
+export type SearchResultsQueryResult = Apollo.QueryResult<SearchResultsQuery, SearchResultsQueryVariables>;
 export const UserDocument = gql`
     query User($userId: Int!) {
   user(userId: $userId) {

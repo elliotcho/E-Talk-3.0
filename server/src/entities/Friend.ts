@@ -21,7 +21,7 @@ export class Friend extends BaseEntity {
     receiverId: number;
 
     @Field()
-    @Column()
+    @Column({ default: false })
     status: boolean;
 
     @ManyToOne(() => User, user => user.friends)

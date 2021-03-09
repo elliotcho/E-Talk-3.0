@@ -21,7 +21,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ userId, type }) => { 
     let myId = useMeQuery().data?.me?.id;
 
-    const { loading, data } = useUserQuery({
+    const { data } = useUserQuery({
         variables: { userId },
         skip: userId === -1
     });

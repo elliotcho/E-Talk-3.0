@@ -18,10 +18,9 @@ const Container = styled.div`
 const Searchbar : React.FC<{}> = () => {
     const router = useRouter();
     let searchQuery = router.query.query as string;
+    let userId = router.query.id as string;
 
-    if(router.pathname.includes('profile') && router.query.id) {
-        let userId = router.query.id as string;
-
+    if(router.pathname.includes('profile') && userId) {
         const { data } = useUserQuery({
             variables: { userId: parseInt(userId) }
         });

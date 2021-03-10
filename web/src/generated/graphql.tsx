@@ -25,6 +25,7 @@ export type Query = {
   post: Post;
   userPosts: PaginatedPosts;
   posts: PaginatedPosts;
+  friends: Array<User>;
 };
 
 
@@ -125,7 +126,9 @@ export type Mutation = {
   editPost: Post;
   deletePost: Scalars['Boolean'];
   createPost: Post;
+  removeFriend: Scalars['Boolean'];
   acceptFriendRequest: Scalars['Boolean'];
+  cancelFriendRequest: Scalars['Boolean'];
   declineFriendRequest: Scalars['Boolean'];
   sendFriendRequest: Scalars['Boolean'];
 };
@@ -196,8 +199,18 @@ export type MutationCreatePostArgs = {
 };
 
 
+export type MutationRemoveFriendArgs = {
+  friendId: Scalars['Int'];
+};
+
+
 export type MutationAcceptFriendRequestArgs = {
   senderId: Scalars['Int'];
+};
+
+
+export type MutationCancelFriendRequestArgs = {
+  receiverId: Scalars['Int'];
 };
 
 
@@ -455,6 +468,17 @@ export type UpdateProfilePicMutation = (
     { __typename?: 'UserResponse' }
     & RegularUserResponseFragment
   ) }
+);
+
+export type FriendsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FriendsQuery = (
+  { __typename?: 'Query' }
+  & { friends: Array<(
+    { __typename?: 'User' }
+    & RegularUserFragment
+  )> }
 );
 
 export type CommentsQueryVariables = Exact<{
@@ -1143,6 +1167,38 @@ export function useUpdateProfilePicMutation(baseOptions?: Apollo.MutationHookOpt
 export type UpdateProfilePicMutationHookResult = ReturnType<typeof useUpdateProfilePicMutation>;
 export type UpdateProfilePicMutationResult = Apollo.MutationResult<UpdateProfilePicMutation>;
 export type UpdateProfilePicMutationOptions = Apollo.BaseMutationOptions<UpdateProfilePicMutation, UpdateProfilePicMutationVariables>;
+export const FriendsDocument = gql`
+    query Friends {
+  friends {
+    ...RegularUser
+  }
+}
+    ${RegularUserFragmentDoc}`;
+
+/**
+ * __useFriendsQuery__
+ *
+ * To run a query within a React component, call `useFriendsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFriendsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFriendsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useFriendsQuery(baseOptions?: Apollo.QueryHookOptions<FriendsQuery, FriendsQueryVariables>) {
+        return Apollo.useQuery<FriendsQuery, FriendsQueryVariables>(FriendsDocument, baseOptions);
+      }
+export function useFriendsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FriendsQuery, FriendsQueryVariables>) {
+          return Apollo.useLazyQuery<FriendsQuery, FriendsQueryVariables>(FriendsDocument, baseOptions);
+        }
+export type FriendsQueryHookResult = ReturnType<typeof useFriendsQuery>;
+export type FriendsLazyQueryHookResult = ReturnType<typeof useFriendsLazyQuery>;
+export type FriendsQueryResult = Apollo.QueryResult<FriendsQuery, FriendsQueryVariables>;
 export const CommentsDocument = gql`
     query Comments($postId: Int!) {
   comments(postId: $postId) {

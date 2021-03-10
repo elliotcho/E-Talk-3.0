@@ -31,6 +31,12 @@ const Primary = styled.h3`
     }
 `;
 
+const Box = styled.div`
+    margin-left: auto;
+`;
+
+const Button = styled.button``;
+
 const Header = styled.h3`
     margin-top: 50px;
     text-align: center;
@@ -70,6 +76,16 @@ const SearchResults : React.FC<{}> = () => {
                                     {u.firstName} {u.lastName}
                                 </Primary>
                             </NextLink>
+
+                            {!u.isMe && (
+                                 <Box>
+                                    <Button>
+                                        {u.friendStatus === 0 && 'Add Friend'}
+                                        {u.friendStatus === 1 && 'Pending'}
+                                        {u.friendStatus === 2 && 'Friends'}
+                                    </Button>
+                                </Box>
+                            )}
                         </Card>
                     )
                 })} 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Formik, Form } from 'formik';
 import styled from 'styled-components';
 import { FormControl } from 'react-bootstrap';
@@ -16,6 +16,8 @@ const Container = styled.div`
 `;
 
 const Searchbar : React.FC<{}> = () => {
+    const [query, setQuery] = useState('');
+
     const router = useRouter();
     let isProfile = router.pathname.includes('profile');
     let searchQuery = router.query.query as string;
@@ -37,7 +39,7 @@ const Searchbar : React.FC<{}> = () => {
     return (
         <Container>
             <Formik
-                initialValues = {{ query: '' }}
+                initialValues = {{ query: searchQuery }}
                 onSubmit = {async ({ query }) => {
                     if(query.trim().length === 0) {
                         return;
@@ -46,13 +48,13 @@ const Searchbar : React.FC<{}> = () => {
                     router.push(`/search/${query}`);
                 }}
             >
-                {({ handleChange }) => (
+                {({ values, handleChange }) => (
                     <Form>
                          <FormControl
                             type = 'text'
                             placeholder = 'Search'
                             onChange = {handleChange}
-                            value = {searchQuery}
+                            value = {values.query}
                             name = 'query'
                         />
                     </Form>

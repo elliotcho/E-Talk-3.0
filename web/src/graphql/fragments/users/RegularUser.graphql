@@ -2,6 +2,7 @@ fragment RegularUser on User {
        id
        firstName
        lastName
+       friendStatus
        profileURL
        profilePic
 }

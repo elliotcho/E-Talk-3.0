@@ -2,7 +2,7 @@ import {
     PaginatedPosts
 } from '../generated/graphql';
 
-export const getPaginatedPostsPolicy = () => (
+export const getPaginatedPostsPolicy = (reset = false) => (
     {
         keyArgs: ['PaginatedPosts'],
         merge(

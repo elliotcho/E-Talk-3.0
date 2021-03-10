@@ -75,6 +75,8 @@ export type User = {
   profileURL: Scalars['String'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
+  isMe: Scalars['Boolean'];
+  friendStatus: Scalars['Int'];
 };
 
 export type Comment = {
@@ -123,6 +125,9 @@ export type Mutation = {
   editPost: Post;
   deletePost: Scalars['Boolean'];
   createPost: Post;
+  acceptFriendRequest: Scalars['Boolean'];
+  declineFriendRequest: Scalars['Boolean'];
+  sendFriendRequest: Scalars['Boolean'];
 };
 
 
@@ -190,6 +195,21 @@ export type MutationCreatePostArgs = {
   content: Scalars['String'];
 };
 
+
+export type MutationAcceptFriendRequestArgs = {
+  senderId: Scalars['Int'];
+};
+
+
+export type MutationDeclineFriendRequestArgs = {
+  senderId: Scalars['Int'];
+};
+
+
+export type MutationSendFriendRequestArgs = {
+  receiverId: Scalars['Int'];
+};
+
 export type UserResponse = {
   __typename?: 'UserResponse';
   errors?: Maybe<Array<FieldError>>;
@@ -231,7 +251,7 @@ export type RegularErrorFragment = (
 
 export type RegularUserFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'id' | 'firstName' | 'lastName' | 'profileURL' | 'profilePic'>
+  & Pick<User, 'id' | 'firstName' | 'lastName' | 'friendStatus' | 'profileURL' | 'profilePic'>
 );
 
 export type RegularUserResponseFragment = (
@@ -243,6 +263,36 @@ export type RegularUserResponseFragment = (
     { __typename?: 'FieldError' }
     & RegularErrorFragment
   )>> }
+);
+
+export type AcceptFriendRequestMutationVariables = Exact<{
+  senderId: Scalars['Int'];
+}>;
+
+
+export type AcceptFriendRequestMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'acceptFriendRequest'>
+);
+
+export type DeclineFriendRequestMutationVariables = Exact<{
+  senderId: Scalars['Int'];
+}>;
+
+
+export type DeclineFriendRequestMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'declineFriendRequest'>
+);
+
+export type SendFriendRequestMutationVariables = Exact<{
+  receiverId: Scalars['Int'];
+}>;
+
+
+export type SendFriendRequestMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'sendFriendRequest'>
 );
 
 export type CreateCommentMutationVariables = Exact<{
@@ -507,6 +557,7 @@ export type SearchResultsQuery = (
   { __typename?: 'Query' }
   & { searchResults: Array<(
     { __typename?: 'User' }
+    & Pick<User, 'isMe'>
     & RegularUserFragment
   )> }
 );
@@ -520,6 +571,7 @@ export type UserQuery = (
   { __typename?: 'Query' }
   & { user: (
     { __typename?: 'User' }
+    & Pick<User, 'isMe'>
     & RegularUserFragment
   ) }
 );
@@ -529,6 +581,7 @@ export const RegularUserFragmentDoc = gql`
   id
   firstName
   lastName
+  friendStatus
   profileURL
   profilePic
 }
@@ -563,6 +616,96 @@ export const RegularUserResponseFragmentDoc = gql`
 }
     ${RegularUserFragmentDoc}
 ${RegularErrorFragmentDoc}`;
+export const AcceptFriendRequestDocument = gql`
+    mutation AcceptFriendRequest($senderId: Int!) {
+  acceptFriendRequest(senderId: $senderId)
+}
+    `;
+export type AcceptFriendRequestMutationFn = Apollo.MutationFunction<AcceptFriendRequestMutation, AcceptFriendRequestMutationVariables>;
+
+/**
+ * __useAcceptFriendRequestMutation__
+ *
+ * To run a mutation, you first call `useAcceptFriendRequestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAcceptFriendRequestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [acceptFriendRequestMutation, { data, loading, error }] = useAcceptFriendRequestMutation({
+ *   variables: {
+ *      senderId: // value for 'senderId'
+ *   },
+ * });
+ */
+export function useAcceptFriendRequestMutation(baseOptions?: Apollo.MutationHookOptions<AcceptFriendRequestMutation, AcceptFriendRequestMutationVariables>) {
+        return Apollo.useMutation<AcceptFriendRequestMutation, AcceptFriendRequestMutationVariables>(AcceptFriendRequestDocument, baseOptions);
+      }
+export type AcceptFriendRequestMutationHookResult = ReturnType<typeof useAcceptFriendRequestMutation>;
+export type AcceptFriendRequestMutationResult = Apollo.MutationResult<AcceptFriendRequestMutation>;
+export type AcceptFriendRequestMutationOptions = Apollo.BaseMutationOptions<AcceptFriendRequestMutation, AcceptFriendRequestMutationVariables>;
+export const DeclineFriendRequestDocument = gql`
+    mutation DeclineFriendRequest($senderId: Int!) {
+  declineFriendRequest(senderId: $senderId)
+}
+    `;
+export type DeclineFriendRequestMutationFn = Apollo.MutationFunction<DeclineFriendRequestMutation, DeclineFriendRequestMutationVariables>;
+
+/**
+ * __useDeclineFriendRequestMutation__
+ *
+ * To run a mutation, you first call `useDeclineFriendRequestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeclineFriendRequestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [declineFriendRequestMutation, { data, loading, error }] = useDeclineFriendRequestMutation({
+ *   variables: {
+ *      senderId: // value for 'senderId'
+ *   },
+ * });
+ */
+export function useDeclineFriendRequestMutation(baseOptions?: Apollo.MutationHookOptions<DeclineFriendRequestMutation, DeclineFriendRequestMutationVariables>) {
+        return Apollo.useMutation<DeclineFriendRequestMutation, DeclineFriendRequestMutationVariables>(DeclineFriendRequestDocument, baseOptions);
+      }
+export type DeclineFriendRequestMutationHookResult = ReturnType<typeof useDeclineFriendRequestMutation>;
+export type DeclineFriendRequestMutationResult = Apollo.MutationResult<DeclineFriendRequestMutation>;
+export type DeclineFriendRequestMutationOptions = Apollo.BaseMutationOptions<DeclineFriendRequestMutation, DeclineFriendRequestMutationVariables>;
+export const SendFriendRequestDocument = gql`
+    mutation SendFriendRequest($receiverId: Int!) {
+  sendFriendRequest(receiverId: $receiverId)
+}
+    `;
+export type SendFriendRequestMutationFn = Apollo.MutationFunction<SendFriendRequestMutation, SendFriendRequestMutationVariables>;
+
+/**
+ * __useSendFriendRequestMutation__
+ *
+ * To run a mutation, you first call `useSendFriendRequestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendFriendRequestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendFriendRequestMutation, { data, loading, error }] = useSendFriendRequestMutation({
+ *   variables: {
+ *      receiverId: // value for 'receiverId'
+ *   },
+ * });
+ */
+export function useSendFriendRequestMutation(baseOptions?: Apollo.MutationHookOptions<SendFriendRequestMutation, SendFriendRequestMutationVariables>) {
+        return Apollo.useMutation<SendFriendRequestMutation, SendFriendRequestMutationVariables>(SendFriendRequestDocument, baseOptions);
+      }
+export type SendFriendRequestMutationHookResult = ReturnType<typeof useSendFriendRequestMutation>;
+export type SendFriendRequestMutationResult = Apollo.MutationResult<SendFriendRequestMutation>;
+export type SendFriendRequestMutationOptions = Apollo.BaseMutationOptions<SendFriendRequestMutation, SendFriendRequestMutationVariables>;
 export const CreateCommentDocument = gql`
     mutation CreateComment($postId: Int!, $text: String!) {
   createComment(postId: $postId, text: $text)
@@ -1219,6 +1362,7 @@ export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
 export const SearchResultsDocument = gql`
     query SearchResults($query: String!) {
   searchResults(query: $query) {
+    isMe
     ...RegularUser
   }
 }
@@ -1252,6 +1396,7 @@ export type SearchResultsQueryResult = Apollo.QueryResult<SearchResultsQuery, Se
 export const UserDocument = gql`
     query User($userId: Int!) {
   user(userId: $userId) {
+    isMe
     ...RegularUser
   }
 }

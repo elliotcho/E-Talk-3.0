@@ -295,11 +295,13 @@ export class PostResolver {
 
         const posts = await getConnection().query(
             `
-              select * from post
-              ${cursor? `where post."createdAt" < $2` : ``}
-              order by post."createdAt" DESC
+              select p.* from post as p
+              inner join "user" as u on p."userId" = u.id
+              inner join friend as f on u.id = f."senderId" or u.id = f."receiverId"
+              ${cursor? `where p."createdAt" < $2` : ``}
+              where f.status = true
+              order by p."createdAt" DESC
               limit $1
-
             `, 
             cursor? [realLimit + 1, date] : [realLimit + 1]
         );

@@ -8,6 +8,7 @@ import { isServer } from './isServer';
 import { NextPageContext } from 'next';
 
 const postsPolicy = getPaginatedPostsPolicy();
+const userPostsPolicy = getPaginatedPostsPolicy()
 
 const client = (ctx: NextPageContext) => (
     new ApolloClient({

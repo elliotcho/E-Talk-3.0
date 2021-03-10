@@ -1,5 +1,6 @@
 query SearchResults($query: String!) {
     searchResults(query: $query) {
+        isMe
         ...RegularUser
     }
 }

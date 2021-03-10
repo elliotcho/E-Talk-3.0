@@ -63,16 +63,43 @@ class UserResponse {
 @Resolver(User)
 export class UserResolver{
     @FieldResolver(() => Boolean)
-    async profilePic(
-        @Root() { id } : User
-    ) : Promise<string> {
-        const user = await User.findOne(id);
-        
-        if(!user) {
-            return '';
+    isMe(
+        @Root() user : User,
+        @Ctx() { req } : MyContext
+    ) : boolean {
+        return user.id === req.session.uid;
+    }
+
+    /*
+        return 0 if not friends
+        return 1 if friend request pending
+        return 2 if friends 
+    */
+    @FieldResolver(() => Int)
+    async friendStatus(
+        @Root() user : User,
+        @Ctx() { req } : MyContext
+    ) : Promise<0 | 1 | 2> {
+        const { uid } =  req.session;
+
+        const friends = await getConnection().query(
+            `
+                select status from friend as f
+                where (f."senderId" = $1 and f."receiverId" = $2) or
+                (f."senderId" = $2 and f."receiverId" = $1)
+            `, 
+            [uid, user.id]
+        );
+
+        if(!friends.length) {
+            return 0;
         }
 
-        return user.profilePic;
+        if(friends.length === 2 || friends[0].status === false) {
+            return 2;
+        }
+
+        return 1;
     }
 
     @FieldResolver(() => String)

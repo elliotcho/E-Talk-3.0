@@ -95,7 +95,16 @@ const MyNetwork: React.FC<{}> = () => {
                                     Decline
                                 </Button>
 
-                                <Button>
+                                <Button
+                                    onClick = {async () => {
+                                        await acceptRequest({
+                                            variables: { senderId: u.id },
+                                            update: (cache) => {
+                                                cache.evict({ id: "User" + u.id })
+                                            }
+                                        })
+                                    }}
+                                >
                                     Accept
                                 </Button>
                             </Box>

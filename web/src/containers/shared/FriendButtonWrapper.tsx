@@ -6,13 +6,13 @@ import {
     useRemoveFriendMutation
 } from '../../generated/graphql';
 
-interface FriendButtonProps {
+interface FriendButtonWrapperProps {
     children: ReactElement<any, JSXElementConstructor<any>>;
     friendStatus: number;
     friendId: number;
 }
 
-const FriendButton: React.FC<FriendButtonProps> = ({ children, friendStatus, friendId }) => {
+const FriendButtonWrapper: React.FC<FriendButtonWrapperProps> = ({ children, friendStatus, friendId }) => {
     const [sendFriendRequest] = useSendFriendRequestMutation();
     const [cancelFriendRequest] = useCancelFriendRequestMutation();
     const [removeFriend] = useRemoveFriendMutation();
@@ -79,4 +79,4 @@ const FriendButton: React.FC<FriendButtonProps> = ({ children, friendStatus, fri
     )
 }
 
-export default FriendButton;
+export default FriendButtonWrapper;

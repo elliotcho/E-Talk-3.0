@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import FriendButton from '../shared/FriendButton';
+import FriendButtonWrapper from '../../containers/shared/FriendButtonWrapper';
 
 const Box = styled.div`
     text-align: center;
@@ -42,16 +42,18 @@ const ProfileButtons: React.FC<ProfileButtonsProps> = ({ friendStatus, friendId 
     return (
         <>
             <Box>
-                <FriendButton
+                <FriendButtonWrapper
                     friendStatus ={friendStatus}
                     friendId = {friendId}
                 >
                     <ButtonPrimary>
+                        {typeof friendStatus !== 'number' && 'Loading...'}
+                        
                         {friendStatus === 0 && 'Add Friend'}
                         {friendStatus === 1 && 'Pending'}
                         {friendStatus === 2 && 'Friends'}
                     </ButtonPrimary>
-                </FriendButton>
+                </FriendButtonWrapper>
 
                 <ButtonInverse>
                     Message

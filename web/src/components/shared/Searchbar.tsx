@@ -39,6 +39,7 @@ const Searchbar : React.FC<{}> = () => {
     return (
         <Container>
             <Formik
+                enableReinitialize
                 initialValues = {{ query: searchQuery }}
                 onSubmit = {async ({ query }) => {
                     if(query.trim().length === 0) {

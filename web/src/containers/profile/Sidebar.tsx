@@ -29,6 +29,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userId, type }) => {
     let lastName = data?.user.lastName || 'User...';
     let imgURL = data?.user?.profileURL || '/loading.jpg';
     let hasProfilePic = !!data?.user?.profilePic;
+    let friendStatus = data?.user?.friendStatus;
 
     return (
         <Container>
@@ -40,8 +41,11 @@ const Sidebar: React.FC<SidebarProps> = ({ userId, type }) => {
                 imgURL = {imgURL}
             />
 
-            {!isOwner && myId && (
-                <ProfileButtons />
+            {!isOwner && (
+                <ProfileButtons 
+                    friendStatus = {friendStatus}
+                    friendId = {userId}
+                />
             )}
 
             <ProfileMenu 

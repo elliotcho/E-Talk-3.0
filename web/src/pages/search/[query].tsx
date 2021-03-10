@@ -4,6 +4,7 @@ import { useSearchResultsQuery } from '../../generated/graphql';
 import { withApollo } from '../../utils/withApollo';
 import Layout from '../../containers/shared/Layout';
 import AuthWrapper from '../../containers/shared/AuthWrapper';
+import FriendButton from '../../components/shared/FriendButton';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 
@@ -79,11 +80,16 @@ const SearchResults : React.FC<{}> = () => {
 
                             {!u.isMe && (
                                  <Box>
-                                    <Button>
-                                        {u.friendStatus === 0 && 'Add Friend'}
-                                        {u.friendStatus === 1 && 'Pending'}
-                                        {u.friendStatus === 2 && 'Friends'}
-                                    </Button>
+                                    <FriendButton 
+                                        friendStatus={u.friendStatus}
+                                        friendId = {u.id}
+                                    >
+                                        <Button>
+                                            {u.friendStatus === 0 && 'Add Friend'}
+                                            {u.friendStatus === 1 && 'Pending'}
+                                            {u.friendStatus === 2 && 'Friends'}
+                                        </Button>
+                                    </FriendButton>
                                 </Box>
                             )}
                         </Card>

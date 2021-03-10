@@ -288,6 +288,16 @@ export type AcceptFriendRequestMutation = (
   & Pick<Mutation, 'acceptFriendRequest'>
 );
 
+export type CancelFriendRequestMutationVariables = Exact<{
+  receiverId: Scalars['Int'];
+}>;
+
+
+export type CancelFriendRequestMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'cancelFriendRequest'>
+);
+
 export type DeclineFriendRequestMutationVariables = Exact<{
   senderId: Scalars['Int'];
 }>;
@@ -296,6 +306,16 @@ export type DeclineFriendRequestMutationVariables = Exact<{
 export type DeclineFriendRequestMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'declineFriendRequest'>
+);
+
+export type RemoveFriendMutationVariables = Exact<{
+  friendId: Scalars['Int'];
+}>;
+
+
+export type RemoveFriendMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'removeFriend'>
 );
 
 export type SendFriendRequestMutationVariables = Exact<{
@@ -670,6 +690,36 @@ export function useAcceptFriendRequestMutation(baseOptions?: Apollo.MutationHook
 export type AcceptFriendRequestMutationHookResult = ReturnType<typeof useAcceptFriendRequestMutation>;
 export type AcceptFriendRequestMutationResult = Apollo.MutationResult<AcceptFriendRequestMutation>;
 export type AcceptFriendRequestMutationOptions = Apollo.BaseMutationOptions<AcceptFriendRequestMutation, AcceptFriendRequestMutationVariables>;
+export const CancelFriendRequestDocument = gql`
+    mutation CancelFriendRequest($receiverId: Int!) {
+  cancelFriendRequest(receiverId: $receiverId)
+}
+    `;
+export type CancelFriendRequestMutationFn = Apollo.MutationFunction<CancelFriendRequestMutation, CancelFriendRequestMutationVariables>;
+
+/**
+ * __useCancelFriendRequestMutation__
+ *
+ * To run a mutation, you first call `useCancelFriendRequestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCancelFriendRequestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [cancelFriendRequestMutation, { data, loading, error }] = useCancelFriendRequestMutation({
+ *   variables: {
+ *      receiverId: // value for 'receiverId'
+ *   },
+ * });
+ */
+export function useCancelFriendRequestMutation(baseOptions?: Apollo.MutationHookOptions<CancelFriendRequestMutation, CancelFriendRequestMutationVariables>) {
+        return Apollo.useMutation<CancelFriendRequestMutation, CancelFriendRequestMutationVariables>(CancelFriendRequestDocument, baseOptions);
+      }
+export type CancelFriendRequestMutationHookResult = ReturnType<typeof useCancelFriendRequestMutation>;
+export type CancelFriendRequestMutationResult = Apollo.MutationResult<CancelFriendRequestMutation>;
+export type CancelFriendRequestMutationOptions = Apollo.BaseMutationOptions<CancelFriendRequestMutation, CancelFriendRequestMutationVariables>;
 export const DeclineFriendRequestDocument = gql`
     mutation DeclineFriendRequest($senderId: Int!) {
   declineFriendRequest(senderId: $senderId)
@@ -700,6 +750,36 @@ export function useDeclineFriendRequestMutation(baseOptions?: Apollo.MutationHoo
 export type DeclineFriendRequestMutationHookResult = ReturnType<typeof useDeclineFriendRequestMutation>;
 export type DeclineFriendRequestMutationResult = Apollo.MutationResult<DeclineFriendRequestMutation>;
 export type DeclineFriendRequestMutationOptions = Apollo.BaseMutationOptions<DeclineFriendRequestMutation, DeclineFriendRequestMutationVariables>;
+export const RemoveFriendDocument = gql`
+    mutation RemoveFriend($friendId: Int!) {
+  removeFriend(friendId: $friendId)
+}
+    `;
+export type RemoveFriendMutationFn = Apollo.MutationFunction<RemoveFriendMutation, RemoveFriendMutationVariables>;
+
+/**
+ * __useRemoveFriendMutation__
+ *
+ * To run a mutation, you first call `useRemoveFriendMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveFriendMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeFriendMutation, { data, loading, error }] = useRemoveFriendMutation({
+ *   variables: {
+ *      friendId: // value for 'friendId'
+ *   },
+ * });
+ */
+export function useRemoveFriendMutation(baseOptions?: Apollo.MutationHookOptions<RemoveFriendMutation, RemoveFriendMutationVariables>) {
+        return Apollo.useMutation<RemoveFriendMutation, RemoveFriendMutationVariables>(RemoveFriendDocument, baseOptions);
+      }
+export type RemoveFriendMutationHookResult = ReturnType<typeof useRemoveFriendMutation>;
+export type RemoveFriendMutationResult = Apollo.MutationResult<RemoveFriendMutation>;
+export type RemoveFriendMutationOptions = Apollo.BaseMutationOptions<RemoveFriendMutation, RemoveFriendMutationVariables>;
 export const SendFriendRequestDocument = gql`
     mutation SendFriendRequest($receiverId: Int!) {
   sendFriendRequest(receiverId: $receiverId)

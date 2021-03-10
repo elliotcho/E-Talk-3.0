@@ -96,10 +96,10 @@ export class UserResolver{
         }
 
         if(friends.length === 2 || friends[0].status === false) {
-            return 2;
+            return 1;
         }
 
-        return 1;
+        return 2;
     }
 
     @FieldResolver(() => String)

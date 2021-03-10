@@ -37,9 +37,9 @@ export class FriendResolver {
             `
                 select u.* from "user" as u
                 inner join friend as f 
-                on u.id = f."senderId" or u.id = f."receiverId" 
+                on f."senderId" = $1 or f."receiverId" = $1 
                 where f.status = true and
-                u.id = $1
+                u.id != $1
             `,[userId]
         );
 
@@ -77,9 +77,9 @@ export class FriendResolver {
             await tm.query(
                 `
                     update friend
+                    set status = true
                     where "senderId" = $1 and
                     "receiverId" = $2
-                    set status = true
                 `, [senderId, uid]
             );
 

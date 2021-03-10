@@ -100,7 +100,7 @@ const MyNetwork: React.FC<{}> = () => {
                                         await acceptRequest({
                                             variables: { senderId: u.id },
                                             update: (cache) => {
-                                                cache.evict({ id: "User" + u.id })
+                                                cache.evict({ id: "User:" + u.id })
                                             }
                                         })
                                     }}

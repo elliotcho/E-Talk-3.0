@@ -42,6 +42,10 @@ export class User extends BaseEntity{
     @Field()
     profileURL: string;
 
+    @Field()
+    @Column({ default: '' })
+    bio: string;
+
     @OneToMany(() => Post, (post) => post.user)
     posts: Post[];
 

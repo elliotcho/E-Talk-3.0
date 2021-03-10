@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import UserPosts from './UserPosts';
 import UserFriends from './UserFriends';
+import UserBio from './UserBio';
 
 const Box  = styled.div`
     width: 90%;
@@ -22,6 +23,7 @@ const ProfileContent: React.FC<ProfileContentProps> = ({ userId, type }) => {
         <Box>
             {type === 'posts' && <UserPosts userId = {userId}/>}
             {type === 'friends' && <UserFriends userId = {userId} />}
+            {type === 'bio' && <UserBio userId = {userId} />}
         </Box>
     )
 }

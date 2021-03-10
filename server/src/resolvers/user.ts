@@ -118,6 +118,18 @@ export class UserResolver{
         return imgURL;
     }
 
+    @Mutation(() => Boolean)
+    async updateBio(
+        @Arg('newBio') newBio : string,
+        @Ctx() { req } : MyContext
+    ) : Promise<boolean> {
+        const { uid } = req.session;
+
+        await User.update({ id: uid }, { bio: newBio });
+
+        return true;
+    }
+
     @Query(() => [User])
     async searchResults(
         @Arg('query') query: string 

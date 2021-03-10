@@ -10,6 +10,7 @@ const Card = styled.div`
     background: white;
     max-width: 600px;
     padding: 15px;
+    width: 90%;
 `;
 
 const Image = styled.img`

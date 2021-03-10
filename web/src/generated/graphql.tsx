@@ -80,6 +80,7 @@ export type User = {
   lastName: Scalars['String'];
   profilePic: Scalars['String'];
   profileURL: Scalars['String'];
+  bio: Scalars['String'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
   isMe: Scalars['Boolean'];
@@ -270,7 +271,7 @@ export type RegularErrorFragment = (
 
 export type RegularUserFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'id' | 'firstName' | 'lastName' | 'friendStatus' | 'profileURL' | 'profilePic'>
+  & Pick<User, 'id' | 'firstName' | 'lastName' | 'friendStatus' | 'profileURL' | 'profilePic' | 'bio'>
 );
 
 export type RegularUserResponseFragment = (
@@ -647,6 +648,7 @@ export const RegularUserFragmentDoc = gql`
   friendStatus
   profileURL
   profilePic
+  bio
 }
     `;
 export const RegularPostFragmentDoc = gql`

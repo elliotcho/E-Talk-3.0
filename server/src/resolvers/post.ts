@@ -154,8 +154,8 @@ export class PostResolver {
     ) : Promise<[User]> {
         const result = await getConnection().query(
             `
-                select id, "firstName", "lastName", "profilePic" from "user" 
-                inner join "like" on "like"."userId" = "user".id
+                select u.* from "user" as u
+                inner join "like" on "like"."userId" = u.id
                 and "like"."postId" = $1
             `, [postId]
         );

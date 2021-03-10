@@ -5,4 +5,5 @@ fragment RegularUser on User {
        friendStatus
        profileURL
        profilePic
+       bio
 }

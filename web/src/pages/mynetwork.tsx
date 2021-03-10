@@ -1,6 +1,9 @@
 import React from 'react';
+import { ApolloCache } from '@apollo/client';
 import styled from 'styled-components';
 import { 
+    AcceptFriendRequestMutation as AcceptMutation,
+    DeclineFriendRequestMutation as DeclineMutation,
     useAcceptFriendRequestMutation, 
     useDeclineFriendRequestMutation, 
     useFriendRequestsQuery 
@@ -26,6 +29,15 @@ const MyNetwork: React.FC<{}> = () => {
     const [acceptRequest] = useAcceptFriendRequestMutation();
     const [declineRequest] = useDeclineFriendRequestMutation();
 
+    const getPayload = (userId: number) => ({
+        variables: { senderId: userId },
+        update: (
+            cache: ApolloCache<AcceptMutation | DeclineMutation>
+        ) => {
+            cache.evict({ id: "User:" + userId });
+        }
+    });
+
     return (
         <AuthWrapper requiresAuth>
             <Layout>
@@ -43,12 +55,7 @@ const MyNetwork: React.FC<{}> = () => {
                     >
                         <Button
                             onClick = {async () => {
-                                await declineRequest({
-                                    variables: { senderId: u.id },
-                                    update: (cache) => {
-                                        cache.evict({ id: "User:" + u.id });
-                                    }
-                                })
+                                await declineRequest(getPayload(u.id));
                             }}
                         >
                             Decline
@@ -56,12 +63,7 @@ const MyNetwork: React.FC<{}> = () => {
 
                         <Button
                             onClick = {async () => {
-                                await acceptRequest({
-                                    variables: { senderId: u.id },
-                                    update: (cache) => {
-                                        cache.evict({ id: "User:" + u.id })
-                                    }
-                                })
+                                await acceptRequest(getPayload(u.id));
                             }}
                         >
                             Accept

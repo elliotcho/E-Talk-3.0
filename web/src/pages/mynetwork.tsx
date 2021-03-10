@@ -8,40 +8,12 @@ import {
 import { withApollo } from '../utils/withApollo';
 import AuthWrapper from '../containers/shared/AuthWrapper';
 import Layout from '../containers/shared/Layout';
-import NextLink from 'next/link';
+import UserCard from '../containers/shared/UserCard';
 
 const Header = styled.h3`
     margin-top: 50px;
     text-align: center;
     color: white;
-`;
-
-const Card = styled.div`
-    display: flex;
-    align-items: center;
-    margin: 50px auto;
-    background: white;
-    max-width: 600px;
-    padding: 15px;
-`;
-
-const Image = styled.img`
-    cursor: pointer;
-    width: 6rem;
-    height: 6rem;
-`;
-
-const Primary = styled.h3`
-    color: #0275d8;
-    cursor: pointer;
-    margin-left: 20px;
-    &:hover {
-        text-decoration: underline;
-    }
-`;
-
-const Box = styled.div`
-    margin-left: auto;
 `;
 
 const Button = styled.button`
@@ -63,54 +35,39 @@ const MyNetwork: React.FC<{}> = () => {
                     </Header>
                 )}
 
-                {data?.friendRequests.map(u => {
-                    const route = `/profile/${u.id}`;
+                {data?.friendRequests.map(u => 
+                    <UserCard
+                        key = {u.id}
+                        userId = {u.id}
+                        {...u}
+                    >
+                        <Button
+                            onClick = {async () => {
+                                await declineRequest({
+                                    variables: { senderId: u.id },
+                                    update: (cache) => {
+                                        cache.evict({ id: "User:" + u.id });
+                                    }
+                                })
+                            }}
+                        >
+                            Decline
+                        </Button>
 
-                    return (
-                        <Card>
-                            <NextLink href={route}>
-                                <Image 
-                                    src={u.profileURL} 
-                                    alt='profile pic'
-                                />
-                            </NextLink>
-
-                            <NextLink href={route}>
-                                <Primary>
-                                    {u.firstName} {u.lastName}
-                                </Primary>
-                            </NextLink>
-
-                            <Box>
-                                <Button
-                                    onClick = {async () => {
-                                        await declineRequest({
-                                            variables: { senderId: u.id },
-                                            update: (cache) => {
-                                                cache.evict({ id: "User:" + u.id });
-                                            }
-                                        })
-                                    }}
-                                >
-                                    Decline
-                                </Button>
-
-                                <Button
-                                    onClick = {async () => {
-                                        await acceptRequest({
-                                            variables: { senderId: u.id },
-                                            update: (cache) => {
-                                                cache.evict({ id: "User:" + u.id })
-                                            }
-                                        })
-                                    }}
-                                >
-                                    Accept
-                                </Button>
-                            </Box>
-                        </Card>
-                    )
-                })}
+                        <Button
+                            onClick = {async () => {
+                                await acceptRequest({
+                                    variables: { senderId: u.id },
+                                    update: (cache) => {
+                                        cache.evict({ id: "User:" + u.id })
+                                    }
+                                })
+                            }}
+                        >
+                            Accept
+                        </Button>
+                    </UserCard>
+                )}
             </Layout>
         </AuthWrapper>
     )

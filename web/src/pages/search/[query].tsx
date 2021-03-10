@@ -8,6 +8,12 @@ import FriendButtonWrapper from '../../containers/shared/FriendButtonWrapper';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 
+const Header = styled.h3`
+    margin-top: 50px;
+    text-align: center;
+    color: white;
+`;
+
 const Card = styled.div`
     display: flex;
     align-items: center;
@@ -37,12 +43,6 @@ const Box = styled.div`
 `;
 
 const Button = styled.button``;
-
-const Header = styled.h3`
-    margin-top: 50px;
-    text-align: center;
-    color: white;
-`;
 
 const SearchResults : React.FC<{}> = () => {
     const searchQuery = useRouter().query.query as string;

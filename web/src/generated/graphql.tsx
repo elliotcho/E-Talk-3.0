@@ -25,6 +25,7 @@ export type Query = {
   post: Post;
   userPosts: PaginatedPosts;
   posts: PaginatedPosts;
+  friendRequests: Array<User>;
   friends: Array<User>;
 };
 
@@ -64,6 +65,11 @@ export type QueryUserPostsArgs = {
 export type QueryPostsArgs = {
   limit: Scalars['Int'];
   cursor?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryFriendsArgs = {
+  userId: Scalars['Int'];
 };
 
 export type User = {
@@ -490,7 +496,20 @@ export type UpdateProfilePicMutation = (
   ) }
 );
 
-export type FriendsQueryVariables = Exact<{ [key: string]: never; }>;
+export type FriendRequestsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FriendRequestsQuery = (
+  { __typename?: 'Query' }
+  & { friendRequests: Array<(
+    { __typename?: 'User' }
+    & RegularUserFragment
+  )> }
+);
+
+export type FriendsQueryVariables = Exact<{
+  userId: Scalars['Int'];
+}>;
 
 
 export type FriendsQuery = (
@@ -1247,9 +1266,41 @@ export function useUpdateProfilePicMutation(baseOptions?: Apollo.MutationHookOpt
 export type UpdateProfilePicMutationHookResult = ReturnType<typeof useUpdateProfilePicMutation>;
 export type UpdateProfilePicMutationResult = Apollo.MutationResult<UpdateProfilePicMutation>;
 export type UpdateProfilePicMutationOptions = Apollo.BaseMutationOptions<UpdateProfilePicMutation, UpdateProfilePicMutationVariables>;
+export const FriendRequestsDocument = gql`
+    query FriendRequests {
+  friendRequests {
+    ...RegularUser
+  }
+}
+    ${RegularUserFragmentDoc}`;
+
+/**
+ * __useFriendRequestsQuery__
+ *
+ * To run a query within a React component, call `useFriendRequestsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFriendRequestsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFriendRequestsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useFriendRequestsQuery(baseOptions?: Apollo.QueryHookOptions<FriendRequestsQuery, FriendRequestsQueryVariables>) {
+        return Apollo.useQuery<FriendRequestsQuery, FriendRequestsQueryVariables>(FriendRequestsDocument, baseOptions);
+      }
+export function useFriendRequestsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FriendRequestsQuery, FriendRequestsQueryVariables>) {
+          return Apollo.useLazyQuery<FriendRequestsQuery, FriendRequestsQueryVariables>(FriendRequestsDocument, baseOptions);
+        }
+export type FriendRequestsQueryHookResult = ReturnType<typeof useFriendRequestsQuery>;
+export type FriendRequestsLazyQueryHookResult = ReturnType<typeof useFriendRequestsLazyQuery>;
+export type FriendRequestsQueryResult = Apollo.QueryResult<FriendRequestsQuery, FriendRequestsQueryVariables>;
 export const FriendsDocument = gql`
-    query Friends {
-  friends {
+    query Friends($userId: Int!) {
+  friends(userId: $userId) {
     ...RegularUser
   }
 }
@@ -1267,10 +1318,11 @@ export const FriendsDocument = gql`
  * @example
  * const { data, loading, error } = useFriendsQuery({
  *   variables: {
+ *      userId: // value for 'userId'
  *   },
  * });
  */
-export function useFriendsQuery(baseOptions?: Apollo.QueryHookOptions<FriendsQuery, FriendsQueryVariables>) {
+export function useFriendsQuery(baseOptions: Apollo.QueryHookOptions<FriendsQuery, FriendsQueryVariables>) {
         return Apollo.useQuery<FriendsQuery, FriendsQueryVariables>(FriendsDocument, baseOptions);
       }
 export function useFriendsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FriendsQuery, FriendsQueryVariables>) {

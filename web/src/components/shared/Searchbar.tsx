@@ -25,7 +25,6 @@ const Searchbar : React.FC<{}> = () => {
 
     const { data } = useUserQuery({
         variables: { userId: parseInt(userId) },
-        fetchPolicy: 'network-only',
         skip: !isProfile
     });
 

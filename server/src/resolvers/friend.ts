@@ -4,11 +4,9 @@ import {
     Int,
     Mutation,
     Query,
-    Resolver, 
-    UseMiddleware
+    Resolver
 } from "type-graphql";
 import { getConnection } from "typeorm";
-import { isAuth } from "../middleware/isAuth";
 import { Friend } from "../entities/Friend";
 import { User } from '../entities/User';
 import { MyContext } from "../types";
@@ -16,9 +14,24 @@ import { MyContext } from "../types";
 @Resolver(Friend)
 export class FriendResolver {
     @Query(() => [User])
-    @UseMiddleware(isAuth)
-    async friends(
+    async friendRequests(
         @Ctx() { req } : MyContext
+    ) : Promise<User[]> {
+        const friendRequests = await getConnection().query(
+            `
+                select u.* from "user" as u inner join friend as f 
+                on u.id = f."receiverId" or u.id = f."senderId"
+                where f.status = false and f."receiverId" = $1 and
+                u.id = f."senderId"
+            `, [req.session.uid]
+        );
+
+        return friendRequests;
+    }
+
+    @Query(() => [User])
+    async friends(
+        @Arg('userId', () => Int) userId: number
     ) : Promise<User[]> {
         const friends = await getConnection().query(
             `
@@ -27,7 +40,7 @@ export class FriendResolver {
                 on u.id = f."senderId" or u.id = f."receiverId" 
                 where f.status = true and
                 u.id = $1
-            `,[req.session.uid]
+            `,[userId]
         );
 
         return friends;

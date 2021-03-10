@@ -43,11 +43,15 @@ const SignedInLinks : React.FC<SignedInLinksProps> = ({ userId }) => {
 
     return (
         <Nav>
+            <NextLink href='/mynetwork'>
+                <Item>
+                    <Link>My Network</Link>
+                </Item>
+            </NextLink>
+
             <NextLink href={`/profile/${userId}`}>
                 <Item>
-                    <Link>
-                        Profile
-                    </Link>
+                    <Link>Profile</Link>
                 </Item>
             </NextLink>
 

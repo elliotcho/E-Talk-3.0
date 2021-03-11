@@ -119,6 +119,7 @@ export type PaginatedPosts = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  updateBio: Scalars['Boolean'];
   removeProfilePic: UserResponse;
   updateProfilePic: UserResponse;
   register: UserResponse;
@@ -138,6 +139,11 @@ export type Mutation = {
   cancelFriendRequest: Scalars['Boolean'];
   declineFriendRequest: Scalars['Boolean'];
   sendFriendRequest: Scalars['Boolean'];
+};
+
+
+export type MutationUpdateBioArgs = {
+  newBio: Scalars['String'];
 };
 
 
@@ -253,6 +259,11 @@ export type RegisterInput = {
 export type LoginInput = {
   email: Scalars['String'];
   password: Scalars['String'];
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  newLike: Post;
 };
 
 export type RegularPostFragment = (
@@ -637,6 +648,17 @@ export type UserQuery = (
     { __typename?: 'User' }
     & Pick<User, 'isMe'>
     & RegularUserFragment
+  ) }
+);
+
+export type NewLikeSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type NewLikeSubscription = (
+  { __typename?: 'Subscription' }
+  & { newLike: (
+    { __typename?: 'Post' }
+    & RegularPostFragment
   ) }
 );
 
@@ -1617,3 +1639,31 @@ export function useUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserQ
 export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
 export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
 export type UserQueryResult = Apollo.QueryResult<UserQuery, UserQueryVariables>;
+export const NewLikeDocument = gql`
+    subscription NewLike {
+  newLike {
+    ...RegularPost
+  }
+}
+    ${RegularPostFragmentDoc}`;
+
+/**
+ * __useNewLikeSubscription__
+ *
+ * To run a query within a React component, call `useNewLikeSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useNewLikeSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNewLikeSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useNewLikeSubscription(baseOptions?: Apollo.SubscriptionHookOptions<NewLikeSubscription, NewLikeSubscriptionVariables>) {
+        return Apollo.useSubscription<NewLikeSubscription, NewLikeSubscriptionVariables>(NewLikeDocument, baseOptions);
+      }
+export type NewLikeSubscriptionHookResult = ReturnType<typeof useNewLikeSubscription>;
+export type NewLikeSubscriptionResult = Apollo.SubscriptionResult<NewLikeSubscription>;

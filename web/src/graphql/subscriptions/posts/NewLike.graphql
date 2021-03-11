@@ -1,0 +1,5 @@
+subscription NewLike {
+    newLike {
+        ...RegularPost
+    }
+}

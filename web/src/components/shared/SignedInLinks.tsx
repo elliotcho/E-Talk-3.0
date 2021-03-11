@@ -2,7 +2,7 @@ import React from 'react';
 import { useApolloClient } from '@apollo/client';
 import styled from 'styled-components';
 import { Nav } from 'react-bootstrap';
-import { useLogoutMutation } from '../../generated/graphql';
+import { useLogoutMutation, useNewLikeSubscription } from '../../generated/graphql';
 import NextLink from 'next/link';
 
 const Item = styled.div`
@@ -40,6 +40,12 @@ interface SignedInLinksProps {
 const SignedInLinks : React.FC<SignedInLinksProps> = ({ userId }) => {
     const [logout] = useLogoutMutation();
     const apolloClient = useApolloClient();
+
+    const { data } = useNewLikeSubscription();
+
+    if(data) {
+        console.log(data);
+    }
 
     return (
         <Nav>

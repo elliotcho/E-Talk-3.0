@@ -12,6 +12,7 @@ import { Comment } from './entities/Comment';
 import { User } from './entities/User';
 import { Post } from './entities/Post';
 import { Like } from './entities/Like';
+import http from 'http';
 import cors from 'cors';
 import path from 'path';
 
@@ -20,7 +21,7 @@ const main  = async () => {
         type: 'postgres',
         url: process.env.DB_URL,
         synchronize: true,
-        logging: true,
+        logging: false,
         entities: [
             Friend,
             Comment,
@@ -30,18 +31,19 @@ const main  = async () => {
         ]
     });
 
-    const schema = await createSchema();
-
-    const apolloServer = new ApolloServer({
-        context: ({ req, res }) => ({ req, res, redis }),
-        schema
-    });
-
-
     const app = express();
+    const httpServer = http.createServer(app);
 
     const RedisStore = connectRedis(session);
     const redis = new Redis();
+
+    const apolloServer = new ApolloServer({
+        schema: await createSchema(),
+        context: ({ req, res }) => ({ req, res, redis }),
+        subscriptions: {
+            path: '/subscriptions'
+        }
+    });
 
     app.use(
         cors({
@@ -72,10 +74,11 @@ const main  = async () => {
     app.use('/images', express.static(path.join(__dirname, '../images')));
 
     apolloServer.applyMiddleware({ app, cors: false });
+    apolloServer.installSubscriptionHandlers(httpServer);
 
     const port = process.env.PORT;
 
-    app.listen(port, () => {
+    httpServer.listen(port, () => {
         console.log(`listening to port ${port}`);
     });
 }

@@ -6,18 +6,23 @@ import {
     Int,
     Mutation,
     ObjectType,
+    PubSub,
+    PubSubEngine,
     Query,
     Resolver, 
     Root, 
+    Subscription, 
     UseMiddleware
 } from "type-graphql";
+import { getConnection } from "typeorm";;
 import { isAuth } from "../middleware/isAuth";
 import { Comment } from '../entities/Comment';
 import { Like } from '../entities/Like';
 import { Post } from '../entities/Post';
 import { User } from '../entities/User';
 import { MyContext } from '../types';
-import { getConnection } from "typeorm";
+
+const NEW_LIKE_EVENT = 'NEW_LIKE_EVENT';
 
 @ObjectType()
 class PaginatedPosts {
@@ -56,6 +61,19 @@ export class PostResolver {
         @Root() post: Post
     ) : Promise<User | undefined> {
         return User.findOne(post.userId);
+    }
+
+    @Subscription(() => Post, { 
+        topics: NEW_LIKE_EVENT,
+        filter: ({ payload, info }) => {
+            console.log(info)
+            return payload.id === 38;
+        }
+    })
+    newLike( 
+        @Root() post: Post | undefined
+    ): Post | undefined {
+        return post;
     }
 
     @Mutation(() => Boolean)
@@ -173,6 +191,7 @@ export class PostResolver {
     @Mutation(() => Boolean)
     @UseMiddleware(isAuth)
     async likePost(
+        @PubSub() pubSub: PubSubEngine,
         @Arg('postId', () => Int) postId: number,
         @Ctx() { req } : MyContext
     ) : Promise<boolean> {
@@ -218,6 +237,10 @@ export class PostResolver {
             )
         });
 
+        const post = await Post.findOne(postId);
+
+        await pubSub.publish(NEW_LIKE_EVENT, post);
+        
         return true;
     }
 

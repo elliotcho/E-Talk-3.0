@@ -36,7 +36,7 @@ const Register : React.FC<{}> = () => {
                                     }
                                 });
 
-                                cache.evict({ fieldName: 'posts' })
+                                cache.evict({ fieldName: 'posts' });
                             }
                         });
 

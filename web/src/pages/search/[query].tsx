@@ -32,6 +32,12 @@ const SearchResults : React.FC<{}> = () => {
                     </Header>
                 )}   
 
+                {!loading && !data?.searchResults.length && (
+                    <Header>
+                        No users found
+                    </Header>
+                )}
+
                 {data?.searchResults.map(u => 
                     <UserCard
                         key = {u.id}

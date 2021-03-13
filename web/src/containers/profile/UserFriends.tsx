@@ -5,7 +5,7 @@ import UserCard from '../shared/UserCard';
 import FriendButtonWrapper from '../shared/FriendButtonWrapper';
 
 const Header = styled.h3`
-    margin-top: 20px;
+    margin-top: 50px;
     text-align: center;
     color: black;
 `;
@@ -29,6 +29,12 @@ const UserFriends: React.FC<UserFriendsProps> = ({ userId }) => {
             {loading && (
                 <Header>
                     Loading...
+                </Header>
+            )}
+
+            {!loading && !data?.friends.length && (
+                <Header>
+                    You have no friends :(
                 </Header>
             )}
 

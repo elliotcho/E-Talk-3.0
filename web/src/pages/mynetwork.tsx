@@ -35,6 +35,7 @@ const MyNetwork: React.FC<{}> = () => {
             cache: ApolloCache<AcceptMutation | DeclineMutation>
         ) => {
             cache.evict({ id: "User:" + userId });
+            cache.evict({ fieldName: "posts" });
         }
     });
 
@@ -44,6 +45,12 @@ const MyNetwork: React.FC<{}> = () => {
                 {loading && (
                     <Header>
                         Loading...
+                    </Header>
+                )}
+
+                {!loading && !data?.friendRequests.length && (
+                    <Header>
+                        You have no friend requests
                     </Header>
                 )}
 

@@ -138,9 +138,9 @@ export class UserResolver{
 
         const users = await getConnection().query(
             `
-                select * from "user" where
-                LOWER("user"."firstName") LIKE '${pattern}%' or
-                LOWER("user"."lastName") LIKE '${pattern}%'
+                select * from "user" as u where
+                LOWER(u."firstName") LIKE '${pattern}%' or
+                LOWER(u."lastName") LIKE '${pattern}%' 
             `
         );
 
@@ -262,7 +262,7 @@ export class UserResolver{
         @Arg('input') input : LoginInput,
         @Ctx() { req } : MyContext
     ) : Promise<UserResponse> {  
-        const user = await User.findOne({where: {email : input.email}});
+        const user = await User.findOne({ where: {email : input.email} });
 
         if(!user){
             return {

@@ -46,7 +46,7 @@ const Login: React.FC<{}> = () => {
                                     }
                                 });
 
-                                cache.evict({ fieldName: 'posts' })
+                                cache.evict({ fieldName: 'posts' });
                             }
                         });
 

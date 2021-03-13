@@ -65,8 +65,7 @@ export class PostResolver {
 
     @Subscription(() => Post, { 
         topics: NEW_LIKE_EVENT,
-        filter: ({ payload, info }) => {
-            console.log(info)
+        filter: ({ payload }) => {
             return payload.id === 38;
         }
     })

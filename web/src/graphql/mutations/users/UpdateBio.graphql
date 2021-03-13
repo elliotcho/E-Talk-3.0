@@ -1,0 +1,3 @@
+mutation UpdateBio($newBio: String!) {
+    updateBio(newBio: $newBio)
+}

@@ -32,48 +32,57 @@ const main  = async () => {
     });
 
     const app = express();
-    const httpServer = http.createServer(app);
 
     const RedisStore = connectRedis(session);
     const redis = new Redis();
-
-    const apolloServer = new ApolloServer({
-        schema: await createSchema(),
-        context: ({ req, res }) => ({ req, res, redis }),
-        subscriptions: {
-            path: '/subscriptions'
-        }
-    });
 
     app.use(
         cors({
             origin: process.env.CORS_ORIGIN,
             credentials: true
         })
-    )
-
-    app.use(
-        session({
-          name: 'cid',
-          store: new RedisStore({
-              client: redis,
-              disableTouch: true
-          }),
-          cookie: {
-              maxAge: 1000 * 60 * 60 * 24 *365 * 10, //10 years,
-              httpOnly: true, 
-              sameSite: 'lax', //csrf
-              secure: false //includes http
-          },
-          saveUninitialized: false,
-          secret: process.env.SESSION_SECRET as string,
-          resave: false
-        })
     );
 
+    
     app.use('/images', express.static(path.join(__dirname, '../images')));
 
+    const sessionMiddleware = session({
+        name: 'cid',
+        store: new RedisStore({
+            client: redis,
+            disableTouch: true
+        }),
+        cookie: {
+            maxAge: 1000 * 60 * 60 * 24 *365 * 10, //10 years,
+            httpOnly: true, 
+            sameSite: 'lax', //csrf
+            secure: false //includes http
+        },
+        saveUninitialized: true,
+        secret: process.env.SESSION_SECRET as string,
+        resave: false
+    })
+
+    app.use(sessionMiddleware);
+
+    const apolloServer = new ApolloServer({
+        schema: await createSchema(),
+        context: ({ req, res }) => ({ req, res, redis }),
+        subscriptions: {
+            path: '/subscriptions',
+            onConnect: (_, ws: any) => {
+                sessionMiddleware(ws.upgradeReq, {} as any, () => {
+                    if(!ws.upgradeReq.session) {
+                        throw new Error('not authenticated');
+                    }
+                });
+            }
+        }
+    });
+
     apolloServer.applyMiddleware({ app, cors: false });
+
+    const httpServer = http.createServer(app);
     apolloServer.installSubscriptionHandlers(httpServer);
 
     const port = process.env.PORT;

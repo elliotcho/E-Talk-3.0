@@ -495,6 +495,16 @@ export type RemoveProfilePicMutation = (
   ) }
 );
 
+export type UpdateBioMutationVariables = Exact<{
+  newBio: Scalars['String'];
+}>;
+
+
+export type UpdateBioMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'updateBio'>
+);
+
 export type UpdateProfilePicMutationVariables = Exact<{
   file: Scalars['Upload'];
 }>;
@@ -1258,6 +1268,36 @@ export function useRemoveProfilePicMutation(baseOptions?: Apollo.MutationHookOpt
 export type RemoveProfilePicMutationHookResult = ReturnType<typeof useRemoveProfilePicMutation>;
 export type RemoveProfilePicMutationResult = Apollo.MutationResult<RemoveProfilePicMutation>;
 export type RemoveProfilePicMutationOptions = Apollo.BaseMutationOptions<RemoveProfilePicMutation, RemoveProfilePicMutationVariables>;
+export const UpdateBioDocument = gql`
+    mutation UpdateBio($newBio: String!) {
+  updateBio(newBio: $newBio)
+}
+    `;
+export type UpdateBioMutationFn = Apollo.MutationFunction<UpdateBioMutation, UpdateBioMutationVariables>;
+
+/**
+ * __useUpdateBioMutation__
+ *
+ * To run a mutation, you first call `useUpdateBioMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateBioMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateBioMutation, { data, loading, error }] = useUpdateBioMutation({
+ *   variables: {
+ *      newBio: // value for 'newBio'
+ *   },
+ * });
+ */
+export function useUpdateBioMutation(baseOptions?: Apollo.MutationHookOptions<UpdateBioMutation, UpdateBioMutationVariables>) {
+        return Apollo.useMutation<UpdateBioMutation, UpdateBioMutationVariables>(UpdateBioDocument, baseOptions);
+      }
+export type UpdateBioMutationHookResult = ReturnType<typeof useUpdateBioMutation>;
+export type UpdateBioMutationResult = Apollo.MutationResult<UpdateBioMutation>;
+export type UpdateBioMutationOptions = Apollo.BaseMutationOptions<UpdateBioMutation, UpdateBioMutationVariables>;
 export const UpdateProfilePicDocument = gql`
     mutation UpdateProfilePic($file: Upload!) {
   updateProfilePic(file: $file) {

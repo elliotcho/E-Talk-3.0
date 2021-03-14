@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useApolloClient } from '@apollo/client';
 import styled from 'styled-components';
 import { Nav } from 'react-bootstrap';
@@ -41,11 +41,15 @@ const SignedInLinks : React.FC<SignedInLinksProps> = ({ userId }) => {
     const [logout] = useLogoutMutation();
     const apolloClient = useApolloClient();
 
-    const { data } = useNewLikeSubscription();
+    const { data, error } = useNewLikeSubscription();
 
-    if(data) {
-        console.log(data);
-    }
+    useEffect(() => {
+        if(data && !error) {
+            alert("HI");
+        }
+
+        console.log(data, error)
+    }, [data, error])
 
     return (
         <Nav>

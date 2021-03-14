@@ -37,7 +37,7 @@ const link = (ctx: NextPageContext) => split(
         const definition = getMainDefinition(query);
 
         const useSubscriptionLink = (
-            definition.kind === 'OperationDefinition' &&
+            definition.kind ===  'OperationDefinition' &&
             definition.operation === 'subscription'
         );
 

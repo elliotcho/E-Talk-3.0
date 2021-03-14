@@ -65,8 +65,13 @@ export class PostResolver {
 
     @Subscription(() => Post, { 
         topics: NEW_LIKE_EVENT,
-        filter: ({ payload }) => {
-            return payload.id === 38;
+        filter: ({ payload, context }) => {
+            const { req } = context.connection.context;
+            const { uid } = req.session;
+
+            context.req = req;
+
+            return payload.userId === uid;
         }
     })
     newLike( 

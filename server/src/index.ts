@@ -42,7 +42,6 @@ const main  = async () => {
             credentials: true
         })
     );
-
     
     app.use('/images', express.static(path.join(__dirname, '../images')));
 
@@ -67,15 +66,17 @@ const main  = async () => {
 
     const apolloServer = new ApolloServer({
         schema: await createSchema(),
-        context: ({ req, res }) => ({ req, res, redis }),
+        context: ({ req, res, connection }) => {
+            return ({ req, res, connection, redis });
+        },
         subscriptions: {
             path: '/subscriptions',
             onConnect: (_, ws: any) => {
-                sessionMiddleware(ws.upgradeReq, {} as any, () => {
-                    if(!ws.upgradeReq.session) {
-                        throw new Error('not authenticated');
-                    }
-                });
+                return new Promise(res => 
+                    sessionMiddleware(ws.upgradeReq, {} as any, () => {
+                        res({ req: ws.upgradeReq });
+                    })
+                );
             }
         }
     });

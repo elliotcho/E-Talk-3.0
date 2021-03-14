@@ -37,6 +37,12 @@ const Index : React.FC<{}> = () => {
                </Header>
             )}
 
+            {!loading && !data?.posts?.posts.length && (
+               <Header>
+                  No posts available
+               </Header>
+            )}
+
             {data?.posts?.posts?.map(p => 
                <Post {...mapPostProps(p)}/>
             )}

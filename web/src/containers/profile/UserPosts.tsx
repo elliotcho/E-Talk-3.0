@@ -51,6 +51,13 @@ const UserPosts: React.FC<UserPostsProps> = ({ userId }) => {
                 </Header>
             )}
 
+            
+            {!loading && !data?.userPosts?.posts.length && (
+               <Header>
+                  No posts available
+               </Header>
+            )}
+
             {data?.userPosts?.posts.map(p => 
                <Post {...mapPostProps(p)}/>
             )}

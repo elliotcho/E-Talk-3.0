@@ -27,9 +27,11 @@ export class Friend extends BaseEntity {
     @ManyToOne(() => User, user => user.friends)
     user: User;
 
+    @Field()
     @CreateDateColumn()
     createdAt: Date;
 
+    @Field()
     @UpdateDateColumn()
     updatedAt: Date;
 }

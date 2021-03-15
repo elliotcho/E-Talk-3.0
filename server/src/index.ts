@@ -8,6 +8,7 @@ import { createConnection } from 'typeorm';
 import { ApolloServer } from 'apollo-server-express';
 import { createSchema } from './utils/createSchema';
 import { Friend } from './entities/Friend';
+import { Notification } from './entities/Notification';
 import { Comment } from './entities/Comment';
 import { User } from './entities/User';
 import { Post } from './entities/Post';
@@ -24,6 +25,7 @@ const main  = async () => {
         logging: false,
         entities: [
             Friend,
+            Notification,
             Comment,
             Post,
             User,

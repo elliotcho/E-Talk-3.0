@@ -59,6 +59,12 @@ const SignedInLinks : React.FC<SignedInLinksProps> = ({ userId }) => {
                 </Item>
             </NextLink>
 
+            <NextLink href='/notifications'>
+                <Item>
+                    <Link>Notifications</Link>
+                </Item>
+            </NextLink>
+
             <NextLink href={`/profile/${userId}`}>
                 <Item>
                     <Link>Profile</Link>

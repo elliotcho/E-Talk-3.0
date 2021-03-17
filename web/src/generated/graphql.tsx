@@ -11,6 +11,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
+  DateTime: any;
   /** The `Upload` scalar type represents a file upload. */
   Upload: any;
 };
@@ -25,6 +27,7 @@ export type Query = {
   post: Post;
   userPosts: PaginatedPosts;
   posts: PaginatedPosts;
+  notifications: Array<Notification>;
   friendRequests: Array<User>;
   friends: Array<User>;
 };
@@ -116,6 +119,19 @@ export type PaginatedPosts = {
   posts: Array<Post>;
   hasMore: Scalars['Boolean'];
 };
+
+export type Notification = {
+  __typename?: 'Notification';
+  id: Scalars['Float'];
+  senderId: Scalars['Float'];
+  receiverId: Scalars['Float'];
+  text: Scalars['String'];
+  postId: Scalars['Float'];
+  user: User;
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+};
+
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -539,6 +555,17 @@ export type FriendsQuery = (
   & { friends: Array<(
     { __typename?: 'User' }
     & RegularUserFragment
+  )> }
+);
+
+export type NotificationsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type NotificationsQuery = (
+  { __typename?: 'Query' }
+  & { notifications: Array<(
+    { __typename?: 'Notification' }
+    & Pick<Notification, 'createdAt' | 'receiverId' | 'senderId' | 'postId' | 'text'>
   )> }
 );
 
@@ -1395,6 +1422,42 @@ export function useFriendsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Fr
 export type FriendsQueryHookResult = ReturnType<typeof useFriendsQuery>;
 export type FriendsLazyQueryHookResult = ReturnType<typeof useFriendsLazyQuery>;
 export type FriendsQueryResult = Apollo.QueryResult<FriendsQuery, FriendsQueryVariables>;
+export const NotificationsDocument = gql`
+    query Notifications {
+  notifications {
+    createdAt
+    receiverId
+    senderId
+    postId
+    text
+  }
+}
+    `;
+
+/**
+ * __useNotificationsQuery__
+ *
+ * To run a query within a React component, call `useNotificationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useNotificationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNotificationsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useNotificationsQuery(baseOptions?: Apollo.QueryHookOptions<NotificationsQuery, NotificationsQueryVariables>) {
+        return Apollo.useQuery<NotificationsQuery, NotificationsQueryVariables>(NotificationsDocument, baseOptions);
+      }
+export function useNotificationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<NotificationsQuery, NotificationsQueryVariables>) {
+          return Apollo.useLazyQuery<NotificationsQuery, NotificationsQueryVariables>(NotificationsDocument, baseOptions);
+        }
+export type NotificationsQueryHookResult = ReturnType<typeof useNotificationsQuery>;
+export type NotificationsLazyQueryHookResult = ReturnType<typeof useNotificationsLazyQuery>;
+export type NotificationsQueryResult = Apollo.QueryResult<NotificationsQuery, NotificationsQueryVariables>;
 export const CommentsDocument = gql`
     query Comments($postId: Int!) {
   comments(postId: $postId) {

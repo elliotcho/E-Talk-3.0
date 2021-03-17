@@ -1,0 +1,9 @@
+query Notifications {
+    notifications {
+        createdAt
+        receiverId
+        senderId
+        postId
+        text
+    }
+}

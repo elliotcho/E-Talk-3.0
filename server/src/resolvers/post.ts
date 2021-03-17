@@ -218,7 +218,7 @@ export class PostResolver {
                         set "numLikes" = "numLikes" - 1
                         where id = $1
                     `, [postId]
-                )
+                );
             });
 
             return true;
@@ -238,7 +238,7 @@ export class PostResolver {
                     set "numLikes" = "numLikes" + 1
                     where id = $1
                 `, [postId]
-            )
+            );
         });
 
         const post = await Post.findOne(postId);

@@ -311,8 +311,10 @@ export class PostResolver {
     @Query(() => PaginatedPosts)
     async posts(
         @Arg('cursor' , () => String, { nullable: true }) cursor: string | null,
-        @Arg('limit', () => Int) limit: number
+        @Arg('limit', () => Int) limit: number,
+        @Ctx() { req } : MyContext
     ) : Promise<PaginatedPosts> {
+        const { uid } = req.session;
         const realLimit = Math.min(limit, 50);
         let date;
 
@@ -325,12 +327,12 @@ export class PostResolver {
               select p.* from post as p
               inner join "user" as u on p."userId" = u.id
               inner join friend as f on u.id = f."senderId" or u.id = f."receiverId"
-              ${cursor? `where p."createdAt" < $2` : ``}
-              where f.status = true
+              where f.status = true and u.id = $2
+              ${cursor? `and p."createdAt" < $3` : ``}
               order by p."createdAt" DESC
               limit $1
             `, 
-            cursor? [realLimit + 1, date] : [realLimit + 1]
+            cursor? [realLimit + 1, uid, date] : [realLimit + 1, uid]
         );
 
         return {

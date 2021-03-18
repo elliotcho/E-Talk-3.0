@@ -84,8 +84,8 @@ export class UserResolver{
 
         const friends = await getConnection().query(
             `
-                select status from friend as f
-                where (f."senderId" = $1 or f.status = true) and
+                select * from friend as f
+                where (f."senderId" = $1 or f."receiverId" = $1) and
                 (f."receiverId" = $2 or f."senderId" = $2)
             `, 
             [uid, user.id]

@@ -16,6 +16,7 @@ import {
 } from "type-graphql";
 import { getConnection } from "typeorm";;
 import { isAuth } from "../middleware/isAuth";
+// import { Notification } from '../entities/Notification';
 import { Comment } from '../entities/Comment';
 import { Like } from '../entities/Like';
 import { Post } from '../entities/Post';
@@ -219,6 +220,14 @@ export class PostResolver {
                         where id = $1
                     `, [postId]
                 );
+
+                await tm.query(
+                    `
+                        delete from notification as n
+                        where n."senderId" = $1 and
+                        n."postId" = $2
+                    `,[uid, postId]
+                );
             });
 
             return true;
@@ -239,11 +248,17 @@ export class PostResolver {
                     where id = $1
                 `, [postId]
             );
+            const post = await Post.findOne(postId);
+
+            await pubSub.publish(NEW_LIKE_EVENT, post);
+
+            await tm.query(
+                `
+                    insert into notification ("receiverId", "senderId", "postId", "text")
+                    values  ($1, $2, $3, $4)
+                `, [post?.userId, uid, postId, "liked your photo"]
+            );
         });
-
-        const post = await Post.findOne(postId);
-
-        await pubSub.publish(NEW_LIKE_EVENT, post);
         
         return true;
     }

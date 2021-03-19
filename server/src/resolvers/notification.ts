@@ -12,6 +12,25 @@ import { MyContext } from "../types";
 
 @Resolver(Notification)
 export class NotificationResolver {
+    @FieldResolver(() => String) 
+    text(
+        @Root() notification: Notification 
+    ) : string | undefined {
+        const { type } = notification;
+
+        if(type === 'like') {
+            return 'liked your post';
+        }
+
+        else if(type === 'comment') {
+            return 'commented on your post';
+        }
+
+        else {
+            return 'accepted your friend request';
+        }
+    }
+
     @FieldResolver(() => User)
     async user (
         @Root() notification: Notification

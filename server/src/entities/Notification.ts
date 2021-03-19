@@ -1,11 +1,10 @@
 import { Field, ObjectType } from 'type-graphql';
 import { 
     BaseEntity,
-    Column,
     CreateDateColumn,
     Entity,
     ManyToOne,
-    PrimaryGeneratedColumn,
+    PrimaryColumn,
     UpdateDateColumn
 } from 'typeorm';
 import { User } from './User';
@@ -14,23 +13,19 @@ import { User } from './User';
 @Entity()
 export class Notification extends BaseEntity {
     @Field()
-    @PrimaryGeneratedColumn()
-    id: number;
-
-    @Field()
-    @Column()
+    @PrimaryColumn()
     senderId: number;
 
     @Field()
-    @Column()
+    @PrimaryColumn()
     receiverId: number;
 
     @Field()
-    @Column()
-    text: string;
+    @PrimaryColumn()
+    type: string;
 
     @Field()
-    @Column({ default: 0 })
+    @PrimaryColumn({ default: 0 })
     postId: number;
 
     @Field(() => User)

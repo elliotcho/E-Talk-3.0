@@ -203,6 +203,9 @@ export class PostResolver {
         const { uid } = req.session;
         const like = await Like.findOne({ userId: uid, postId });
 
+        const post = await Post.findOne(postId);
+        const receiverId = post?.userId;
+
         if(like) {
             await getConnection().transaction(async (tm) => {   
                 await tm.query(
@@ -224,9 +227,9 @@ export class PostResolver {
                 await tm.query(
                     `
                         delete from notification as n
-                        where n."senderId" = $1 and
-                        n."postId" = $2
-                    `,[uid, postId]
+                        where n."senderId" = $1 and n."receiverId" = $2
+                        n."postId" = $3 and n.type = $4
+                    `,[uid, receiverId, postId, 'like']
                 );
             });
 
@@ -248,15 +251,14 @@ export class PostResolver {
                     where id = $1
                 `, [postId]
             );
-            const post = await Post.findOne(postId);
-
+    
             await pubSub.publish(NEW_LIKE_EVENT, post);
 
             await tm.query(
                 `
-                    insert into notification ("receiverId", "senderId", "postId", "text")
+                    insert into notification ("receiverId", "senderId", "postId", "type")
                     values  ($1, $2, $3, $4)
-                `, [post?.userId, uid, postId, "liked your photo"]
+                `, [receiverId, uid, postId, "like"]
             );
         });
         

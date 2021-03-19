@@ -125,11 +125,12 @@ export type Notification = {
   id: Scalars['Float'];
   senderId: Scalars['Float'];
   receiverId: Scalars['Float'];
-  text: Scalars['String'];
+  type: Scalars['String'];
   postId: Scalars['Float'];
   user: User;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
+  text: Scalars['String'];
 };
 
 
@@ -565,7 +566,11 @@ export type NotificationsQuery = (
   { __typename?: 'Query' }
   & { notifications: Array<(
     { __typename?: 'Notification' }
-    & Pick<Notification, 'createdAt' | 'receiverId' | 'senderId' | 'postId' | 'text'>
+    & Pick<Notification, 'text' | 'type' | 'createdAt' | 'receiverId' | 'senderId' | 'postId'>
+    & { user: (
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'firstName' | 'lastName' | 'profileURL'>
+    ) }
   )> }
 );
 
@@ -1425,11 +1430,18 @@ export type FriendsQueryResult = Apollo.QueryResult<FriendsQuery, FriendsQueryVa
 export const NotificationsDocument = gql`
     query Notifications {
   notifications {
+    text
+    type
     createdAt
     receiverId
     senderId
     postId
-    text
+    user {
+      id
+      firstName
+      lastName
+      profileURL
+    }
   }
 }
     `;

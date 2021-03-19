@@ -35,11 +35,10 @@ export class FriendResolver {
     ) : Promise<User[]> {
         const friends = await getConnection().query(
             `
-                select u.* from "user" as u
-                inner join friend as f 
-                on f."senderId" = $1 or f."receiverId" = $1 
-                where f.status = true and
-                u.id != $1
+                select u.* from "user" as u inner join friend as f 
+                on u.id = f."senderId" or u.id = f."receiverId"
+                where (f."senderId" = $1 or f."receiverId" = $1) and u.id != $1
+                and f.status = true
             `,[userId]
         );
 

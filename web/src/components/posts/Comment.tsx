@@ -8,7 +8,7 @@ import {
 } from '../../generated/graphql'
 import { formatDate } from '../../utils/formatDate'; 
 import ConfirmModal from '../shared/ConfirmModal';
-import EditModal from './EditModal';
+import EditModal from '../shared/EditModal';
 import NextLink from 'next/link';
 
 const Card = styled.div`
@@ -214,6 +214,10 @@ const Comment: React.FC<CommentProps> = ({
                 title = 'Edit Comment'
                 onClose = {() => setEditting(false)}
                 onSubmit = {async (newContent) => {
+                    if(!newContent.trim().length) {
+                        return;
+                    }
+
                     await editComment({
                         variables: { commentId, newContent },
                         update: (cache) => {

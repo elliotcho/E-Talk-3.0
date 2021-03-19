@@ -34,7 +34,7 @@ const UserFriends: React.FC<UserFriendsProps> = ({ userId }) => {
 
             {!loading && !data?.friends.length && (
                 <Header>
-                    You have no friends :(
+                    No friends available :(
                 </Header>
             )}
 

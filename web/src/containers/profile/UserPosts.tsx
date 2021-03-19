@@ -8,7 +8,7 @@ import Button from '../../components/shared/Button';
 import Post from '../posts/Post';
 
 const Header = styled.h3`
-    margin-top: 20px;
+    margin-top: 50px;
     text-align: center;
     color: black;
 `;

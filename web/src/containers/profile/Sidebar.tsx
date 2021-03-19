@@ -6,8 +6,9 @@ import ProfileButtons from '../../components/profile/ProfileButtons';
 import ProfileMenu from '../../components/profile/ProfileMenu';
 
 const Container = styled.div`
+    height: 510px;
+    margin-bottom: 50px;
     position: relative;
-    height: 600px;
     background: white;
     overflow: auto;
     color: black;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Modal from 'react-responsive-modal';
 
@@ -61,11 +61,16 @@ interface EditModalProps {
 const EditModal : React.FC<EditModalProps> = ({ open, content, title, onSubmit, onClose }) => {
     const [newContent, setNewContent] = useState(content);
 
-    const onSave = () => {
-        if(newContent.trim().length !== 0) {
-            onSubmit(newContent);
+    useEffect(() => {
+        
+        if(content !== newContent) {
+            setNewContent(content);
         }
 
+    }, [content])
+
+    const onSave = () => {
+        onSubmit(newContent);
         onClose();
     }
 

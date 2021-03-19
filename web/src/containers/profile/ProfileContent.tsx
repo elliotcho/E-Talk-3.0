@@ -7,8 +7,9 @@ import UserBio from './UserBio';
 const Box  = styled.div`
     width: 90%;
     position: relative;
-    min-height: 460px;
+    margin-bottom: 50px;
     min-width: 600px;
+    min-height: 510px;
     background: white;
     overflow: auto;
     color: black;

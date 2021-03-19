@@ -8,7 +8,7 @@ import {
 } from '../../generated/graphql';
 import { formatDate } from '../../utils/formatDate';
 import ConfirmModal from '../shared/ConfirmModal';
-import EditModal from './EditModal';
+import EditModal from '../shared/EditModal';
 import NextLink from 'next/link';
 
 const Flex = styled.div`
@@ -178,6 +178,10 @@ const PostHeader: React.FC<PostHeaderProps> = ({
                 title = 'Edit Post'
                 onClose = {() => setEditting(false)}
                 onSubmit = {async (newContent) => {
+                    if(!newContent.trim().length) {
+                        return;
+                    }
+
                     await editPost({ 
                         variables: { postId, newContent },
                         update: (cache) => {

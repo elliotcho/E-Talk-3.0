@@ -48,7 +48,8 @@ export class NotificationResolver {
         const notifications = await getConnection().query(
             `
                 select * from notification as n 
-                where n."receiverId" = $1  
+                where n."receiverId" = $1 
+                order by n."createdAt" DESC
             `, [req.session.uid]
         );
 

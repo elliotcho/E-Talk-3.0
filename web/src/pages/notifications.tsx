@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart } from '@fortawesome/free-solid-svg-icons';
+import { faComment ,faHeart } from '@fortawesome/free-solid-svg-icons';
 import { useNotificationsQuery } from '../generated/graphql';
 import { withApollo } from '../utils/withApollo';
 import AuthWrapper from '../containers/shared/AuthWrapper';
@@ -35,6 +35,7 @@ const Image = styled.img`
 
 const Text = styled.h3`
     margin-left: 20px;
+    line-height: 1.2;
     overflow-wrap: break-word;
     white-space: pre-wrap;
 `;
@@ -83,6 +84,7 @@ const Notifications: React.FC<{}> = () => {
 
                                     <Icon>
                                         {n.type === 'like' && <FontAwesomeIcon icon={faHeart} />}
+                                        {n.type === 'comment' && <FontAwesomeIcon icon = {faComment} />}
                                     </Icon>
                                 </Text>
                             </Card>

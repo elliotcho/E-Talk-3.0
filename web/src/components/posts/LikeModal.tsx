@@ -30,6 +30,7 @@ const Card = styled.div`
     display: flex;
     align-items: center;
     border-bottom: 1px solid gray;
+    padding: 15px 0;
     &:last-child {
         border-bottom: none;
     }

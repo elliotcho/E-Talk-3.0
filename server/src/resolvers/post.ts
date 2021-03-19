@@ -102,8 +102,14 @@ export class PostResolver {
     @Mutation(() => Boolean)
     async deleteComment(
         @Arg('commentId', () => Int) commentId: number,
-        @Arg('postId', () => Int) postId: number
+        @Arg('postId', () => Int) postId: number,
+        @Ctx() { req } : MyContext
     ) : Promise<boolean> {
+        const { uid } = req.session;
+
+        const post = await Post.findOne(postId);
+        const receiverId = post?.userId;
+
         await getConnection().transaction(async tm => {
             await tm.query(
                 `
@@ -119,7 +125,19 @@ export class PostResolver {
                     set "numComments" = "numComments" - 1
                     where id = $1
                 `, [postId]
-            )
+            );
+
+            if(receiverId === uid) {
+                return;
+            }
+
+            await tm.query(
+                `
+                    delete from notification as n
+                    where n."senderId" = $1 and n."receiverId" = $2 and
+                    n."postId" = $3 and n.type = $4
+                `,[uid, receiverId, postId, 'comment']
+            );
         });
         
         return true;
@@ -151,6 +169,9 @@ export class PostResolver {
     ) : Promise<boolean> {
         const { uid } = req.session;
 
+        const post = await Post.findOne(postId);
+        const receiverId = post?.userId;
+
         await getConnection().transaction(async (tm) => {
             await tm.query(
                 `
@@ -165,6 +186,17 @@ export class PostResolver {
                     set "numComments" = "numComments" + 1
                     where id = $1
                 `, [postId]
+            );
+
+            if(receiverId === uid) {
+                return;
+            }
+
+            await tm.query(
+                `
+                    insert into notification ("receiverId", "senderId", "postId", "type")
+                    values  ($1, $2, $3, $4)
+                `, [receiverId, uid, postId, "comment"]
             );
         }) ;      
 
@@ -224,6 +256,10 @@ export class PostResolver {
                     `, [postId]
                 );
 
+                if(receiverId === uid) {
+                    return;
+                }
+
                 await tm.query(
                     `
                         delete from notification as n
@@ -251,6 +287,10 @@ export class PostResolver {
                     where id = $1
                 `, [postId]
             );
+
+            if(receiverId === uid) {
+                return;
+            }
     
             await pubSub.publish(NEW_LIKE_EVENT, post);
 

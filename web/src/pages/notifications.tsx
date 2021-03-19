@@ -39,15 +39,15 @@ const Text = styled.h3`
     white-space: pre-wrap;
 `;
 
-const Icon = styled.span`
-    top: 3px;
-    position: relative;
-    margin-left: 20px;
+const Icon = styled.div`
+    margin-top: 10px;
     color: red;
 `;
 
 const Notifications: React.FC<{}> = () => {
-    const { data, loading } = useNotificationsQuery();
+    const { data, loading } = useNotificationsQuery({
+        fetchPolicy: 'network-only'
+    });
 
     return (
         <AuthWrapper requiresAuth>
@@ -82,7 +82,7 @@ const Notifications: React.FC<{}> = () => {
                                     {firstName} {lastName} {n.text}
 
                                     <Icon>
-                                        <FontAwesomeIcon icon={faHeart} />
+                                        {n.type === 'like' && <FontAwesomeIcon icon={faHeart} />}
                                     </Icon>
                                 </Text>
                             </Card>

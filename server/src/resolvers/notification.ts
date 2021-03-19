@@ -7,27 +7,30 @@ import {
 } from "type-graphql";
 import { getConnection } from "typeorm";
 import { Notification } from '../entities/Notification';
+import { Post } from '../entities/Post';
 import { User } from '../entities/User';
 import { MyContext } from "../types";
 
 @Resolver(Notification)
 export class NotificationResolver {
     @FieldResolver(() => String) 
-    text(
-        @Root() notification: Notification 
-    ) : string | undefined {
-        const { type } = notification;
+    async text(
+        @Root() { type, postId }: Notification 
+    ) : Promise<string | undefined> {
+        const post = await Post.findOne(postId);
+        let textSnippet = post?.content;
 
-        if(type === 'like') {
-            return 'liked your post';
+        if(post?.content && post.content.length > 30) {
+            textSnippet = textSnippet?.substring(0, 30) + '...';
         }
 
-        else if(type === 'comment') {
-            return 'commented on your post';
-        }
-
-        else {
-            return 'accepted your friend request';
+        switch(type) {
+            case 'comment': 
+                return `commented on your post: ${textSnippet}`;
+            case 'like': 
+                return `liked your post: ${textSnippet}`;
+            default: 
+                return 'accepted your friend request';
         }
     }
 

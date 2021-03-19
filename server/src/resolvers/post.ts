@@ -227,7 +227,7 @@ export class PostResolver {
                 await tm.query(
                     `
                         delete from notification as n
-                        where n."senderId" = $1 and n."receiverId" = $2
+                        where n."senderId" = $1 and n."receiverId" = $2 and
                         n."postId" = $3 and n.type = $4
                     `,[uid, receiverId, postId, 'like']
                 );

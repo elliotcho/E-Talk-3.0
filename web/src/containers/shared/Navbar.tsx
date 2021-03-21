@@ -39,10 +39,16 @@ const Index: React.FC<{}> = () => {
         } 
         
         else {
-            let userId = data?.me?.id || -1;
+            const userId = data?.me?.id || -1;
+            const firstName = data?.me?.firstName || '';
+            const lastName = data?.me?.lastName || ''
 
             body = (
-                <SignedInLinks userId={userId}/>
+                <SignedInLinks 
+                    userId = {userId}
+                    firstName = {firstName}
+                    lastName = {lastName}    
+                />
             );
         }
     }

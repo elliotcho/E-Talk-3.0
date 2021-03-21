@@ -6,8 +6,6 @@ import AuthWrapper from '../containers/shared/AuthWrapper';
 import Layout from '../containers/shared/Layout';
 import Notification from '../containers/notifications/Notification';
 import Button from '../components/shared/Button';
-import Icon from '../components/notifications/Icon';
-import NextLink from 'next/link';
 
 const Header = styled.h3`
     margin-top: 50px;

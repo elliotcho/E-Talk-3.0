@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
-    faComment ,
+    faComment,
     faHeart, 
     faUserPlus 
 } from '@fortawesome/free-solid-svg-icons';

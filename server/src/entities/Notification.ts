@@ -32,7 +32,7 @@ export class Notification extends BaseEntity {
     @ManyToOne(() => User, user => user.notifications)
     user: User;
 
-    @Field()
+    @Field(() => String)
     @CreateDateColumn()
     createdAt: Date;
 

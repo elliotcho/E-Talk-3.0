@@ -1,6 +1,10 @@
 import { 
+    Arg,
     Ctx,
+    Field,
     FieldResolver,
+    Int,
+    ObjectType,
     Query, 
     Resolver, 
     Root
@@ -10,6 +14,14 @@ import { Notification } from '../entities/Notification';
 import { Post } from '../entities/Post';
 import { User } from '../entities/User';
 import { MyContext } from "../types";
+
+@ObjectType()
+class PaginatedNotifications {
+    @Field(() => [Notification])
+    notifications!: [Notification] | [];
+    @Field(() => Boolean)
+    hasMore!: boolean;
+}
 
 @Resolver(Notification)
 export class NotificationResolver {
@@ -41,18 +53,33 @@ export class NotificationResolver {
         return User.findOne(notification.senderId);
     }
 
-    @Query(() => [Notification])
+    @Query(() => PaginatedNotifications)
     async notifications (
+        @Arg('cursor' , () => String, { nullable: true }) cursor: string | null,
+        @Arg('limit', () => Int) limit: number,
         @Ctx() { req } : MyContext
-    ) : Promise<Notification[]> {
+    ) : Promise<PaginatedNotifications> {
+        const { uid } = req.session;
+        const realLimit = Math.min(limit, 50);
+        let date;
+
+        if(cursor) {
+            date = new Date(parseInt(cursor));
+        }
+
         const notifications = await getConnection().query(
             `
                 select * from notification as n 
-                where n."receiverId" = $1 
+                where n."receiverId" = $2
+                ${cursor? `and n."createdAt" < $3` : ``}
                 order by n."createdAt" DESC
-            `, [req.session.uid]
+                limit $1
+            `, cursor? [realLimit + 1, uid, date] : [realLimit + 1, uid]
         );
 
-        return notifications;
+        return {
+            hasMore: notifications.length === realLimit + 1,
+            notifications: notifications.slice(0, realLimit)
+        }
     }
 }

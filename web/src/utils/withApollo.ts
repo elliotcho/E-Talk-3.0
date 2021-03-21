@@ -6,12 +6,13 @@ import {
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { createUploadLink }from 'apollo-upload-client';
 import { getMainDefinition } from '@apollo/client/utilities';
-import { getPaginatedPostsPolicy } from './getPaginationPolicies';
+import { getPaginatedPostsPolicy, getPaginatedNotificationsPolicy } from './getPaginationPolicies';
 import { createWithApollo } from './createWithApollo';
 import { isServer } from './isServer';
 import { NextPageContext } from 'next';
 
 const postsPolicy = getPaginatedPostsPolicy();
+const notificationsPolicy = getPaginatedNotificationsPolicy();
 
 const wsLink = process.browser && new WebSocketLink({
       uri: 'ws://localhost:4000/subscriptions',
@@ -54,6 +55,7 @@ const client = (ctx: NextPageContext) => (
             typePolicies: {
                 Query: {
                     fields: {
+                        notifications: notificationsPolicy,
                         userPosts: postsPolicy,
                         posts: postsPolicy
                     }

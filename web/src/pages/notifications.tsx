@@ -6,6 +6,7 @@ import { useNotificationsQuery } from '../generated/graphql';
 import { withApollo } from '../utils/withApollo';
 import AuthWrapper from '../containers/shared/AuthWrapper';
 import Layout from '../containers/shared/Layout';
+import Button from '../components/shared/Button';
 import NextLink from 'next/link';
 
 const Header = styled.h3`
@@ -42,12 +43,19 @@ const Text = styled.h3`
 
 const Icon = styled.div`
     margin-top: 10px;
+    margin-left: 10px;
     color: red;
 `;
 
+const ButtonContainer = styled.div`
+   max-width: 600px;
+   text-align: center;
+   margin: 30px auto;
+`;
+
 const Notifications: React.FC<{}> = () => {
-    const { data, loading } = useNotificationsQuery({
-        fetchPolicy: 'network-only'
+    const { data, loading, fetchMore, variables } = useNotificationsQuery({
+        variables: { cursor: null, limit: 5 }
     });
 
     return (
@@ -59,13 +67,13 @@ const Notifications: React.FC<{}> = () => {
                     </Header>
                 )}   
 
-                {!loading && !data?.notifications.length && (
+                {!loading && !data?.notifications.notifications.length && (
                     <Header>
                         No notifications found
                     </Header>
                 )}
 
-                {data?.notifications.map(n => {
+                {data?.notifications.notifications.map(n => {
                     const { id: userId, firstName, lastName, profileURL } = n.user;
 
                     let route = `/profile/${userId}`;
@@ -91,6 +99,29 @@ const Notifications: React.FC<{}> = () => {
                         </NextLink>
                     )
                 })}
+
+                {data?.notifications?.hasMore && (
+                    <ButtonContainer>
+                        <Button 
+                            bg = 'lightslategray'
+                            isLoading={loading}
+                            onClick = {async () => {
+                                let cursor = data.notifications.notifications[data.notifications.notifications.length - 1]?.createdAt;
+                                const limit = variables?.limit;
+
+                                if(!cursor) {
+                                    cursor = null;
+                                }
+
+                                await fetchMore({
+                                    variables: { cursor, limit }
+                                });
+                            }}
+                        >
+                            Load More
+                        </Button>
+                    </ButtonContainer>
+                )}
             </Layout>
         </AuthWrapper>
     )

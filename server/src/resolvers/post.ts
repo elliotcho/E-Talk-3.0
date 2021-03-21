@@ -228,7 +228,7 @@ export class PostResolver {
     @Mutation(() => Boolean)
     @UseMiddleware(isAuth)
     async likePost(
-        @PubSub() pubSub: PubSubEngine,
+        //@PubSub() pubSub: PubSubEngine,
         @Arg('postId', () => Int) postId: number,
         @Ctx() { req } : MyContext
     ) : Promise<boolean> {
@@ -292,7 +292,7 @@ export class PostResolver {
                 return;
             }
     
-            await pubSub.publish(NEW_LIKE_EVENT, post);
+            //await pubSub.publish(NEW_LIKE_EVENT, post);
 
             await tm.query(
                 `
@@ -341,7 +341,7 @@ export class PostResolver {
         @Arg('cursor' , () => String, { nullable: true }) cursor: string | null,
         @Arg('limit', () => Int) limit: number
     ) : Promise<PaginatedPosts> {
-        const realLimit = Math.min(limit, 5);
+        const realLimit = Math.min(limit, 50);
         let date;
 
         if(cursor) {
@@ -393,7 +393,7 @@ export class PostResolver {
         );
 
         return {
-            hasMore: posts.length === realLimit+ 1,
+            hasMore: posts.length === realLimit + 1,
             posts: posts.slice(0, realLimit)
         }
     }

@@ -1,16 +1,19 @@
-query Notifications {
-    notifications {
-        text
-        type
-        createdAt
-        receiverId
-        senderId
-        postId
-        user {
-            id 
-            firstName
-            lastName
-            profileURL
+query Notifications($cursor: String, $limit: Int!) {
+    notifications(cursor: $cursor, limit: $limit) {
+        hasMore
+        notifications {
+            text
+            type
+            createdAt
+            receiverId
+            senderId
+            postId
+            user {
+                id 
+                firstName
+                lastName
+                profileURL
+            }
         }
     }
 }

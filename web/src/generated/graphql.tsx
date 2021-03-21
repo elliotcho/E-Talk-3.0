@@ -27,7 +27,7 @@ export type Query = {
   post: Post;
   userPosts: PaginatedPosts;
   posts: PaginatedPosts;
-  notifications: Array<Notification>;
+  notifications: PaginatedNotifications;
   friendRequests: Array<User>;
   friends: Array<User>;
 };
@@ -66,6 +66,12 @@ export type QueryUserPostsArgs = {
 
 
 export type QueryPostsArgs = {
+  limit: Scalars['Int'];
+  cursor?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryNotificationsArgs = {
   limit: Scalars['Int'];
   cursor?: Maybe<Scalars['String']>;
 };
@@ -120,9 +126,14 @@ export type PaginatedPosts = {
   hasMore: Scalars['Boolean'];
 };
 
+export type PaginatedNotifications = {
+  __typename?: 'PaginatedNotifications';
+  notifications: Array<Notification>;
+  hasMore: Scalars['Boolean'];
+};
+
 export type Notification = {
   __typename?: 'Notification';
-  id: Scalars['Float'];
   senderId: Scalars['Float'];
   receiverId: Scalars['Float'];
   type: Scalars['String'];
@@ -559,19 +570,26 @@ export type FriendsQuery = (
   )> }
 );
 
-export type NotificationsQueryVariables = Exact<{ [key: string]: never; }>;
+export type NotificationsQueryVariables = Exact<{
+  cursor?: Maybe<Scalars['String']>;
+  limit: Scalars['Int'];
+}>;
 
 
 export type NotificationsQuery = (
   { __typename?: 'Query' }
-  & { notifications: Array<(
-    { __typename?: 'Notification' }
-    & Pick<Notification, 'text' | 'type' | 'createdAt' | 'receiverId' | 'senderId' | 'postId'>
-    & { user: (
-      { __typename?: 'User' }
-      & Pick<User, 'id' | 'firstName' | 'lastName' | 'profileURL'>
-    ) }
-  )> }
+  & { notifications: (
+    { __typename?: 'PaginatedNotifications' }
+    & Pick<PaginatedNotifications, 'hasMore'>
+    & { notifications: Array<(
+      { __typename?: 'Notification' }
+      & Pick<Notification, 'text' | 'type' | 'createdAt' | 'receiverId' | 'senderId' | 'postId'>
+      & { user: (
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'firstName' | 'lastName' | 'profileURL'>
+      ) }
+    )> }
+  ) }
 );
 
 export type CommentsQueryVariables = Exact<{
@@ -1428,19 +1446,22 @@ export type FriendsQueryHookResult = ReturnType<typeof useFriendsQuery>;
 export type FriendsLazyQueryHookResult = ReturnType<typeof useFriendsLazyQuery>;
 export type FriendsQueryResult = Apollo.QueryResult<FriendsQuery, FriendsQueryVariables>;
 export const NotificationsDocument = gql`
-    query Notifications {
-  notifications {
-    text
-    type
-    createdAt
-    receiverId
-    senderId
-    postId
-    user {
-      id
-      firstName
-      lastName
-      profileURL
+    query Notifications($cursor: String, $limit: Int!) {
+  notifications(cursor: $cursor, limit: $limit) {
+    hasMore
+    notifications {
+      text
+      type
+      createdAt
+      receiverId
+      senderId
+      postId
+      user {
+        id
+        firstName
+        lastName
+        profileURL
+      }
     }
   }
 }
@@ -1458,10 +1479,12 @@ export const NotificationsDocument = gql`
  * @example
  * const { data, loading, error } = useNotificationsQuery({
  *   variables: {
+ *      cursor: // value for 'cursor'
+ *      limit: // value for 'limit'
  *   },
  * });
  */
-export function useNotificationsQuery(baseOptions?: Apollo.QueryHookOptions<NotificationsQuery, NotificationsQueryVariables>) {
+export function useNotificationsQuery(baseOptions: Apollo.QueryHookOptions<NotificationsQuery, NotificationsQueryVariables>) {
         return Apollo.useQuery<NotificationsQuery, NotificationsQueryVariables>(NotificationsDocument, baseOptions);
       }
 export function useNotificationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<NotificationsQuery, NotificationsQueryVariables>) {

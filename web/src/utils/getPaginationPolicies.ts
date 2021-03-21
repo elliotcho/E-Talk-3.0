@@ -1,8 +1,9 @@
 import { 
+    PaginatedNotifications,
     PaginatedPosts
 } from '../generated/graphql';
 
-export const getPaginatedPostsPolicy = (reset = false) => (
+export const getPaginatedPostsPolicy = () => (
     {
         keyArgs: ['PaginatedPosts'],
         merge(
@@ -14,6 +15,24 @@ export const getPaginatedPostsPolicy = (reset = false) => (
                 posts: [
                     ...(existing?.posts || []),
                     ...incoming.posts
+                ]
+            }
+        }
+    }
+)
+
+export const getPaginatedNotificationsPolicy = () => (
+    {
+        keyArgs: ['PaginatedNotifications'],
+        merge(
+            existing: PaginatedNotifications | undefined,
+            incoming: PaginatedNotifications
+        ) : PaginatedNotifications{
+            return {
+                ...incoming,
+                notifications: [
+                    ...(existing?.notifications || []),
+                    ...incoming.notifications
                 ]
             }
         }

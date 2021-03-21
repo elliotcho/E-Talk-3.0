@@ -66,8 +66,8 @@ export class FriendResolver {
             await tm.query(
                 `
                     delete from notification as n
-                    where (n."senderId" = $1 and n."receiverId" = $2) or 
-                    (n."receiverId" = $1 and n."senderId" = $2) and
+                    where ((n."senderId" = $1 and n."receiverId" = $2) or 
+                    (n."receiverId" = $1 and n."senderId" = $2)) and
                     n.type = $3
                 `,[uid, friendId, 'friend']
             );

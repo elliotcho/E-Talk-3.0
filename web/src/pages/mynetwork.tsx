@@ -34,7 +34,9 @@ const MyNetwork: React.FC<{}> = () => {
         update: (
             cache: ApolloCache<AcceptMutation | DeclineMutation>
         ) => {
-            cache.evict({ id: "User:" + userId });
+            cache.evict({ fieldName: 'friendRequests' });
+            
+            cache.evict({ fieldName: "notifications" });
             cache.evict({ fieldName: "posts" });
         }
     });

@@ -228,7 +228,7 @@ export class PostResolver {
     @Mutation(() => Boolean)
     @UseMiddleware(isAuth)
     async likePost(
-        //@PubSub() pubSub: PubSubEngine,
+        @PubSub() pubSub: PubSubEngine,
         @Arg('postId', () => Int) postId: number,
         @Ctx() { req } : MyContext
     ) : Promise<boolean> {
@@ -259,6 +259,8 @@ export class PostResolver {
                 if(receiverId === uid) {
                     return;
                 }
+
+                await pubSub.publish(NEW_LIKE_EVENT, post);
 
                 await tm.query(
                     `
@@ -292,7 +294,7 @@ export class PostResolver {
                 return;
             }
     
-            //await pubSub.publish(NEW_LIKE_EVENT, post);
+            await pubSub.publish(NEW_LIKE_EVENT, post);
 
             await tm.query(
                 `

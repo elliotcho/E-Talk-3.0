@@ -14,7 +14,7 @@ const Card = styled.div`
     cursor: pointer;
     color: white;
     &:hover {
-        box-shadow: 0 0 5px black;
+        box-shadow: 0 0 5px white;
     }
 `;
 

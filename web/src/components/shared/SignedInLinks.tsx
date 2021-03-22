@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useApolloClient } from '@apollo/client';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,7 +9,7 @@ import {
     faSignOutAlt
 } from '@fortawesome/free-solid-svg-icons';
 import { Nav } from 'react-bootstrap';
-import { useLogoutMutation, useNewLikeSubscription } from '../../generated/graphql';
+import { useLogoutMutation } from '../../generated/graphql';
 import { formatCount } from '../../utils/formatCount';
 import NextLink from 'next/link';
 
@@ -17,13 +17,10 @@ const Item = styled.div`
     position: relative;
     @media screen and (max-width: 767px) {
         cursor: pointer;
-        border-bottom: 1px solid black;
+        border-top: solid 1px black;
         padding: 12px;
         &:hover {
             background: black;
-        }
-        &:last-child {
-            border-bottom: 0;
         }
     }
 `;
@@ -64,8 +61,10 @@ const Box = styled.div`
    left: 50%;
    top: -45%;
    @media screen and (max-width: 767px) {
+        min-width: 45px;
+        text-align: center;
         padding: 3px 10px;
-        left: 89% !important;
+        left: 90%;
         top: 25%;
    }
 `;
@@ -88,17 +87,9 @@ const SignedInLinks : React.FC<SignedInLinksProps> = ({
     const [logout] = useLogoutMutation();
     const apolloClient = useApolloClient();
 
-    const { data, error } = useNewLikeSubscription();
-
-    const initials = (firstName && lastName) ? `${firstName[0].toUpperCase()}${lastName[0].toUpperCase()}` : '...';
-
-    useEffect(() => {
-        if(data && !error) {
-            alert("HI");
-        }
-
-        console.log(data, error)
-    }, [data, error]);
+    const initials = (firstName && lastName) ? 
+                        firstName[0].toUpperCase() + lastName[0].toUpperCase() : 
+                        '...';
 
     return (
         <Nav>
@@ -134,9 +125,7 @@ const SignedInLinks : React.FC<SignedInLinksProps> = ({
                         <FontAwesomeIcon icon={faBell} />
                     </Icon>
 
-                    <Link>
-                        Notifications
-                    </Link>
+                    <Link>Notifications</Link>
 
                     {!!notifications && (
                         <Box>

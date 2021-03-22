@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Navbar } from 'react-bootstrap';
 import { useMeQuery } from '../../generated/graphql';
 import { isServer } from '../../utils/isServer';
+import SubscriptionWrapper from '../../containers/shared/SubscriptionWrapper';
 import SignedOutLinks from '../../components/shared/SignedOutLinks';
 import SignedInLinks from '../../components/shared/SignedInLinks';
 import Searchbar from '../../components/shared/Searchbar';
@@ -46,13 +47,15 @@ const Index: React.FC<{}> = () => {
             const lastName = data?.me?.lastName || ''
 
             body = (
-                <SignedInLinks 
-                    userId = {userId}
-                    friendRequests = {friendRequests}
-                    notifications = {notifications}
-                    firstName = {firstName}
-                    lastName = {lastName}    
-                />
+                <SubscriptionWrapper>
+                     <SignedInLinks 
+                        userId = {userId}
+                        friendRequests = {friendRequests}
+                        notifications = {notifications}
+                        firstName = {firstName}
+                        lastName = {lastName}    
+                    />
+                </SubscriptionWrapper>
             );
         }
     }

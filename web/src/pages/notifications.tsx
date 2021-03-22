@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { gql } from '@apollo/client';
 import styled from 'styled-components';
 import { useNotificationsQuery, useReadNotificationsMutation } from '../generated/graphql';
 import { withApollo } from '../utils/withApollo';

@@ -19,9 +19,9 @@ export class FriendResolver {
     ): Promise<boolean> {
         await getConnection().query(
             `
-                update friend as f set f.read = true
-                where f."receiverId" = $1 
-                and f.status = false
+                update friend set read = true
+                where "receiverId" = $1 
+                and status = false
             `,[req.session.uid]
         );
 

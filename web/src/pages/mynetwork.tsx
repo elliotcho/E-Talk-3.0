@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect} from 'react';
 import { ApolloCache } from '@apollo/client';
 import styled from 'styled-components';
 import { 
+    useReadFriendRequestsMutation,
     AcceptFriendRequestMutation as AcceptMutation,
     DeclineFriendRequestMutation as DeclineMutation,
     useAcceptFriendRequestMutation, 
@@ -28,16 +29,30 @@ const MyNetwork: React.FC<{}> = () => {
 
     const [acceptRequest] = useAcceptFriendRequestMutation();
     const [declineRequest] = useDeclineFriendRequestMutation();
+    const [readRequests] = useReadFriendRequestsMutation();
 
-    const getPayload = (userId: number) => ({
+    useEffect(() => {
+        const onMount = async () => {
+            await readRequests({
+                update: (cache) => {
+                    cache.evict({ fieldName: 'me' });
+                }
+            })
+        }
+
+        onMount();
+    }, [data]);
+
+    const getMutationPayload = (userId: number) => ({
         variables: { senderId: userId },
         update: (
             cache: ApolloCache<AcceptMutation | DeclineMutation>
         ) => {
+
             cache.evict({ fieldName: 'friendRequests' });
-            
             cache.evict({ fieldName: "notifications" });
             cache.evict({ fieldName: "posts" });
+            
         }
     });
 
@@ -64,7 +79,10 @@ const MyNetwork: React.FC<{}> = () => {
                     >
                         <Button
                             onClick = {async () => {
-                                await declineRequest(getPayload(u.id));
+                                const userId = u.id;
+                                const payload = getMutationPayload(userId);
+
+                                await declineRequest(payload);
                             }}
                         >
                             Decline
@@ -72,7 +90,10 @@ const MyNetwork: React.FC<{}> = () => {
 
                         <Button
                             onClick = {async () => {
-                                await acceptRequest(getPayload(u.id));
+                                const userId = u.id;
+                                const payload = getMutationPayload(userId);
+
+                                await acceptRequest(payload);
                             }}
                         >
                             Accept

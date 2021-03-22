@@ -100,8 +100,6 @@ const SignedInLinks : React.FC<SignedInLinksProps> = ({
         console.log(data, error)
     }, [data, error]);
 
-    console.log(friendRequests, notifications)
-
     return (
         <Nav>
             <NextLink href='/mynetwork'>
@@ -112,7 +110,7 @@ const SignedInLinks : React.FC<SignedInLinksProps> = ({
 
                     <Link>My Network</Link>
 
-                    {friendRequests && (
+                    {!!friendRequests && (
                         <Box>{formatCount(friendRequests)}</Box>
                     )}
                 </Item>
@@ -140,7 +138,7 @@ const SignedInLinks : React.FC<SignedInLinksProps> = ({
                         Notifications
                     </Link>
 
-                    {notifications && (
+                    {!!notifications && (
                         <Box>
                             {formatCount(notifications)}
                         </Box>

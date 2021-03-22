@@ -79,17 +79,16 @@ export class UserResolver{
             return undefined;
         }
 
-        // const requests = await getConnection().query(
-        //     `
-        //         select u.* from "user" as u inner join friend as f 
-        //         on (u.id = f."receiverId" or u.id = f."senderId")
-        //         where f.status = false and f."receiverId" = $1 and
-        //         u.id = f."senderId" and f.read = false
-        //     `, [req.session.uid]
-        // );
+        const requests = await getConnection().query(
+            `
+                select u.* from "user" as u inner join friend as f 
+                on (u.id = f."receiverId" or u.id = f."senderId")
+                where f.status = false and f."receiverId" = $1 and
+                u.id = f."senderId" and f.read = false
+            `, [req.session.uid]
+        );
 
-        // return requests.length;
-        return 5;
+        return requests.length;
     }
 
     @FieldResolver(() => Int)
@@ -101,16 +100,14 @@ export class UserResolver{
             return undefined;
         }
 
-        // const notifications = await getConnection().query(
-        //     `
-        //         select * from notification as n 
-        //         where n."receiverId" = $2
-        //     `, [req.session.uid]
-        // );
+        const notifications = await getConnection().query(
+            `
+                select * from notification as n 
+                where n."receiverId" = $1
+            `, [req.session.uid]
+        );
 
-        // return notifications.length;
-
-        return 5;
+        return notifications.length;
     }
 
     /*

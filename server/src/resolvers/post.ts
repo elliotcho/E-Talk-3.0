@@ -383,8 +383,9 @@ export class PostResolver {
             `
               select p.* from post as p
               inner join "user" as u on p."userId" = u.id
-              inner join friend as f on u.id = f."senderId" or u.id = f."receiverId"
-              where (f."senderId" = $2 or f."receiverId" = $2) and f.status = true 
+              left outer join friend as f on u.id = f."senderId" or u.id = f."receiverId"
+              where ((f."senderId" = $2 or f."receiverId" = $2) and f.status = true)
+              or p."userId" = $2
               ${cursor? `and p."createdAt" < $3` : ``}
               order by p."createdAt" DESC
               limit $1

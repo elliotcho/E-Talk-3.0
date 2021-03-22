@@ -103,7 +103,8 @@ export class UserResolver{
         const notifications = await getConnection().query(
             `
                 select * from notification as n 
-                where n."receiverId" = $1
+                where n."receiverId" = $1 and
+                n.read = false
             `, [req.session.uid]
         );
 

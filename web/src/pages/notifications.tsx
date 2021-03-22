@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { gql } from '@apollo/client';
 import styled from 'styled-components';
-import { useNotificationsQuery } from '../generated/graphql';
+import { useNotificationsQuery, useReadNotificationsMutation } from '../generated/graphql';
 import { withApollo } from '../utils/withApollo';
 import AuthWrapper from '../containers/shared/AuthWrapper';
 import Layout from '../containers/shared/Layout';
@@ -13,7 +14,6 @@ const Header = styled.h3`
     color: white;
 `;
 
-
 const ButtonContainer = styled.div`
    max-width: 600px;
    text-align: center;
@@ -24,6 +24,20 @@ const Notifications: React.FC<{}> = () => {
     const { data, loading, fetchMore, variables } = useNotificationsQuery({
         variables: { cursor: null, limit: 5 }
     });
+
+    const [readNotifications] = useReadNotificationsMutation();
+
+    useEffect(() => {
+        const onMount= async () => {
+            await readNotifications({
+                update: (cache) => {
+                    cache.evict({ fieldName: 'me' });
+                }
+            });
+        }
+
+        onMount();
+    }, [data]);
 
     return (
         <AuthWrapper requiresAuth>

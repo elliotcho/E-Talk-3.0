@@ -165,6 +165,8 @@ export type Mutation = {
   editPost: Post;
   deletePost: Scalars['Boolean'];
   createPost: Post;
+  readNotifications: Scalars['Boolean'];
+  readFriendRequests: Scalars['Boolean'];
   removeFriend: Scalars['Boolean'];
   acceptFriendRequest: Scalars['Boolean'];
   cancelFriendRequest: Scalars['Boolean'];
@@ -358,6 +360,14 @@ export type DeclineFriendRequestMutation = (
   & Pick<Mutation, 'declineFriendRequest'>
 );
 
+export type ReadFriendRequestsMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ReadFriendRequestsMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'readFriendRequests'>
+);
+
 export type RemoveFriendMutationVariables = Exact<{
   friendId: Scalars['Int'];
 }>;
@@ -376,6 +386,14 @@ export type SendFriendRequestMutationVariables = Exact<{
 export type SendFriendRequestMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'sendFriendRequest'>
+);
+
+export type ReadNotificationsMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ReadNotificationsMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'readNotifications'>
 );
 
 export type CreateCommentMutationVariables = Exact<{
@@ -860,6 +878,35 @@ export function useDeclineFriendRequestMutation(baseOptions?: Apollo.MutationHoo
 export type DeclineFriendRequestMutationHookResult = ReturnType<typeof useDeclineFriendRequestMutation>;
 export type DeclineFriendRequestMutationResult = Apollo.MutationResult<DeclineFriendRequestMutation>;
 export type DeclineFriendRequestMutationOptions = Apollo.BaseMutationOptions<DeclineFriendRequestMutation, DeclineFriendRequestMutationVariables>;
+export const ReadFriendRequestsDocument = gql`
+    mutation ReadFriendRequests {
+  readFriendRequests
+}
+    `;
+export type ReadFriendRequestsMutationFn = Apollo.MutationFunction<ReadFriendRequestsMutation, ReadFriendRequestsMutationVariables>;
+
+/**
+ * __useReadFriendRequestsMutation__
+ *
+ * To run a mutation, you first call `useReadFriendRequestsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useReadFriendRequestsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [readFriendRequestsMutation, { data, loading, error }] = useReadFriendRequestsMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useReadFriendRequestsMutation(baseOptions?: Apollo.MutationHookOptions<ReadFriendRequestsMutation, ReadFriendRequestsMutationVariables>) {
+        return Apollo.useMutation<ReadFriendRequestsMutation, ReadFriendRequestsMutationVariables>(ReadFriendRequestsDocument, baseOptions);
+      }
+export type ReadFriendRequestsMutationHookResult = ReturnType<typeof useReadFriendRequestsMutation>;
+export type ReadFriendRequestsMutationResult = Apollo.MutationResult<ReadFriendRequestsMutation>;
+export type ReadFriendRequestsMutationOptions = Apollo.BaseMutationOptions<ReadFriendRequestsMutation, ReadFriendRequestsMutationVariables>;
 export const RemoveFriendDocument = gql`
     mutation RemoveFriend($friendId: Int!) {
   removeFriend(friendId: $friendId)
@@ -920,6 +967,35 @@ export function useSendFriendRequestMutation(baseOptions?: Apollo.MutationHookOp
 export type SendFriendRequestMutationHookResult = ReturnType<typeof useSendFriendRequestMutation>;
 export type SendFriendRequestMutationResult = Apollo.MutationResult<SendFriendRequestMutation>;
 export type SendFriendRequestMutationOptions = Apollo.BaseMutationOptions<SendFriendRequestMutation, SendFriendRequestMutationVariables>;
+export const ReadNotificationsDocument = gql`
+    mutation ReadNotifications {
+  readNotifications
+}
+    `;
+export type ReadNotificationsMutationFn = Apollo.MutationFunction<ReadNotificationsMutation, ReadNotificationsMutationVariables>;
+
+/**
+ * __useReadNotificationsMutation__
+ *
+ * To run a mutation, you first call `useReadNotificationsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useReadNotificationsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [readNotificationsMutation, { data, loading, error }] = useReadNotificationsMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useReadNotificationsMutation(baseOptions?: Apollo.MutationHookOptions<ReadNotificationsMutation, ReadNotificationsMutationVariables>) {
+        return Apollo.useMutation<ReadNotificationsMutation, ReadNotificationsMutationVariables>(ReadNotificationsDocument, baseOptions);
+      }
+export type ReadNotificationsMutationHookResult = ReturnType<typeof useReadNotificationsMutation>;
+export type ReadNotificationsMutationResult = Apollo.MutationResult<ReadNotificationsMutation>;
+export type ReadNotificationsMutationOptions = Apollo.BaseMutationOptions<ReadNotificationsMutation, ReadNotificationsMutationVariables>;
 export const CreateCommentDocument = gql`
     mutation CreateComment($postId: Int!, $text: String!) {
   createComment(postId: $postId, text: $text)

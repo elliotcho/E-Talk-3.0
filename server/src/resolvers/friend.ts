@@ -13,6 +13,21 @@ import { MyContext } from "../types";
 
 @Resolver(Friend)
 export class FriendResolver {
+    @Mutation(() => Boolean)
+    async readFriendRequests(
+        @Ctx() { req } : MyContext
+    ): Promise<boolean> {
+        await getConnection().query(
+            `
+                update friend as f set f.read = true
+                where f."receiverId" = $1 
+                and f.status = false
+            `,[req.session.uid]
+        );
+
+        return true;
+    }
+
     @Query(() => [User])
     async friendRequests(
         @Ctx() { req } : MyContext

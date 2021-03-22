@@ -4,6 +4,7 @@ import {
     Field,
     FieldResolver,
     Int,
+    Mutation,
     ObjectType,
     Query, 
     Resolver, 
@@ -51,6 +52,20 @@ export class NotificationResolver {
         @Root() notification: Notification
     ) : Promise<User | undefined> {
         return User.findOne(notification.senderId);
+    }
+
+    @Mutation(() => Boolean)
+    async readNotifications(
+        @Ctx() { req } : MyContext
+    ): Promise<boolean> {
+        await getConnection().query(
+            `
+                update notification set read = true
+                where "receiverId" = $1
+            `, [req.session.uid]
+        );
+
+        return true;
     }
 
     @Query(() => PaginatedNotifications)

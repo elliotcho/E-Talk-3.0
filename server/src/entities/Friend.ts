@@ -24,6 +24,10 @@ export class Friend extends BaseEntity {
     @Column({ default: false })
     status: boolean;
 
+    @Field()
+    @Column({ default: false })
+    read: boolean;
+
     @ManyToOne(() => User, user => user.friends)
     user: User;
 

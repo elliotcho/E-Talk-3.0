@@ -12,18 +12,22 @@ import { useLogoutMutation, useNewLikeSubscription } from '../../generated/graph
 import NextLink from 'next/link';
 
 const Item = styled.div`
+    position: relative;
     @media screen and (max-width: 768px) {
         cursor: pointer;
-        margin-top: 20px;
+        border-bottom: 1px solid black;
         padding: 12px;
         &:hover {
             background: black;
+        }
+        &:last-child {
+            border-bottom: 0;
         }
     }
 `;
 
 const Icon = styled.span`
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     font-weight: bold;
     margin-right: 30px;
     cursor: pointer;
@@ -45,6 +49,22 @@ const Link = styled.span`
        ${Item}:hover & {
            text-decoration: underline;
        }
+   }
+`;
+
+const Box = styled.div`
+   color: white;
+   background: orangered;
+   position: absolute;
+   font-size: 0.8rem;
+   font-weight: bold;
+   padding: 2px 5px;
+   left: 33%;
+   top: -45%;
+   @media screen and (max-width: 768px) {
+        padding: 3px 10px;
+        left: 89% !important;
+        top: 25%;
    }
 `;
 
@@ -79,6 +99,8 @@ const SignedInLinks : React.FC<SignedInLinksProps> = ({ userId, firstName, lastN
                     </Icon>
 
                     <Link>My Network</Link>
+
+                    <Box>129</Box>
                 </Item>
             </NextLink>
 
@@ -91,6 +113,8 @@ const SignedInLinks : React.FC<SignedInLinksProps> = ({ userId, firstName, lastN
                     <Link>
                         Notifications
                     </Link>
+
+                    <Box style={{ left: '25%'}}>1.2k</Box>
                 </Item>
             </NextLink>
 

@@ -6,6 +6,7 @@ import NextLink from 'next/link';
 const Card = styled.div`
     display: flex;
     align-items: center;
+    width: 90%;
     max-width: 600px;
     margin: 50px auto;
     background: #313131;

@@ -1,6 +1,7 @@
 import { Field, ObjectType } from 'type-graphql';
 import { 
     BaseEntity,
+    Column,
     CreateDateColumn,
     Entity,
     ManyToOne,
@@ -27,6 +28,10 @@ export class Notification extends BaseEntity {
     @Field()
     @PrimaryColumn({ default: 0 })
     postId: number;
+
+    @Field()
+    @Column({ default: false })
+    read: boolean;
 
     @Field(() => User)
     @ManyToOne(() => User, user => user.notifications)

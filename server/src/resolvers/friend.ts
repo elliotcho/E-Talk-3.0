@@ -20,7 +20,7 @@ export class FriendResolver {
         const friendRequests = await getConnection().query(
             `
                 select u.* from "user" as u inner join friend as f 
-                on u.id = f."receiverId" or u.id = f."senderId"
+                on (u.id = f."receiverId" or u.id = f."senderId")
                 where f.status = false and f."receiverId" = $1 and
                 u.id = f."senderId"
             `, [req.session.uid]

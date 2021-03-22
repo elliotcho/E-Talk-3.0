@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Formik, Form } from 'formik';
 import styled from 'styled-components';
 import { FormControl } from 'react-bootstrap';
@@ -16,8 +16,6 @@ const Container = styled.div`
 `;
 
 const Searchbar : React.FC<{}> = () => {
-    const [query, setQuery] = useState('');
-
     const router = useRouter();
     let isProfile = router.pathname.includes('profile');
     let searchQuery = router.query.query as string;

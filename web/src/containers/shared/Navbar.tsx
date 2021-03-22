@@ -40,12 +40,16 @@ const Index: React.FC<{}> = () => {
         
         else {
             const userId = data?.me?.id || -1;
+            const friendRequests = data?.me?.unreadFriendRequests;
+            const notifications = data?.me?.unreadNotifications;
             const firstName = data?.me?.firstName || '';
             const lastName = data?.me?.lastName || ''
 
             body = (
                 <SignedInLinks 
                     userId = {userId}
+                    friendRequests = {friendRequests}
+                    notifications = {notifications}
                     firstName = {firstName}
                     lastName = {lastName}    
                 />

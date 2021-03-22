@@ -70,6 +70,49 @@ export class UserResolver{
         return user.id === req.session.uid;
     }
 
+    @FieldResolver(() => Int)
+    async unreadFriendRequests(
+        @Root() user: User,
+        @Ctx() { req } : MyContext
+    ) : Promise<number | undefined> {
+        if(user.id !== req.session.uid) {
+            return undefined;
+        }
+
+        // const requests = await getConnection().query(
+        //     `
+        //         select u.* from "user" as u inner join friend as f 
+        //         on (u.id = f."receiverId" or u.id = f."senderId")
+        //         where f.status = false and f."receiverId" = $1 and
+        //         u.id = f."senderId" and f.read = false
+        //     `, [req.session.uid]
+        // );
+
+        // return requests.length;
+        return 5;
+    }
+
+    @FieldResolver(() => Int)
+    async unreadNotifications(
+        @Root() user: User,
+        @Ctx() { req } : MyContext
+    ) : Promise<number | undefined> {
+        if(user.id !== req.session.uid) {
+            return undefined;
+        }
+
+        // const notifications = await getConnection().query(
+        //     `
+        //         select * from notification as n 
+        //         where n."receiverId" = $2
+        //     `, [req.session.uid]
+        // );
+
+        // return notifications.length;
+
+        return 5;
+    }
+
     /*
         return 0 if not friends
         return 1 if friend request pending

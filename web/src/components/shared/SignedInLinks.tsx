@@ -5,15 +5,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
     faBell,
     faUserFriends,
+    faCommentAlt,
     faSignOutAlt
 } from '@fortawesome/free-solid-svg-icons';
 import { Nav } from 'react-bootstrap';
 import { useLogoutMutation, useNewLikeSubscription } from '../../generated/graphql';
+import { formatCount } from '../../utils/formatCount';
 import NextLink from 'next/link';
 
 const Item = styled.div`
     position: relative;
-    @media screen and (max-width: 768px) {
+    @media screen and (max-width: 767px) {
         cursor: pointer;
         border-bottom: 1px solid black;
         padding: 12px;
@@ -29,7 +31,7 @@ const Item = styled.div`
 const Icon = styled.span`
     font-size: 1.2rem;
     font-weight: bold;
-    margin-right: 30px;
+    margin: 0 15px;
     cursor: pointer;
     color: white;
     @media screen and (min-width: 768px) {
@@ -41,7 +43,7 @@ const Icon = styled.span`
 
 const Link = styled.span`
    display: none;
-   @media screen and (max-width: 768px) {
+   @media screen and (max-width: 767px) {
        color: white;
        display: inline-block;
        position: relative;
@@ -59,9 +61,9 @@ const Box = styled.div`
    font-size: 0.8rem;
    font-weight: bold;
    padding: 2px 5px;
-   left: 33%;
+   left: 50%;
    top: -45%;
-   @media screen and (max-width: 768px) {
+   @media screen and (max-width: 767px) {
         padding: 3px 10px;
         left: 89% !important;
         top: 25%;
@@ -70,11 +72,19 @@ const Box = styled.div`
 
 interface SignedInLinksProps {
     userId: number;
+    friendRequests: number;
+    notifications: number;
     firstName: string;
     lastName: string;
 }
 
-const SignedInLinks : React.FC<SignedInLinksProps> = ({ userId, firstName, lastName }) => {
+const SignedInLinks : React.FC<SignedInLinksProps> = ({ 
+    userId, 
+    friendRequests,
+    notifications,
+    firstName, 
+    lastName 
+}) => {
     const [logout] = useLogoutMutation();
     const apolloClient = useApolloClient();
 
@@ -88,7 +98,9 @@ const SignedInLinks : React.FC<SignedInLinksProps> = ({ userId, firstName, lastN
         }
 
         console.log(data, error)
-    }, [data, error])
+    }, [data, error]);
+
+    console.log(friendRequests, notifications)
 
     return (
         <Nav>
@@ -99,6 +111,20 @@ const SignedInLinks : React.FC<SignedInLinksProps> = ({ userId, firstName, lastN
                     </Icon>
 
                     <Link>My Network</Link>
+
+                    {friendRequests && (
+                        <Box>{formatCount(friendRequests)}</Box>
+                    )}
+                </Item>
+            </NextLink>
+
+            <NextLink href='/'>
+                <Item>
+                    <Icon>
+                        <FontAwesomeIcon icon={faCommentAlt}/>      
+                    </Icon>
+
+                    <Link>Messages</Link>
 
                     <Box>129</Box>
                 </Item>
@@ -114,7 +140,11 @@ const SignedInLinks : React.FC<SignedInLinksProps> = ({ userId, firstName, lastN
                         Notifications
                     </Link>
 
-                    <Box style={{ left: '25%'}}>1.2k</Box>
+                    {notifications && (
+                        <Box>
+                            {formatCount(notifications)}
+                        </Box>
+                    )}
                 </Item>
             </NextLink>
 
@@ -137,7 +167,7 @@ const SignedInLinks : React.FC<SignedInLinksProps> = ({ userId, firstName, lastN
                 }}
             >
                 <Icon>
-                        <FontAwesomeIcon icon={faSignOutAlt}/>
+                    <FontAwesomeIcon icon={faSignOutAlt}/>
                 </Icon>
 
                 <Link>Logout</Link>

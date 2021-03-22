@@ -93,6 +93,8 @@ export type User = {
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
   isMe: Scalars['Boolean'];
+  unreadFriendRequests: Scalars['Int'];
+  unreadNotifications: Scalars['Int'];
   friendStatus: Scalars['Int'];
 };
 
@@ -138,8 +140,9 @@ export type Notification = {
   receiverId: Scalars['Float'];
   type: Scalars['String'];
   postId: Scalars['Float'];
+  read: Scalars['Boolean'];
   user: User;
-  createdAt: Scalars['DateTime'];
+  createdAt: Scalars['String'];
   updatedAt: Scalars['DateTime'];
   text: Scalars['String'];
 };
@@ -317,6 +320,7 @@ export type RegularUserResponseFragment = (
   { __typename?: 'UserResponse' }
   & { user?: Maybe<(
     { __typename?: 'User' }
+    & Pick<User, 'unreadFriendRequests' | 'unreadNotifications'>
     & RegularUserFragment
   )>, errors?: Maybe<Array<(
     { __typename?: 'FieldError' }
@@ -679,6 +683,7 @@ export type MeQuery = (
   { __typename?: 'Query' }
   & { me?: Maybe<(
     { __typename?: 'User' }
+    & Pick<User, 'unreadFriendRequests' | 'unreadNotifications'>
     & RegularUserFragment
   )> }
 );
@@ -755,6 +760,8 @@ export const RegularErrorFragmentDoc = gql`
 export const RegularUserResponseFragmentDoc = gql`
     fragment RegularUserResponse on UserResponse {
   user {
+    unreadFriendRequests
+    unreadNotifications
     ...RegularUser
   }
   errors {
@@ -1681,6 +1688,8 @@ export const MeDocument = gql`
     query Me {
   me {
     ...RegularUser
+    unreadFriendRequests
+    unreadNotifications
   }
 }
     ${RegularUserFragmentDoc}`;

@@ -1,5 +1,7 @@
 fragment RegularUserResponse on UserResponse {
     user {
+        unreadFriendRequests
+        unreadNotifications
         ...RegularUser
     }
 

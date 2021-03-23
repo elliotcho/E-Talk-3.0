@@ -31,7 +31,6 @@ const Item = styled.div`
 
 const Icon = styled.span`
     font-size: 1.2rem;
-    font-weight: bold;
     margin: 0 15px;
     cursor: pointer;
     color: white;

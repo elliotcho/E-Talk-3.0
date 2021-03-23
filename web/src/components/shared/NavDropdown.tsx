@@ -2,7 +2,7 @@ import React from 'react';
 import { useApolloClient } from '@apollo/client';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faSignOutAlt, faUserCog } from '@fortawesome/free-solid-svg-icons';
 import { useLogoutMutation } from '../../generated/graphql';
 import { isServer } from '../../utils/isServer';
 import NextLink from 'next/link';
@@ -10,10 +10,10 @@ import NextLink from 'next/link';
 const Dropdown = styled.div`
     z-index: 1;
     box-shadow: 0 0 5px black;
-    min-width: 160px;
+    min-width: 200px;
     position: absolute;
     background: #f9f9f9;
-    right: 5px;
+    right: 0px;
     top: 6vh;
 `;
 
@@ -22,9 +22,14 @@ const Option = styled.div`
     font-size: 1.3rem;
     padding: 10px 20px;
     &:hover {
-        background: salmon;
+        background: darkblue;
         color: white;
     }
+`;
+
+const Icon = styled.span`
+    margin-right: 10px;
+    font-weight: bold;
 `;
 
 interface NavDropdownProps {
@@ -55,10 +60,23 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
 
     return (
         <Dropdown style={style}>
-            <NextLink href={`profile/${userId}`}>
+            <NextLink href={`/profile/${userId}`}>
                 <Option>
-                    {initials}
+                    <Icon>
+                        {initials}
+                    </Icon>
+
                     Profile
+                </Option>
+            </NextLink>
+
+            <NextLink href='/'>
+                <Option>
+                    <Icon>
+                        <FontAwesomeIcon icon={faUserCog} />
+                    </Icon>
+
+                    Settings
                 </Option>
             </NextLink>
 
@@ -70,7 +88,10 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
                     await apolloClient.resetStore();
                 }}
             >
-                <FontAwesomeIcon icon={faSignOutAlt}/>
+                <Icon>
+                    <FontAwesomeIcon icon={faSignOutAlt}/>
+                </Icon>
+
                 Logout
             </Option>
         </Dropdown>

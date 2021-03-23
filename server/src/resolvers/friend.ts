@@ -3,16 +3,36 @@ import {
     Ctx,
     Int,
     Mutation,
+    PubSub,
+    PubSubEngine,
     Query,
-    Resolver
+    Resolver,
+    Root,
+    Subscription
 } from "type-graphql";
 import { getConnection } from "typeorm";
+import { Notification } from '../entities/Notification';
 import { Friend } from "../entities/Friend";
 import { User } from '../entities/User';
-import { MyContext } from "../types";
+import { filterSubscription } from '../utils/filterSubscription';
+import { MyContext, SubscriptionPayload } from "../types";
+
+const NEW_FRIEND_EVENT = 'NEW_FRIEND_EVENT';
 
 @Resolver(Friend)
 export class FriendResolver {
+    @Subscription(() => Notification, {
+        topics: NEW_FRIEND_EVENT,
+        filter: filterSubscription
+    })
+    async newFriend(
+        @Root() payload: SubscriptionPayload
+    ): Promise<Notification | undefined> {
+        return Notification.findOne({
+            ...payload, type: 'friend'
+        });
+    }
+ 
     @Mutation(() => Boolean)
     async readFriendRequests(
         @Ctx() { req } : MyContext
@@ -93,6 +113,7 @@ export class FriendResolver {
 
     @Mutation(() => Boolean)
     async acceptFriendRequest(
+        @PubSub() pubSub: PubSubEngine,
         @Arg('senderId', () => Int) senderId: number,
         @Ctx() { req } : MyContext
     ) : Promise<boolean> {
@@ -123,6 +144,11 @@ export class FriendResolver {
                     values  ($1, $2, $3)
                 `, [senderId, uid, "friend"]
             );
+        });
+
+        await pubSub.publish(NEW_FRIEND_EVENT, {
+            receiverId: senderId,
+            senderId: uid
         });
 
         return true;

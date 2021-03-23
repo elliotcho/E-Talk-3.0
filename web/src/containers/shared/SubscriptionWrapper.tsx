@@ -3,6 +3,7 @@ import { useApolloClient } from '@apollo/client';
 import { toast } from 'react-toastify';
 import {
     useNewCommentSubscription,
+    useNewFriendSubscription,
     useNewLikeSubscription
 } from '../../generated/graphql';   
 import Toast from '../../components/shared/Toast';
@@ -12,6 +13,7 @@ const SubscriptionWrapper: React.FC<{}> = ({ children }) => {
 
     const { data: newLikeData } = useNewLikeSubscription();
     const { data: newCommentData } = useNewCommentSubscription();
+    const { data: newFriendData } = useNewFriendSubscription();
 
     useEffect(() => {
 
@@ -49,9 +51,27 @@ const SubscriptionWrapper: React.FC<{}> = ({ children }) => {
             });
         }
 
+        if(newFriendData) {
+            cache.evict({ fieldName: 'notifications' });
+
+            const notification = newFriendData?.newFriend;
+      
+            const props = {
+                route: '/notifications',
+                ...notification.user,
+                ...notification
+            }
+            
+            toast.success(<Toast {...props}/>, {
+                position: toast.POSITION.BOTTOM_RIGHT,
+                draggable: false
+            });
+        }
+
+
         cache.evict({ fieldName: 'me' });
 
-    }, [newLikeData, newCommentData]);
+    }, [newLikeData, newCommentData, newFriendData]);
 
     return (
         <>

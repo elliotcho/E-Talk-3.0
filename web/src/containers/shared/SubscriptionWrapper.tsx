@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useApolloClient } from '@apollo/client';
-import { toast } from 'react-toastify';
 import {
     useNewCommentSubscription,
     useNewFriendSubscription,
@@ -26,47 +25,43 @@ const SubscriptionWrapper: React.FC<{}> = ({ children }) => {
     ];
 
     useEffect(() => {
-        if(newLikeData || newCommentData || newFriendData) {
-            cache.evict({ fieldName: 'notifications' });
-        }
+        if(newLikeData || newCommentData || newFriendData) cache.evict({ fieldName: 'notifications' });
+        if(newRequestData) cache.evict({ fieldName: 'friendRequests' });
+        cache.evict({ fieldName: 'me' });
 
         if(newLikeData) {
-            const payload = newLikeData?.newLike;
+            const data = newLikeData?.newLike;
             const route = '/notifications';
             const type = 'error';
             
-            createToast(payload, Toast, route, type);
+            createToast(data, Toast, route, type);
         }
 
         if(newCommentData) {
-            const payload = newCommentData?.newComment;
+            const data = newCommentData?.newComment;
             const route = '/notifications';
             const type = 'dark';
       
-            createToast(payload, Toast, route, type);
+            createToast(data, Toast, route, type);
         }
 
         if(newFriendData) {
-            const payload = newFriendData?.newFriend;
+            const data = newFriendData?.newFriend;
             const route = '/notifications';
             const type = 'success';
       
-            createToast(payload, Toast, route, type);
+            createToast(data, Toast, route, type);
         }
 
         if(newRequestData) {
-            cache.evict({ fieldName: 'friendRequests' });
-
             const text = 'sent you a friend request';
 
-            const payload = { ...newRequestData?.newFriendRequest, text };
+            const data = { ...newRequestData?.newFriendRequest, text };
             const route = '/mynetwork';
             const type = 'warning';
 
-            createToast(payload, Toast, route, type);
+            createToast(data, Toast, route, type);
         }
-
-        cache.evict({ fieldName: 'me' });
 
     }, subscriptionData);
 

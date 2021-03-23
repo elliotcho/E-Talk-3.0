@@ -14,7 +14,6 @@ const Image = styled.img`
 `;
 
 const Body = styled.div`
-    font-size: 1.2rem;
     overflow-wrap: break-word;
     white-space: pre-wrap;
     margin-left: 15px;

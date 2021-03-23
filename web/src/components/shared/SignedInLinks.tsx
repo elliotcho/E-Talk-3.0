@@ -1,20 +1,24 @@
-import React from 'react';
-import { useApolloClient } from '@apollo/client';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
     faBell,
     faUserFriends,
     faCommentAlt,
-    faSignOutAlt
+    faPlus
 } from '@fortawesome/free-solid-svg-icons';
 import { Nav } from 'react-bootstrap';
-import { useLogoutMutation } from '../../generated/graphql';
 import { formatCount } from '../../utils/formatCount';
+import NavDropdown from './NavDropdown';
 import NextLink from 'next/link';
 
 const Item = styled.div`
     position: relative;
+
+    &:first-child {
+        border-top: none;
+    }
+
     @media screen and (max-width: 767px) {
         cursor: pointer;
         border-top: solid 1px black;
@@ -84,8 +88,7 @@ const SignedInLinks : React.FC<SignedInLinksProps> = ({
     firstName, 
     lastName 
 }) => {
-    const [logout] = useLogoutMutation();
-    const apolloClient = useApolloClient();
+    const [open, setOpen] = useState(false);
 
     const initials = (firstName && lastName) ? 
                         firstName[0].toUpperCase() + lastName[0].toUpperCase() : 
@@ -135,29 +138,19 @@ const SignedInLinks : React.FC<SignedInLinksProps> = ({
                 </Item>
             </NextLink>
 
-            <NextLink href={`/profile/${userId}`}>
-                <Item>
-                    <Icon>
-                        {initials}
-                    </Icon>
-
-                    <Link>Profile</Link>
-                </Item>
-            </NextLink>
-
-            <Item
-                 onClick = {async (e) => {
-                    e.preventDefault();
-
-                    await logout();
-                    await apolloClient.resetStore();
-                }}
-            >
+            <Item onClick={() => setOpen(true)} id='basic-nav-dropdown'>
                 <Icon>
-                    <FontAwesomeIcon icon={faSignOutAlt}/>
+                    <FontAwesomeIcon icon={faPlus} />
                 </Icon>
 
-                <Link>Logout</Link>
+                <Link>See More</Link>
+
+                <NavDropdown 
+                    open = {open}
+                    onClose = {() => setOpen(false)}
+                    initials = {initials}
+                    userId = {userId}
+                />
             </Item>
         </Nav>
     )

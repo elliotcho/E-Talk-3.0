@@ -7,6 +7,7 @@ import {
     useNewFriendRequestSubscription,
     useNewLikeSubscription
 } from '../../generated/graphql';   
+import { createToast } from '../../utils/createToast';
 import Toast from '../../components/shared/Toast';
 
 const SubscriptionWrapper: React.FC<{}> = ({ children }) => {
@@ -17,81 +18,57 @@ const SubscriptionWrapper: React.FC<{}> = ({ children }) => {
     const { data: newRequestData } = useNewFriendRequestSubscription();
     const { data: newFriendData } = useNewFriendSubscription();
 
+    const subscriptionData = [
+        newLikeData, 
+        newCommentData, 
+        newFriendData, 
+        newRequestData
+    ];
+
     useEffect(() => {
+        if(newLikeData || newCommentData || newFriendData) {
+            cache.evict({ fieldName: 'notifications' });
+        }
 
         if(newLikeData) {
-            cache.evict({ fieldName: 'notifications' });
-
-            const notification = newLikeData?.newLike;
-      
-            const props = {
-                route: '/notifications',
-                ...notification.user,
-                ...notification
-            }
+            const payload = newLikeData?.newLike;
+            const route = '/notifications';
+            const type = 'error';
             
-            toast.error(<Toast {...props}/>, {
-                position: toast.POSITION.BOTTOM_RIGHT,
-                draggable: false
-            });
+            createToast(payload, Toast, route, type);
         }
 
         if(newCommentData) {
-            cache.evict({ fieldName: 'notifications' });
-
-            const notification = newCommentData?.newComment;
+            const payload = newCommentData?.newComment;
+            const route = '/notifications';
+            const type = 'dark';
       
-            const props = {
-                route: '/notifications',
-                ...notification.user,
-                ...notification
-            }
-            
-            toast.dark(<Toast {...props}/>, {
-                position: toast.POSITION.BOTTOM_RIGHT,
-                draggable: false
-            });
+            createToast(payload, Toast, route, type);
         }
 
         if(newFriendData) {
-            cache.evict({ fieldName: 'notifications' });
-
-            const notification = newFriendData?.newFriend;
+            const payload = newFriendData?.newFriend;
+            const route = '/notifications';
+            const type = 'success';
       
-            const props = {
-                route: '/notifications',
-                ...notification.user,
-                ...notification
-            }
-            
-            toast.success(<Toast {...props}/>, {
-                position: toast.POSITION.BOTTOM_RIGHT,
-                draggable: false
-            });
+            createToast(payload, Toast, route, type);
         }
 
         if(newRequestData) {
             cache.evict({ fieldName: 'friendRequests' });
 
-            const user = newRequestData?.newFriendRequest;
-      
-            const props = {
-                route: '/mynetwork',
-                text: 'sent you a friend request',
-                ...user
-            }
-            
-            toast.warning(<Toast {...props}/>, {
-                position: toast.POSITION.BOTTOM_RIGHT,
-                draggable: false
-            });
+            const text = 'sent you a friend request';
+
+            const payload = { ...newRequestData?.newFriendRequest, text };
+            const route = '/mynetwork';
+            const type = 'warning';
+
+            createToast(payload, Toast, route, type);
         }
-
-
 
         cache.evict({ fieldName: 'me' });
 
-    }, [newLikeData, newCommentData, newFriendData, newRequestData]);
+    }, subscriptionData);
 
     return (
         <>

@@ -18,9 +18,20 @@ import { filterSubscription } from '../utils/filterSubscription';
 import { MyContext, SubscriptionPayload } from "../types";
 
 const NEW_FRIEND_EVENT = 'NEW_FRIEND_EVENT';
+const NEW_FRIEND_REQUEST_EVENT = 'NEW_FRIEND_REQUEST_EVENT';
 
 @Resolver(Friend)
 export class FriendResolver {
+    @Subscription(() => User, {
+        topics: NEW_FRIEND_REQUEST_EVENT,
+        filter: filterSubscription
+    })
+    async newFriendRequest(
+        @Root() { senderId } : SubscriptionPayload
+    ) : Promise<User | undefined> {
+        return User.findOne(senderId);
+    }
+
     @Subscription(() => Notification, {
         topics: NEW_FRIEND_EVENT,
         filter: filterSubscription
@@ -194,15 +205,23 @@ export class FriendResolver {
 
     @Mutation(() => Boolean)
     async sendFriendRequest(
-        @Arg('receiverId', () => Int) recceiverId: number,
+        @PubSub() pubSub: PubSubEngine,
+        @Arg('receiverId', () => Int) receiverId: number,
         @Ctx() { req } : MyContext
     ): Promise<boolean> {
+        const { uid } = req.session;
+
         await getConnection().query(
             `
                 insert into friend ("receiverId", "senderId")
                 values ($1, $2)
-            `, [recceiverId, req.session.uid]
+            `, [receiverId, uid]
         );
+
+        await pubSub.publish(NEW_FRIEND_REQUEST_EVENT, {
+            senderId: uid,
+            receiverId
+        });
 
         return true;
     }

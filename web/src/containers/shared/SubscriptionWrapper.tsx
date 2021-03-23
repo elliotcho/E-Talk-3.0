@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import {
     useNewCommentSubscription,
     useNewFriendSubscription,
+    useNewFriendRequestSubscription,
     useNewLikeSubscription
 } from '../../generated/graphql';   
 import Toast from '../../components/shared/Toast';
@@ -13,6 +14,7 @@ const SubscriptionWrapper: React.FC<{}> = ({ children }) => {
 
     const { data: newLikeData } = useNewLikeSubscription();
     const { data: newCommentData } = useNewCommentSubscription();
+    const { data: newRequestData } = useNewFriendRequestSubscription();
     const { data: newFriendData } = useNewFriendSubscription();
 
     useEffect(() => {
@@ -68,10 +70,28 @@ const SubscriptionWrapper: React.FC<{}> = ({ children }) => {
             });
         }
 
+        if(newRequestData) {
+            cache.evict({ fieldName: 'friendRequests' });
+
+            const user = newRequestData?.newFriendRequest;
+      
+            const props = {
+                route: '/mynetwork',
+                text: 'sent you a friend request',
+                ...user
+            }
+            
+            toast.warning(<Toast {...props}/>, {
+                position: toast.POSITION.BOTTOM_RIGHT,
+                draggable: false
+            });
+        }
+
+
 
         cache.evict({ fieldName: 'me' });
 
-    }, [newLikeData, newCommentData, newFriendData]);
+    }, [newLikeData, newCommentData, newFriendData, newRequestData]);
 
     return (
         <>

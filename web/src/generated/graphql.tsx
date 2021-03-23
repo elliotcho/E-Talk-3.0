@@ -298,6 +298,7 @@ export type Subscription = {
   __typename?: 'Subscription';
   newComment: Notification;
   newLike: Notification;
+  newFriendRequest: User;
   newFriend: Notification;
 };
 
@@ -749,6 +750,17 @@ export type NewFriendSubscription = (
   & { newFriend: (
     { __typename?: 'Notification' }
     & RegularNotificationFragment
+  ) }
+);
+
+export type NewFriendRequestSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type NewFriendRequestSubscription = (
+  { __typename?: 'Subscription' }
+  & { newFriendRequest: (
+    { __typename?: 'User' }
+    & RegularUserFragment
   ) }
 );
 
@@ -1924,6 +1936,34 @@ export function useNewFriendSubscription(baseOptions?: Apollo.SubscriptionHookOp
       }
 export type NewFriendSubscriptionHookResult = ReturnType<typeof useNewFriendSubscription>;
 export type NewFriendSubscriptionResult = Apollo.SubscriptionResult<NewFriendSubscription>;
+export const NewFriendRequestDocument = gql`
+    subscription NewFriendRequest {
+  newFriendRequest {
+    ...RegularUser
+  }
+}
+    ${RegularUserFragmentDoc}`;
+
+/**
+ * __useNewFriendRequestSubscription__
+ *
+ * To run a query within a React component, call `useNewFriendRequestSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useNewFriendRequestSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNewFriendRequestSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useNewFriendRequestSubscription(baseOptions?: Apollo.SubscriptionHookOptions<NewFriendRequestSubscription, NewFriendRequestSubscriptionVariables>) {
+        return Apollo.useSubscription<NewFriendRequestSubscription, NewFriendRequestSubscriptionVariables>(NewFriendRequestDocument, baseOptions);
+      }
+export type NewFriendRequestSubscriptionHookResult = ReturnType<typeof useNewFriendRequestSubscription>;
+export type NewFriendRequestSubscriptionResult = Apollo.SubscriptionResult<NewFriendRequestSubscription>;
 export const NewCommentDocument = gql`
     subscription NewComment {
   newComment {

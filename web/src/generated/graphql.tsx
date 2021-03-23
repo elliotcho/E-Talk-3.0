@@ -296,6 +296,7 @@ export type LoginInput = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  newComment: Notification;
   newLike: Notification;
 };
 
@@ -304,7 +305,7 @@ export type RegularNotificationFragment = (
   & Pick<Notification, 'text' | 'type' | 'createdAt' | 'receiverId' | 'senderId' | 'postId'>
   & { user: (
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'firstName' | 'lastName' | 'profileURL'>
+    & Pick<User, 'id' | 'profileURL' | 'firstName' | 'lastName'>
   ) }
 );
 
@@ -739,6 +740,17 @@ export type UserQuery = (
   ) }
 );
 
+export type NewCommentSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type NewCommentSubscription = (
+  { __typename?: 'Subscription' }
+  & { newComment: (
+    { __typename?: 'Notification' }
+    & RegularNotificationFragment
+  ) }
+);
+
 export type NewLikeSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -760,9 +772,9 @@ export const RegularNotificationFragmentDoc = gql`
   postId
   user {
     id
+    profileURL
     firstName
     lastName
-    profileURL
   }
 }
     `;
@@ -1872,6 +1884,34 @@ export function useUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserQ
 export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
 export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
 export type UserQueryResult = Apollo.QueryResult<UserQuery, UserQueryVariables>;
+export const NewCommentDocument = gql`
+    subscription NewComment {
+  newComment {
+    ...RegularNotification
+  }
+}
+    ${RegularNotificationFragmentDoc}`;
+
+/**
+ * __useNewCommentSubscription__
+ *
+ * To run a query within a React component, call `useNewCommentSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useNewCommentSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNewCommentSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useNewCommentSubscription(baseOptions?: Apollo.SubscriptionHookOptions<NewCommentSubscription, NewCommentSubscriptionVariables>) {
+        return Apollo.useSubscription<NewCommentSubscription, NewCommentSubscriptionVariables>(NewCommentDocument, baseOptions);
+      }
+export type NewCommentSubscriptionHookResult = ReturnType<typeof useNewCommentSubscription>;
+export type NewCommentSubscriptionResult = Apollo.SubscriptionResult<NewCommentSubscription>;
 export const NewLikeDocument = gql`
     subscription NewLike {
   newLike {

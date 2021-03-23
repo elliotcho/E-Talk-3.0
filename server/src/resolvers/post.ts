@@ -21,10 +21,11 @@ import { Comment } from '../entities/Comment';
 import { Like } from '../entities/Like';
 import { Post } from '../entities/Post';
 import { User } from '../entities/User';
-
+import { filterSubscription } from '../utils/filterSubscription';
 import { MyContext, SubscriptionPayload } from '../types';
 
 const NEW_LIKE_EVENT = 'NEW_LIKE_EVENT';
+const NEW_COMMENT_EVENT = 'NEW_COMMENT_EVENT';
 
 @ObjectType()
 class PaginatedPosts {
@@ -66,15 +67,20 @@ export class PostResolver {
     }
 
     @Subscription(() => Notification, { 
+        topics: NEW_COMMENT_EVENT,
+        filter: filterSubscription
+    })
+    async newComment( 
+        @Root() payload: SubscriptionPayload,
+    ): Promise<Notification | undefined> {
+        return Notification.findOne({ where: {
+            ...payload, type: 'comment'
+        }});
+    }
+
+    @Subscription(() => Notification, { 
         topics: NEW_LIKE_EVENT,
-        filter: ({ payload, context }) => {
-            const { req } = context.connection.context;
-            const { uid } = req.session;
-
-            context.req = req;
-
-            return payload.receiverId === uid;
-        }
+        filter: filterSubscription
     })
     async newLike( 
         @Root() payload: SubscriptionPayload,
@@ -166,6 +172,7 @@ export class PostResolver {
     @Mutation(() => Boolean)
     @UseMiddleware(isAuth)
     async createComment(
+        @PubSub() pubSub: PubSubEngine,
         @Arg('postId', () => Int) postId: number,
         @Arg('text') text: string, 
         @Ctx() { req } : MyContext
@@ -201,7 +208,13 @@ export class PostResolver {
                     values  ($1, $2, $3, $4)
                 `, [receiverId, uid, postId, "comment"]
             );
-        }) ;      
+        });
+        
+        await pubSub.publish(NEW_COMMENT_EVENT, {
+            receiverId, 
+            senderId: uid,
+            postId
+        });      
 
         return true;
     }

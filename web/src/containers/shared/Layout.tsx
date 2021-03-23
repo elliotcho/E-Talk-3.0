@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
+import { ToastContainer } from 'react-toastify';
 import Navbar from './Navbar';
 
-const Container = styled.div`
+const Main = styled.div`
     height: 92vh;
     position: relative;
     background: #5a535a;
@@ -16,9 +17,10 @@ const Layout: React.FC<{}> = ({ children }) => {
         <>
             <Navbar />
 
-            <Container>
+            <Main>
+                <ToastContainer />
                 {children}
-            </Container>
+            </Main>
         </>
     )
 }

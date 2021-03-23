@@ -10,6 +10,12 @@ export type MyContext = {
     redis: Redis;
 }
 
+export type SubscriptionPayload = {
+    receiverId: number;
+    senderId: number;
+    postId?: number;
+}
+
 export type Upload = {
     createReadStream: () => Stream;
     filename: string;

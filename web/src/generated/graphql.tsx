@@ -296,8 +296,17 @@ export type LoginInput = {
 
 export type Subscription = {
   __typename?: 'Subscription';
-  newLike: Post;
+  newLike: Notification;
 };
+
+export type RegularNotificationFragment = (
+  { __typename?: 'Notification' }
+  & Pick<Notification, 'text' | 'type' | 'createdAt' | 'receiverId' | 'senderId' | 'postId'>
+  & { user: (
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'firstName' | 'lastName' | 'profileURL'>
+  ) }
+);
 
 export type RegularPostFragment = (
   { __typename?: 'Post' }
@@ -605,11 +614,7 @@ export type NotificationsQuery = (
     & Pick<PaginatedNotifications, 'hasMore'>
     & { notifications: Array<(
       { __typename?: 'Notification' }
-      & Pick<Notification, 'text' | 'type' | 'createdAt' | 'receiverId' | 'senderId' | 'postId'>
-      & { user: (
-        { __typename?: 'User' }
-        & Pick<User, 'id' | 'firstName' | 'lastName' | 'profileURL'>
-      ) }
+      & RegularNotificationFragment
     )> }
   ) }
 );
@@ -740,11 +745,27 @@ export type NewLikeSubscriptionVariables = Exact<{ [key: string]: never; }>;
 export type NewLikeSubscription = (
   { __typename?: 'Subscription' }
   & { newLike: (
-    { __typename?: 'Post' }
-    & RegularPostFragment
+    { __typename?: 'Notification' }
+    & RegularNotificationFragment
   ) }
 );
 
+export const RegularNotificationFragmentDoc = gql`
+    fragment RegularNotification on Notification {
+  text
+  type
+  createdAt
+  receiverId
+  senderId
+  postId
+  user {
+    id
+    firstName
+    lastName
+    profileURL
+  }
+}
+    `;
 export const RegularUserFragmentDoc = gql`
     fragment RegularUser on User {
   id
@@ -1533,22 +1554,11 @@ export const NotificationsDocument = gql`
   notifications(cursor: $cursor, limit: $limit) {
     hasMore
     notifications {
-      text
-      type
-      createdAt
-      receiverId
-      senderId
-      postId
-      user {
-        id
-        firstName
-        lastName
-        profileURL
-      }
+      ...RegularNotification
     }
   }
 }
-    `;
+    ${RegularNotificationFragmentDoc}`;
 
 /**
  * __useNotificationsQuery__
@@ -1865,10 +1875,10 @@ export type UserQueryResult = Apollo.QueryResult<UserQuery, UserQueryVariables>;
 export const NewLikeDocument = gql`
     subscription NewLike {
   newLike {
-    ...RegularPost
+    ...RegularNotification
   }
 }
-    ${RegularPostFragmentDoc}`;
+    ${RegularNotificationFragmentDoc}`;
 
 /**
  * __useNewLikeSubscription__

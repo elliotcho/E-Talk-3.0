@@ -64,7 +64,7 @@ const Box = styled.div`
         min-width: 45px;
         text-align: center;
         padding: 3px 10px;
-        left: 90%;
+        left: 89%;
         top: 25%;
    }
 `;

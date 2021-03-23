@@ -16,12 +16,13 @@ import {
 } from "type-graphql";
 import { getConnection } from "typeorm";;
 import { isAuth } from "../middleware/isAuth";
-// import { Notification } from '../entities/Notification';
+import { Notification } from '../entities/Notification';
 import { Comment } from '../entities/Comment';
 import { Like } from '../entities/Like';
 import { Post } from '../entities/Post';
 import { User } from '../entities/User';
-import { MyContext } from '../types';
+
+import { MyContext, SubscriptionPayload } from '../types';
 
 const NEW_LIKE_EVENT = 'NEW_LIKE_EVENT';
 
@@ -64,7 +65,7 @@ export class PostResolver {
         return User.findOne(post.userId);
     }
 
-    @Subscription(() => Post, { 
+    @Subscription(() => Notification, { 
         topics: NEW_LIKE_EVENT,
         filter: ({ payload, context }) => {
             const { req } = context.connection.context;
@@ -72,13 +73,15 @@ export class PostResolver {
 
             context.req = req;
 
-            return payload.userId === uid;
+            return payload.receiverId === uid;
         }
     })
-    newLike( 
-        @Root() post: Post | undefined
-    ): Post | undefined {
-        return post;
+    async newLike( 
+        @Root() payload: SubscriptionPayload,
+    ): Promise<Notification | undefined> {
+        return Notification.findOne({ where: {
+            ...payload, type: 'like'
+        }});
     }
 
     @Mutation(() => Boolean)
@@ -233,8 +236,8 @@ export class PostResolver {
         @Ctx() { req } : MyContext
     ) : Promise<boolean> {
         const { uid } = req.session;
-        const like = await Like.findOne({ userId: uid, postId });
 
+        const like = await Like.findOne({ userId: uid, postId });
         const post = await Post.findOne(postId);
         const receiverId = post?.userId;
 
@@ -259,8 +262,6 @@ export class PostResolver {
                 if(receiverId === uid) {
                     return;
                 }
-
-                await pubSub.publish(NEW_LIKE_EVENT, post);
 
                 await tm.query(
                     `
@@ -293,15 +294,19 @@ export class PostResolver {
             if(receiverId === uid) {
                 return;
             }
-    
-            await pubSub.publish(NEW_LIKE_EVENT, post);
-
             await tm.query(
                 `
-                    insert into notification ("receiverId", "senderId", "postId", "type")
+                    insert into notification 
+                    ("receiverId", "senderId", "postId", "type")
                     values  ($1, $2, $3, $4)
                 `, [receiverId, uid, postId, "like"]
             );
+        });
+        
+        await pubSub.publish(NEW_LIKE_EVENT, {
+            receiverId,
+            senderId: uid,
+            postId
         });
         
         return true;

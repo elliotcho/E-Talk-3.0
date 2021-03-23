@@ -51,16 +51,11 @@ const UserCard: React.FC<UserCardProps> = ({
     return (
         <Card>
             <NextLink href={route}>
-                <Image 
-                    src={profileURL} 
-                    alt='profile pic'
-                />
+                <Image src={profileURL} alt='profile pic' />
             </NextLink>
 
             <NextLink href={route}>
-                <Primary>
-                    {firstName} {lastName}
-                </Primary>
+                <Primary>{firstName} {lastName}</Primary>
             </NextLink>
 
             <Box>

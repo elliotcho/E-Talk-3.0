@@ -1,0 +1,14 @@
+fragment RegularNotification on Notification {
+    text
+    type
+    createdAt
+    receiverId
+    senderId
+    postId
+    user {
+        id 
+        profileURL
+        firstName
+        lastName
+    }
+}

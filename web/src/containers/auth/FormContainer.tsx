@@ -9,8 +9,8 @@ const Flex = styled.div`
 
 const Container = styled.div`
     margin: auto;
-    width: 400px;
     text-align: center;
+    width: 400px;
 `;
 
 const FormContainer: React.FC<{}> = ({ children }) => {

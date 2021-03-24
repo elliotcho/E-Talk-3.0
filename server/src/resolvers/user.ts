@@ -181,17 +181,9 @@ export class UserResolver{
         @Ctx() { req } : MyContext
     ) : Promise<boolean> {
         const { uid } = req.session;
-        const user = await User.findOne(uid);
-
-        if(!firstName.trim().length) {
-           lastName = user?.firstName || '';
-        } 
-
-        if(!lastName.trim().length) {
-            firstName = user?.lastName || '';
-        }
 
         await User.update({ id: uid }, { firstName, lastName });
+        
         return true;
     }
 

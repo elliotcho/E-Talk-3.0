@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Form, Formik } from 'formik';
 import { useForgotPasswordMutation } from '../generated/graphql';
 import { withApollo } from '../utils/withApollo';
-import AuthWrapper from '../containers/shared/AuthWrapper';
 import Layout from '../containers/shared/Layout';
 import FormContainer from '../containers/auth/FormContainer';
 import Title from '../components/auth/Title';
@@ -14,43 +13,41 @@ const ForgotPassword: React.FC<{}> = () => {
     const [forgotPassword] = useForgotPasswordMutation();
 
     return (
-        <AuthWrapper>
-            <Layout>
-                <Formik
-                    initialValues = {{ email: '' }}
-                    onSubmit = {async ({ email }, { setValues }) => {
-                        setIsLoading(true);
+        <Layout>
+            <Formik
+                initialValues = {{ email: '' }}
+                onSubmit = {async ({ email }, { setValues }) => {
+                    setIsLoading(true);
 
-                        await forgotPassword({
-                            variables: { email }
-                        });
+                    await forgotPassword({
+                        variables: { email }
+                    });
 
-                        setValues({ email: '' });
-                        setIsLoading(false);
-                    }}
-                >
-                    {({ values, handleChange }) => (
-                        <FormContainer>
-                            <Title>Forgot Password?</Title>
+                    setValues({ email: '' });
+                    setIsLoading(false);
+                }}
+            >
+                {({ values, handleChange }) => (
+                    <FormContainer>
+                        <Title>Forgot Password?</Title>
 
-                            <Form>
-                                <InputField
-                                    type = 'text'
-                                    placeholder = 'Email'
-                                    onChange = {handleChange}
-                                    value = {values.email}
-                                    name = 'email'
-                                />
-        
-                                <Button isLoading={isLoading}>
-                                    Submit
-                                </Button>
-                            </Form>
-                        </FormContainer>
-                    )}
-                </Formik>
-            </Layout>
-        </AuthWrapper>
+                        <Form>
+                            <InputField
+                                type = 'text'
+                                placeholder = 'Email'
+                                onChange = {handleChange}
+                                value = {values.email}
+                                name = 'email'
+                            />
+    
+                            <Button isLoading={isLoading}>
+                                Submit
+                            </Button>
+                        </Form>
+                    </FormContainer>
+                )}
+            </Formik>
+        </Layout>
     )
 }
 

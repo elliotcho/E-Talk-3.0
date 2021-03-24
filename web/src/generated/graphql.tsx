@@ -150,6 +150,8 @@ export type Notification = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  updateEmail: Scalars['Boolean'];
+  updateName: Scalars['Boolean'];
   updateBio: Scalars['Boolean'];
   removeProfilePic: UserResponse;
   updateProfilePic: UserResponse;
@@ -172,6 +174,17 @@ export type Mutation = {
   cancelFriendRequest: Scalars['Boolean'];
   declineFriendRequest: Scalars['Boolean'];
   sendFriendRequest: Scalars['Boolean'];
+};
+
+
+export type MutationUpdateEmailArgs = {
+  newEmail: Scalars['String'];
+};
+
+
+export type MutationUpdateNameArgs = {
+  lastName: Scalars['String'];
+  firstName: Scalars['String'];
 };
 
 
@@ -327,7 +340,7 @@ export type RegularErrorFragment = (
 
 export type RegularUserFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'id' | 'firstName' | 'lastName' | 'friendStatus' | 'profileURL' | 'profilePic' | 'bio'>
+  & Pick<User, 'id' | 'email' | 'firstName' | 'lastName' | 'friendStatus' | 'profileURL' | 'profilePic' | 'bio'>
 );
 
 export type RegularUserResponseFragment = (
@@ -565,6 +578,27 @@ export type UpdateBioMutationVariables = Exact<{
 export type UpdateBioMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'updateBio'>
+);
+
+export type UpdateEmailMutationVariables = Exact<{
+  newEmail: Scalars['String'];
+}>;
+
+
+export type UpdateEmailMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'updateEmail'>
+);
+
+export type UpdateNameMutationVariables = Exact<{
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+}>;
+
+
+export type UpdateNameMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'updateName'>
 );
 
 export type UpdateProfilePicMutationVariables = Exact<{
@@ -805,6 +839,7 @@ export const RegularNotificationFragmentDoc = gql`
 export const RegularUserFragmentDoc = gql`
     fragment RegularUser on User {
   id
+  email
   firstName
   lastName
   friendStatus
@@ -1488,6 +1523,67 @@ export function useUpdateBioMutation(baseOptions?: Apollo.MutationHookOptions<Up
 export type UpdateBioMutationHookResult = ReturnType<typeof useUpdateBioMutation>;
 export type UpdateBioMutationResult = Apollo.MutationResult<UpdateBioMutation>;
 export type UpdateBioMutationOptions = Apollo.BaseMutationOptions<UpdateBioMutation, UpdateBioMutationVariables>;
+export const UpdateEmailDocument = gql`
+    mutation UpdateEmail($newEmail: String!) {
+  updateEmail(newEmail: $newEmail)
+}
+    `;
+export type UpdateEmailMutationFn = Apollo.MutationFunction<UpdateEmailMutation, UpdateEmailMutationVariables>;
+
+/**
+ * __useUpdateEmailMutation__
+ *
+ * To run a mutation, you first call `useUpdateEmailMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateEmailMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateEmailMutation, { data, loading, error }] = useUpdateEmailMutation({
+ *   variables: {
+ *      newEmail: // value for 'newEmail'
+ *   },
+ * });
+ */
+export function useUpdateEmailMutation(baseOptions?: Apollo.MutationHookOptions<UpdateEmailMutation, UpdateEmailMutationVariables>) {
+        return Apollo.useMutation<UpdateEmailMutation, UpdateEmailMutationVariables>(UpdateEmailDocument, baseOptions);
+      }
+export type UpdateEmailMutationHookResult = ReturnType<typeof useUpdateEmailMutation>;
+export type UpdateEmailMutationResult = Apollo.MutationResult<UpdateEmailMutation>;
+export type UpdateEmailMutationOptions = Apollo.BaseMutationOptions<UpdateEmailMutation, UpdateEmailMutationVariables>;
+export const UpdateNameDocument = gql`
+    mutation UpdateName($firstName: String!, $lastName: String!) {
+  updateName(firstName: $firstName, lastName: $lastName)
+}
+    `;
+export type UpdateNameMutationFn = Apollo.MutationFunction<UpdateNameMutation, UpdateNameMutationVariables>;
+
+/**
+ * __useUpdateNameMutation__
+ *
+ * To run a mutation, you first call `useUpdateNameMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateNameMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateNameMutation, { data, loading, error }] = useUpdateNameMutation({
+ *   variables: {
+ *      firstName: // value for 'firstName'
+ *      lastName: // value for 'lastName'
+ *   },
+ * });
+ */
+export function useUpdateNameMutation(baseOptions?: Apollo.MutationHookOptions<UpdateNameMutation, UpdateNameMutationVariables>) {
+        return Apollo.useMutation<UpdateNameMutation, UpdateNameMutationVariables>(UpdateNameDocument, baseOptions);
+      }
+export type UpdateNameMutationHookResult = ReturnType<typeof useUpdateNameMutation>;
+export type UpdateNameMutationResult = Apollo.MutationResult<UpdateNameMutation>;
+export type UpdateNameMutationOptions = Apollo.BaseMutationOptions<UpdateNameMutation, UpdateNameMutationVariables>;
 export const UpdateProfilePicDocument = gql`
     mutation UpdateProfilePic($file: Upload!) {
   updateProfilePic(file: $file) {

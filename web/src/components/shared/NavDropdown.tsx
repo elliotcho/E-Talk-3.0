@@ -70,7 +70,7 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
                 </Option>
             </NextLink>
 
-            <NextLink href='/'>
+            <NextLink href='/settings'>
                 <Option>
                     <Icon>
                         <FontAwesomeIcon icon={faUserCog} />

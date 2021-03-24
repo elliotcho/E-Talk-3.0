@@ -10,7 +10,7 @@ const Input= styled.input`
 
 interface InputFieldProps {
     type: string;
-    placeholder: string;
+    placeholder?: string;
     onChange(e: any) : void;
     value: string;
     name: string;

@@ -160,6 +160,42 @@ export class UserResolver{
     }
 
     @Mutation(() => Boolean)
+    async updateEmail(
+        @Arg('newEmail') newEmail: string,
+        @Ctx() { req } : MyContext
+    ): Promise<boolean> {
+        const user = await User.findOne({ where: { email: newEmail } });
+
+        if(user) {
+            return false;
+        }
+
+        await User.update({ id: req.session.uid }, { email: newEmail });
+        return true;
+    }
+
+    @Mutation(() => Boolean)
+    async updateName(
+        @Arg('firstName') firstName: string,
+        @Arg('lastName') lastName: string,
+        @Ctx() { req } : MyContext
+    ) : Promise<boolean> {
+        const { uid } = req.session;
+        const user = await User.findOne(uid);
+
+        if(!firstName.trim().length) {
+           lastName = user?.firstName || '';
+        } 
+
+        if(!lastName.trim().length) {
+            firstName = user?.lastName || '';
+        }
+
+        await User.update({ id: uid }, { firstName, lastName });
+        return true;
+    }
+
+    @Mutation(() => Boolean)
     async updateBio(
         @Arg('newBio') newBio : string,
         @Ctx() { req } : MyContext

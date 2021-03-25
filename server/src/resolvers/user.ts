@@ -208,8 +208,8 @@ export class UserResolver{
         const users = await getConnection().query(
             `
                 select * from "user" as u where
-                LOWER(u."firstName") LIKE '${pattern}%' or
-                LOWER(u."lastName") LIKE '${pattern}%' 
+                LOWER(CONCAT(u."firstName", ' ', u."lastName")) 
+                LIKE '%${pattern}%'
             `
         );
 

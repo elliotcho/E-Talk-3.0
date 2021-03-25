@@ -1,9 +1,10 @@
 import React from 'react';
 import { gql } from '@apollo/client';
 import { Formik, Form } from 'formik';
-import styled from 'styled-components';
 import { useUpdateEmailMutation } from '../../generated/graphql';
-import InputField from '../../components/auth/InputField';
+import FormWrapper from './FormWrapper';
+import Title from '../../components/shared/Title';
+import InputField from '../../components/shared/InputField';
 import Button from '../../components/shared/Button';
 
 interface ChangeEmailFormProps {
@@ -48,20 +49,24 @@ const ChangeEmailForm : React.FC<ChangeEmailFormProps> = ({ userId, email }) => 
             }}
         >
             {({ values, handleChange, isSubmitting }) => (
-                <Form>
-                    <h1>Change your email</h1>
+                <FormWrapper>
+                    <Form>
+                        <Title color='black'>
+                            Change your email
+                        </Title>
 
-                    <InputField
-                        type = 'text'
-                        onChange = {handleChange}
-                        value = {values.newEmail}
-                        name = 'newEmail'
-                    />
+                        <InputField
+                            type = 'text'
+                            onChange = {handleChange}
+                            value = {values.newEmail}
+                            name = 'newEmail'
+                        />
 
-                    <Button isLoading={isSubmitting}>
-                        Submit
-                    </Button>
-                </Form>
+                        <Button isLoading={isSubmitting}>
+                            Submit
+                        </Button>
+                    </Form>
+                </FormWrapper>
             )}
         </Formik>
     )

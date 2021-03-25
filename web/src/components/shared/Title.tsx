@@ -7,8 +7,12 @@ const Header = styled.h3`
     color: white;
 `;
 
-const Title: React.FC<{}> = ({ children }) => (
-    <Header>
+interface TitleProps {
+    color?: string;
+}
+
+const Title: React.FC<TitleProps> = ({ children, color = 'white' }) => (
+    <Header style={{ color }}>
         {children}
     </Header>
 )

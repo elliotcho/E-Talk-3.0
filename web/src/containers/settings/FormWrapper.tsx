@@ -1,24 +1,24 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled  from 'styled-components';
 
 const Flex = styled.div`
-    height: 92vh;
-    align-items: center;
     display: flex;
+    align-items: center;
+    height: auto;
 `;
 
 const Container = styled.div`
-    width: 400px;
+    margin: 40px auto;
     text-align: center;
-    margin: auto;
+    width: 400px;
 `;
 
-const FormContainer: React.FC<{}> = ({ children }) =>(
+const FormWrapper: React.FC<{}> = ({ children }) => (
     <Flex>
         <Container>
             {children}
         </Container>
     </Flex>
-)
+) 
 
-export default FormContainer;
+export default FormWrapper;

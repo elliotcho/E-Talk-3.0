@@ -1,9 +1,10 @@
 import React from 'react';
 import { gql } from '@apollo/client';
 import { Formik, Form } from 'formik';
-import styled from 'styled-components';
 import { useUpdateNameMutation } from '../../generated/graphql';
-import InputField from '../../components/auth/InputField';
+import FormWrapper from './FormWrapper';
+import Title from '../../components/shared/Title';
+import InputField from '../../components/shared/InputField';
 import Button from '../../components/shared/Button';
 
 interface ChangeNameFormProps {
@@ -46,27 +47,31 @@ const ChangeNameForm : React.FC<ChangeNameFormProps> = ({ userId, firstName, las
             }}
         >
             {({ values, handleChange, isSubmitting }) => (
-                <Form>
-                    <h1>Change your name</h1>
+                <FormWrapper>
+                    <Form>
+                        <Title color='black'>
+                            Change your name
+                        </Title>
 
-                    <InputField
-                        type = 'text'
-                        onChange = {handleChange}
-                        value = {values.firstName}
-                        name = 'firstName'
-                    />
+                        <InputField
+                            type = 'text'
+                            onChange = {handleChange}
+                            value = {values.firstName}
+                            name = 'firstName'
+                        />
 
-                    <InputField
-                        type = 'text'
-                        onChange = {handleChange}
-                        value = {values.lastName}
-                        name = 'lastName'
-                    />
+                        <InputField
+                            type = 'text'
+                            onChange = {handleChange}
+                            value = {values.lastName}
+                            name = 'lastName'
+                        />
 
-                    <Button isLoading={isSubmitting}>
-                        Submit
-                    </Button>
-                </Form>
+                        <Button isLoading={isSubmitting}>
+                            Submit
+                        </Button>
+                    </Form>
+                </FormWrapper>
             )}
         </Formik>
     )

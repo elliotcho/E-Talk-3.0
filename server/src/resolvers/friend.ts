@@ -12,7 +12,6 @@ import {
 } from "type-graphql";
 import { getConnection } from "typeorm";
 import { Notification } from '../entities/Notification';
-import { Friend } from "../entities/Friend";
 import { User } from '../entities/User';
 import { filterSubscription } from '../utils/filterSubscription';
 import { MyContext, SubscriptionPayload } from "../types";
@@ -20,7 +19,7 @@ import { MyContext, SubscriptionPayload } from "../types";
 const NEW_FRIEND_EVENT = 'NEW_FRIEND_EVENT';
 const NEW_FRIEND_REQUEST_EVENT = 'NEW_FRIEND_REQUEST_EVENT';
 
-@Resolver(Friend)
+@Resolver()
 export class FriendResolver {
     @Subscription(() => User, {
         topics: NEW_FRIEND_REQUEST_EVENT,

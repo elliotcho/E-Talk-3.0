@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { withApollo } from '../../utils/withApollo';
 import Layout from '../../containers/shared/Layout';
-import Sidebar from '../../containers/profile/Sidebar';
+import ProfileSidebar from '../../containers/profile/ProfileSidebar';
 import ProfileContent from '../../containers/profile/ProfileContent';
 import { useRouter } from 'next/router';
 
@@ -20,24 +20,21 @@ const types = [
 
 const Profile : React.FC<{}> = () => {
     const { query: { id, type } } = useRouter();
-
-    let contentType = '';
+    let contentType = 'posts';
     let userId = -1;
+    
+    if(typeof type === 'string' && types.includes(type)) {
+        contentType = type;
+    }
 
     if(typeof id === 'string') {
         userId = parseInt(id);
     } 
-    
-    if(typeof type === 'string' && types.includes(type)) {
-        contentType = type;
-    } else {
-        contentType = 'posts';
-    }
 
     return (
         <Layout>
             <Container>
-                <Sidebar 
+                <ProfileSidebar 
                     userId={userId} 
                     type={contentType}
                 />

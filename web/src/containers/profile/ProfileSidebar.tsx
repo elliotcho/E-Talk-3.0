@@ -14,12 +14,12 @@ const Container = styled.div`
     color: black;
 `;
 
-interface SidebarProps {
+interface ProfileSidebarProps {
     userId: number;
     type: string;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ userId, type }) => { 
+const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ userId, type }) => { 
     const myId = useMeQuery()?.data?.me?.id;
 
     const { data } = useUserQuery({
@@ -59,4 +59,4 @@ const Sidebar: React.FC<SidebarProps> = ({ userId, type }) => {
     )
 }
 
-export default Sidebar;
+export default ProfileSidebar;

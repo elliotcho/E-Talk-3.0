@@ -8,8 +8,6 @@ import {
     UpdateDateColumn,
     OneToMany
 } from 'typeorm';
-import { Friend } from './Friend';
-import { Notification } from './Notification';
 import { Comment } from './Comment';
 import { Post } from './Post';
 import { Like } from './Like';
@@ -55,12 +53,6 @@ export class User extends BaseEntity{
 
     @OneToMany(() => Comment, (comment) => comment.user)
     comments: Comment[];
-
-    @OneToMany(() => Friend, (friend) => friend.user)
-    friends: Friend[];
-
-    @OneToMany(() => Notification, (notification) => notification.user)
-    notifications: Notification[];
 
     @Field(() => String)
     @CreateDateColumn()

@@ -4,11 +4,9 @@ import {
     Column,
     CreateDateColumn,
     Entity,
-    ManyToOne,
     PrimaryColumn,
     UpdateDateColumn
 } from 'typeorm';
-import { User } from './User';
 
 @Entity()
 export class Friend extends BaseEntity {
@@ -27,9 +25,6 @@ export class Friend extends BaseEntity {
     @Field()
     @Column({ default: false })
     read: boolean;
-
-    @ManyToOne(() => User, user => user.friends)
-    user: User;
 
     @Field()
     @CreateDateColumn()

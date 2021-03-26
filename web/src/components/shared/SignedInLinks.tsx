@@ -109,7 +109,7 @@ const SignedInLinks : React.FC<SignedInLinksProps> = ({
                 </Item>
             </NextLink>
 
-            <NextLink href='/'>
+            <NextLink href={`/chat`}>
                 <Item>
                     <Icon>
                         <FontAwesomeIcon icon={faCommentAlt}/>      

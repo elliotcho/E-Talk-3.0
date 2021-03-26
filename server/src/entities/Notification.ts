@@ -4,11 +4,9 @@ import {
     Column,
     CreateDateColumn,
     Entity,
-    ManyToOne,
     PrimaryColumn,
     UpdateDateColumn
 } from 'typeorm';
-import { User } from './User';
 
 @ObjectType()
 @Entity()
@@ -32,10 +30,6 @@ export class Notification extends BaseEntity {
     @Field()
     @Column({ default: false })
     read: boolean;
-
-    @Field(() => User)
-    @ManyToOne(() => User, user => user.notifications)
-    user: User;
 
     @Field(() => String)
     @CreateDateColumn()

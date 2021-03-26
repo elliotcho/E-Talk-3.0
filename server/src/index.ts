@@ -10,6 +10,7 @@ import { createSchema } from './utils/createSchema';
 import { Friend } from './entities/Friend';
 import { Notification } from './entities/Notification';
 import { Comment } from './entities/Comment';
+import { Chat } from './entities/Chat';
 import { User } from './entities/User';
 import { Post } from './entities/Post';
 import { Like } from './entities/Like';
@@ -27,6 +28,7 @@ const main  = async () => {
             Friend,
             Notification,
             Comment,
+            Chat,
             Post,
             User,
             Like

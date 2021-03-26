@@ -1,11 +1,18 @@
 import React from 'react';
 import { gql } from '@apollo/client';
 import { Formik, Form } from 'formik';
+import styled from 'styled-components';
+import { toast } from 'react-toastify';
 import { useUpdateEmailMutation } from '../../generated/graphql';
 import FormWrapper from './FormWrapper';
-import Title from '../../components/shared/Title';
 import InputField from '../../components/shared/InputField';
 import Button from '../../components/shared/Button';
+
+const Title = styled.h3`
+    color: black;
+    margin-bottom: 20px;
+    text-align: left;
+`;
 
 interface ChangeEmailFormProps {
     userId: number;
@@ -14,14 +21,23 @@ interface ChangeEmailFormProps {
 
 const ChangeEmailForm : React.FC<ChangeEmailFormProps> = ({ userId, email }) => {
     const [changeEmail] = useUpdateEmailMutation();
+    
+    const toastInfo = {
+        position: toast.POSITION.BOTTOM_RIGHT,
+        draggable: false
+    };
 
     return (
         <Formik
             enableReinitialize
             initialValues = {{ newEmail: email }}
             onSubmit = {async ({ newEmail }) => {
+
                 if(!newEmail.trim().length) {
+
+                    toast.error('Input cannot be empty', toastInfo);
                     return;
+                
                 }
 
                 const response = await changeEmail({ 
@@ -42,21 +58,20 @@ const ChangeEmailForm : React.FC<ChangeEmailFormProps> = ({ userId, email }) => 
                 });
 
                 if(!response?.data?.updateEmail) {
-                    alert("Email is taken");
+                    toast.error("Email is taken", toastInfo);
                 } else {
-                    alert("SAVED")
+                    toast.success("SAVED", toastInfo);
                 }
+
             }}
         >
             {({ values, handleChange, isSubmitting }) => (
                 <FormWrapper>
                     <Form>
-                        <Title color='black'>
-                            Change your email
-                        </Title>
+                        <Title>Change your email</Title>
 
                         <InputField
-                            type = 'text'
+                            type = 'email'
                             onChange = {handleChange}
                             value = {values.newEmail}
                             name = 'newEmail'

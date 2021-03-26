@@ -5,7 +5,7 @@ import { toErrorMap } from '../../utils/toErrorMap';
 import { withApollo } from '../../utils/withApollo';
 import Layout from '../../containers/shared/Layout';
 import FormContainer from '../../containers/auth/FormContainer';
-import Title from '../../components/shared/Title';
+import Title from '../../components/auth/Title';
 import InputField from '../../components/shared/InputField';
 import Button from '../../components/shared/Button';
 import ErrorText from '../../components/auth/ErrorText';

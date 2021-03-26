@@ -1,11 +1,18 @@
 import React from 'react';
 import { gql } from '@apollo/client';
 import { Formik, Form } from 'formik';
+import styled from 'styled-components';
+import { toast } from 'react-toastify';
 import { useUpdateNameMutation } from '../../generated/graphql';
 import FormWrapper from './FormWrapper';
-import Title from '../../components/shared/Title';
 import InputField from '../../components/shared/InputField';
 import Button from '../../components/shared/Button';
+
+const Title = styled.h3`
+    color: black;
+    margin-bottom: 20px;
+    text-align: left;
+`;
 
 interface ChangeNameFormProps {
     userId: number;
@@ -16,13 +23,22 @@ interface ChangeNameFormProps {
 const ChangeNameForm : React.FC<ChangeNameFormProps> = ({ userId, firstName, lastName }) => {
     const [changeName] = useUpdateNameMutation();
 
+    const toastInfo = {
+        position: toast.POSITION.BOTTOM_RIGHT,
+        draggable: false
+    };
+
     return (
         <Formik
             enableReinitialize
             initialValues = {{  firstName, lastName }}
             onSubmit = {async ({ firstName, lastName }) => {
+
                 if(!firstName.trim().length || !lastName.trim().length) {
+
+                    toast.error('Input cannot be empty', toastInfo);
                     return;
+                
                 }
 
                 await changeName({ 
@@ -39,19 +55,18 @@ const ChangeNameForm : React.FC<ChangeNameFormProps> = ({ userId, firstName, las
                                 }
                             `,
                             data: newData
-                        })
+                        });
                     }
                 });
 
-                alert("SAVED");
+                toast.success('SAVED', toastInfo);
+            
             }}
         >
             {({ values, handleChange, isSubmitting }) => (
                 <FormWrapper>
                     <Form>
-                        <Title color='black'>
-                            Change your name
-                        </Title>
+                        <Title>Change your name</Title>
 
                         <InputField
                             type = 'text'

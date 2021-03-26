@@ -7,6 +7,7 @@ import AuthWrapper from '../containers/shared/AuthWrapper';
 import Layout from '../containers/shared/Layout';
 import ChangeEmailForm from '../containers/settings/ChangeEmailForm';
 import ChangeNameForm from '../containers/settings/ChangeNameForm';
+import Details from '../components/settings/Details';
 import NextLink from 'next/link';
 
 const Container = styled.div`
@@ -17,22 +18,11 @@ const Container = styled.div`
     width: 90%;
 `;
 
-const Details = styled.details`
-    border: solid black 1px;
-    padding: 30px;
-`;
-
-const Summary = styled.summary`
-    &:focus {
-        outline: none;
-    }
-`;
-
 const Link = styled.h3`
     cursor: pointer;
     color: #0275d8;
-    text-align: center;
-    margin-top: 50px;
+    margin: 50px auto 0;
+    width: fit-content;
     &:hover {
         text-decoration: underline;
     }
@@ -52,18 +42,11 @@ const Settings: React.FC<{}> = () => {
         <AuthWrapper requiresAuth>
             <Layout>
                 <Container>
-                    <Details>
-                        <Summary>Change Email</Summary>
-
-                        <ChangeEmailForm 
-                            userId={userId} 
-                            email={email}
-                        />
+                    <Details summary='Change Email'>
+                        <ChangeEmailForm userId={userId} email={email} />
                     </Details>
 
-                    <Details>
-                        <Summary>Change Name</Summary>
-
+                    <Details summary='Change Name'>
                         <ChangeNameForm
                             userId = {userId}
                             firstName = {firstName}
@@ -71,12 +54,10 @@ const Settings: React.FC<{}> = () => {
                         />
                     </Details>
 
-                    <Details>
-                        <Summary>Change Password</Summary>
-
+                    <Details summary='Change Password'>
                         <NextLink href='/forgot-password'>
                             <Link>
-                                Click here!
+                                Click Here
                             </Link>
                         </NextLink>
                     </Details>

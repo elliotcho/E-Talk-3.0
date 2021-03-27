@@ -4,12 +4,23 @@ import { useSearchResultsQuery } from '../../generated/graphql';
 
 const Container = styled.div`
     position: relative;
+    background: white;
 `;
 
 const Input = styled.input`
     height: 100%;
     font-size: 1.4rem;
-    width: 100%;
+    border: none;
+
+    &:focus {
+        outline: none;
+    }
+`;
+
+const Block = styled.span`
+    margin-left: 10px;
+    background: #68bbee;
+    padding: 5px;
 `;
 
 const Stack = styled.div`
@@ -23,6 +34,7 @@ const Card = styled.div`
     align-items: center;
     cursor: pointer;
     min-width: 300px;
+    background: #fff;
     color: black;
 
     &:hover {
@@ -52,8 +64,19 @@ const ChatComposer: React.FC<{}> = () => {
 
     return (
         <Container>
+            {Object.keys(recipients).map(key => {
+                const { firstName, lastName } = recipients[key];
+
+                return (
+                    <Block>
+                        {firstName} {lastName}
+                    </Block>
+                )
+            })}
+
             <Input 
                 type = 'text'
+                value = {query}
                 onChange = {async (e) => {
                     setQuery(e.target.value);
                     await refetch();

@@ -4,8 +4,8 @@ import styled from 'styled-components';
 const Header = styled.h2`
     display: flex;
     align-items: center;
-    background: silver;
-    color: black;
+    background: green;
+    color: white;
     margin: 0;
 `;
 

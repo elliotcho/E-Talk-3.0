@@ -4,7 +4,8 @@ import { withApollo } from '../utils/withApollo';
 import AuthWrapper from '../containers/shared/AuthWrapper'
 import Layout from '../containers/shared/Layout';
 import Sidebar from '../containers/chats/Sidebar';
-import ChatHeader from '../components/chats/ChatHeader';
+//import ChatHeader from '../components/chats/ChatHeader';
+import ChatComposer from '../components/chats/ChatComposer';
 import ChatContainer from '../containers/chats/ChatContainer';
 import SendMessage from '../components/chats/SendMessage';
 import { useRouter } from 'next/router';
@@ -31,7 +32,7 @@ const Chats: React.FC<{}> = () => {
                     <Sidebar />
                     
                     <Main>
-                        <ChatHeader />
+                        <ChatComposer />
 
                         <ChatContainer />
 

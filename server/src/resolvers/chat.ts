@@ -3,6 +3,7 @@ import {
     Ctx,
     Int,
     Mutation,
+    Query,
     Resolver
 } from 'type-graphql';
 import { getConnection } from 'typeorm';
@@ -11,6 +12,21 @@ import { MyContext } from '../types';
 
 @Resolver(Chat)
 export class ChatResolver {
+    @Query(() => [Chat])
+    async chats(
+        @Ctx() { req } : MyContext
+    ) : Promise<Chat[]> {
+        const chats = await getConnection().query(
+            `
+                select c.* from chat as c
+                inner join member as m on m."chatId" = c.id
+                where m."userId" = $1
+            `, [req.session.uid]
+        );
+
+        return chats;
+    }
+
     @Mutation(() => Boolean)
     async createChat(
         @Arg('members', () => [Int]) members: number[],

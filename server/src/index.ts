@@ -4,40 +4,15 @@ import express from 'express';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
 import Redis from 'ioredis';
-import { createConnection } from 'typeorm';
 import { ApolloServer } from 'apollo-server-express';
+import { createDbConnection } from './utils/createDbConnection';
 import { createSchema } from './utils/createSchema';
-import { Friend } from './entities/Friend';
-import { Notification } from './entities/Notification';
-import { Comment } from './entities/Comment';
-import { Chat } from './entities/Chat';
-import { Member } from './entities/Member';
-import { Message } from './entities/Message';
-import { User } from './entities/User';
-import { Post } from './entities/Post';
-import { Like } from './entities/Like';
 import http from 'http';
 import cors from 'cors';
 import path from 'path';
 
 const main  = async () => {
-    await createConnection({
-        type: 'postgres',
-        url: process.env.DB_URL,
-        synchronize: true,
-        logging: false,
-        entities: [
-            Friend,
-            Notification,
-            Comment,
-            Member, 
-            Message,
-            Chat,
-            Post,
-            User,
-            Like
-        ]
-    });
+    await createDbConnection();
 
     const app = express();
 

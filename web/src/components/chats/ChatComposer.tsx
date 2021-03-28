@@ -18,7 +18,7 @@ const Input = styled.input`
 `;
 
 const Block = styled.span`
-    margin-left: 10px;
+    margin: 0 10px;
     background: #68bbee;
     padding: 5px;
 `;
@@ -55,7 +55,7 @@ const Image = styled.img`
 
 const ChatComposer: React.FC<{}> = () => {
     const [query, setQuery] = useState('');
-    const [recipients, setRecipients] = useState({});
+    const [recipients, setRecipients] = useState([]);
 
     const { data, refetch } = useSearchResultsQuery({
         variables: { query },
@@ -64,19 +64,23 @@ const ChatComposer: React.FC<{}> = () => {
 
     return (
         <Container>
-            {Object.keys(recipients).map(key => {
-                const { firstName, lastName } = recipients[key];
-
-                return (
-                    <Block>
-                        {firstName} {lastName}
-                    </Block>
-                )
-            })}
+            {recipients.map(u => 
+                <Block>
+                    {u.firstName} {u.lastName}
+                </Block>
+            )}
 
             <Input 
                 type = 'text'
                 value = {query}
+                onKeyDown = {(e: any) => {
+                    if(e.keyCode === 8 && !query.length) {
+                        const newRecipients = [...recipients];
+                        newRecipients.pop();
+
+                        setRecipients(newRecipients);
+                    }
+                }}
                 onChange = {async (e) => {
                     setQuery(e.target.value);
                     await refetch();
@@ -89,8 +93,8 @@ const ChatComposer: React.FC<{}> = () => {
                         <Card 
                             key={u.id}
                             onClick = {() => {
-                                const newRecipients = recipients;
-                                newRecipients[u.id] = u;
+                                const newRecipients = [...recipients];
+                                newRecipients.push(u);
 
                                 setRecipients(newRecipients);
                                 setQuery('');

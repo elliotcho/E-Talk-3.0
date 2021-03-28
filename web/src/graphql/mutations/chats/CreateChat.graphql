@@ -1,0 +1,3 @@
+mutation CreateChat($members: [Int!]!, $text: String!) {
+    createChat(members: $members, text: $text)
+}

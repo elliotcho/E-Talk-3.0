@@ -10,14 +10,22 @@ import {
 
 @ObjectType()
 @Entity()
-export class Chat extends BaseEntity{
+export class Message extends BaseEntity{
     @Field()
     @PrimaryGeneratedColumn()
     id! : number;
 
     @Field()
     @Column()
-    isPrivate: boolean;
+    userId: number;
+
+    @Field()
+    @Column()
+    chatId: number;
+
+    @Field()
+    @Column()
+    text: string;
 
     @Field(() => String)
     @CreateDateColumn()

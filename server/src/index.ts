@@ -11,6 +11,8 @@ import { Friend } from './entities/Friend';
 import { Notification } from './entities/Notification';
 import { Comment } from './entities/Comment';
 import { Chat } from './entities/Chat';
+import { Member } from './entities/Member';
+import { Message } from './entities/Message';
 import { User } from './entities/User';
 import { Post } from './entities/Post';
 import { Like } from './entities/Like';
@@ -28,6 +30,8 @@ const main  = async () => {
             Friend,
             Notification,
             Comment,
+            Member, 
+            Message,
             Chat,
             Post,
             User,

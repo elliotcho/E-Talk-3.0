@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { withApollo } from '../utils/withApollo';
 import AuthWrapper from '../containers/shared/AuthWrapper'
@@ -23,7 +23,9 @@ const Main = styled.div`
 `;
 
 const Chats: React.FC<{}> = () => {
-    const { query: { id } } = useRouter();
+    //const { query: { id } } = useRouter();
+
+    const [recipients, setRecipients] = useState([]);
 
     return (
         <AuthWrapper requiresAuth>
@@ -32,11 +34,16 @@ const Chats: React.FC<{}> = () => {
                     <Sidebar />
                     
                     <Main>
-                        <ChatComposer />
+                        <ChatComposer 
+                            setRecipients = {setRecipients}
+                            recipients = {recipients}
+                        />
 
                         <ChatContainer />
 
-                        <SendMessage />
+                        <SendMessage 
+                            recipients = {recipients}
+                        />
                     </Main>
                 </Container>
             </Layout>

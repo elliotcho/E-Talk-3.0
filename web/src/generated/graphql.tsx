@@ -141,10 +141,10 @@ export type Notification = {
   type: Scalars['String'];
   postId: Scalars['Float'];
   read: Scalars['Boolean'];
-  user: User;
   createdAt: Scalars['String'];
   updatedAt: Scalars['DateTime'];
   text: Scalars['String'];
+  user: User;
 };
 
 
@@ -168,6 +168,7 @@ export type Mutation = {
   deletePost: Scalars['Boolean'];
   createPost: Post;
   readNotifications: Scalars['Boolean'];
+  createChat: Scalars['Boolean'];
   readFriendRequests: Scalars['Boolean'];
   removeFriend: Scalars['Boolean'];
   acceptFriendRequest: Scalars['Boolean'];
@@ -255,6 +256,12 @@ export type MutationDeletePostArgs = {
 
 export type MutationCreatePostArgs = {
   content: Scalars['String'];
+};
+
+
+export type MutationCreateChatArgs = {
+  text: Scalars['String'];
+  members: Array<Scalars['Int']>;
 };
 
 
@@ -353,6 +360,17 @@ export type RegularUserResponseFragment = (
     { __typename?: 'FieldError' }
     & RegularErrorFragment
   )>> }
+);
+
+export type CreateChatMutationVariables = Exact<{
+  members: Array<Scalars['Int']> | Scalars['Int'];
+  text: Scalars['String'];
+}>;
+
+
+export type CreateChatMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'createChat'>
 );
 
 export type AcceptFriendRequestMutationVariables = Exact<{
@@ -880,6 +898,37 @@ export const RegularUserResponseFragmentDoc = gql`
 }
     ${RegularUserFragmentDoc}
 ${RegularErrorFragmentDoc}`;
+export const CreateChatDocument = gql`
+    mutation CreateChat($members: [Int!]!, $text: String!) {
+  createChat(members: $members, text: $text)
+}
+    `;
+export type CreateChatMutationFn = Apollo.MutationFunction<CreateChatMutation, CreateChatMutationVariables>;
+
+/**
+ * __useCreateChatMutation__
+ *
+ * To run a mutation, you first call `useCreateChatMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateChatMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createChatMutation, { data, loading, error }] = useCreateChatMutation({
+ *   variables: {
+ *      members: // value for 'members'
+ *      text: // value for 'text'
+ *   },
+ * });
+ */
+export function useCreateChatMutation(baseOptions?: Apollo.MutationHookOptions<CreateChatMutation, CreateChatMutationVariables>) {
+        return Apollo.useMutation<CreateChatMutation, CreateChatMutationVariables>(CreateChatDocument, baseOptions);
+      }
+export type CreateChatMutationHookResult = ReturnType<typeof useCreateChatMutation>;
+export type CreateChatMutationResult = Apollo.MutationResult<CreateChatMutation>;
+export type CreateChatMutationOptions = Apollo.BaseMutationOptions<CreateChatMutation, CreateChatMutationVariables>;
 export const AcceptFriendRequestDocument = gql`
     mutation AcceptFriendRequest($senderId: Int!) {
   acceptFriendRequest(senderId: $senderId)

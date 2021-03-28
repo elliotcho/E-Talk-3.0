@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useSearchResultsQuery } from '../../generated/graphql';
+import { User, useSearchResultsQuery } from '../../generated/graphql';
 
 const Container = styled.div`
     position: relative;
@@ -53,9 +53,13 @@ const Image = styled.img`
     height: 4rem;
 `;
 
-const ChatComposer: React.FC<{}> = () => {
+interface ChatComposerProps {
+    setRecipients: React.Dispatch<React.SetStateAction<any[]>>;
+    recipients: any[];
+}
+
+const ChatComposer: React.FC<ChatComposerProps> = ({ setRecipients, recipients }) => {
     const [query, setQuery] = useState('');
-    const [recipients, setRecipients] = useState([]);
 
     const { data, refetch } = useSearchResultsQuery({
         variables: { query },

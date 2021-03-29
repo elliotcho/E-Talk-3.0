@@ -25,7 +25,7 @@ const Chats: React.FC<{}> = () => {
         <AuthWrapper requiresAuth>
             <Layout>
                 <Container>
-                    <Sidebar />
+                    <Sidebar chatId = {chatId}/>
                     
                     <ChatWindow chatId = {chatId}/>
                 </Container>

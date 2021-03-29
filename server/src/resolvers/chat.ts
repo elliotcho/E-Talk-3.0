@@ -32,10 +32,26 @@ export class ChatResolver {
         let output = '';
 
         for(let i=0;i<members.length;i++) {
-            output += `${members[i].firstName} ${members[i].lastName} `;
+            output += members[i].firstName;
+            output += members[i].lastName;
         }
     
         return output;
+    }
+
+    @Query(() => [Chat])
+    async chats(
+        @Ctx() { req } : MyContext
+    ) : Promise<Chat[]> {
+        const chats = await getConnection().query(
+            `
+                select c.* from chat as c
+                inner join member as m on m."chatId" = c.id
+                where m."userId" = $1
+            `, [req.session.uid]
+        );
+
+        return chats;
     }
 
     @Query(() => [Message])

@@ -28,6 +28,7 @@ export type Query = {
   userPosts: PaginatedPosts;
   posts: PaginatedPosts;
   notifications: PaginatedNotifications;
+  chats: Array<Chat>;
   messages: Array<Message>;
   chat: Chat;
   friendRequests: Array<User>;
@@ -160,6 +161,15 @@ export type Notification = {
 };
 
 
+export type Chat = {
+  __typename?: 'Chat';
+  id: Scalars['Float'];
+  isPrivate: Scalars['Boolean'];
+  title: Scalars['String'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+};
+
 export type Message = {
   __typename?: 'Message';
   id: Scalars['Float'];
@@ -168,16 +178,6 @@ export type Message = {
   chatId: Scalars['Float'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
-};
-
-export type Chat = {
-  __typename?: 'Chat';
-  id: Scalars['Float'];
-  isPrivate: Scalars['Boolean'];
-  title: Scalars['String'];
-  createdAt: Scalars['String'];
-  updatedAt: Scalars['String'];
-  messages: Array<Message>;
 };
 
 export type Mutation = {
@@ -685,6 +685,17 @@ export type ChatQuery = (
     { __typename?: 'Chat' }
     & RegularChatFragment
   ) }
+);
+
+export type ChatsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ChatsQuery = (
+  { __typename?: 'Query' }
+  & { chats: Array<(
+    { __typename?: 'Chat' }
+    & RegularChatFragment
+  )> }
 );
 
 export type MessagesQueryVariables = Exact<{
@@ -1783,6 +1794,38 @@ export function useChatLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ChatQ
 export type ChatQueryHookResult = ReturnType<typeof useChatQuery>;
 export type ChatLazyQueryHookResult = ReturnType<typeof useChatLazyQuery>;
 export type ChatQueryResult = Apollo.QueryResult<ChatQuery, ChatQueryVariables>;
+export const ChatsDocument = gql`
+    query Chats {
+  chats {
+    ...RegularChat
+  }
+}
+    ${RegularChatFragmentDoc}`;
+
+/**
+ * __useChatsQuery__
+ *
+ * To run a query within a React component, call `useChatsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChatsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChatsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useChatsQuery(baseOptions?: Apollo.QueryHookOptions<ChatsQuery, ChatsQueryVariables>) {
+        return Apollo.useQuery<ChatsQuery, ChatsQueryVariables>(ChatsDocument, baseOptions);
+      }
+export function useChatsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ChatsQuery, ChatsQueryVariables>) {
+          return Apollo.useLazyQuery<ChatsQuery, ChatsQueryVariables>(ChatsDocument, baseOptions);
+        }
+export type ChatsQueryHookResult = ReturnType<typeof useChatsQuery>;
+export type ChatsLazyQueryHookResult = ReturnType<typeof useChatsLazyQuery>;
+export type ChatsQueryResult = Apollo.QueryResult<ChatsQuery, ChatsQueryVariables>;
 export const MessagesDocument = gql`
     query Messages($chatId: Int!) {
   messages(chatId: $chatId) {

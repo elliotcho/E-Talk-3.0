@@ -31,6 +31,9 @@ export class Notification extends BaseEntity {
     @Column({ default: false })
     read: boolean;
 
+    @Field()
+    text: string;
+
     @Field(() => String)
     @CreateDateColumn()
     createdAt: Date;

@@ -28,6 +28,7 @@ export type Query = {
   userPosts: PaginatedPosts;
   posts: PaginatedPosts;
   notifications: PaginatedNotifications;
+  chat: Chat;
   friendRequests: Array<User>;
   friends: Array<User>;
 };
@@ -77,6 +78,11 @@ export type QueryNotificationsArgs = {
 };
 
 
+export type QueryChatArgs = {
+  chatId: Scalars['Int'];
+};
+
+
 export type QueryFriendsArgs = {
   userId: Scalars['Int'];
 };
@@ -90,12 +96,12 @@ export type User = {
   profilePic: Scalars['String'];
   profileURL: Scalars['String'];
   bio: Scalars['String'];
+  friendStatus: Scalars['Float'];
+  isMe: Scalars['Boolean'];
+  unreadFriendRequests: Scalars['Float'];
+  unreadNotifications: Scalars['Float'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
-  isMe: Scalars['Boolean'];
-  unreadFriendRequests: Scalars['Int'];
-  unreadNotifications: Scalars['Int'];
-  friendStatus: Scalars['Int'];
 };
 
 export type Comment = {
@@ -117,9 +123,9 @@ export type Post = {
   user: User;
   numLikes: Scalars['Float'];
   numComments: Scalars['Float'];
+  likeStatus: Scalars['Boolean'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
-  likeStatus: Scalars['Boolean'];
 };
 
 export type PaginatedPosts = {
@@ -141,12 +147,32 @@ export type Notification = {
   type: Scalars['String'];
   postId: Scalars['Float'];
   read: Scalars['Boolean'];
+  text: Scalars['String'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['DateTime'];
-  text: Scalars['String'];
   user: User;
 };
 
+
+export type Chat = {
+  __typename?: 'Chat';
+  id: Scalars['Float'];
+  isPrivate: Scalars['Boolean'];
+  title: Scalars['String'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+  messages: Array<Message>;
+};
+
+export type Message = {
+  __typename?: 'Message';
+  id: Scalars['Float'];
+  text: Scalars['String'];
+  userId: Scalars['Float'];
+  chatId: Scalars['Float'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+};
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -168,7 +194,7 @@ export type Mutation = {
   deletePost: Scalars['Boolean'];
   createPost: Post;
   readNotifications: Scalars['Boolean'];
-  createChat: Scalars['Boolean'];
+  createChat: Scalars['Int'];
   readFriendRequests: Scalars['Boolean'];
   removeFriend: Scalars['Boolean'];
   acceptFriendRequest: Scalars['Boolean'];
@@ -321,6 +347,16 @@ export type Subscription = {
   newFriendRequest: User;
   newFriend: Notification;
 };
+
+export type RegularChatFragment = (
+  { __typename?: 'Chat' }
+  & Pick<Chat, 'id' | 'isPrivate' | 'title'>
+);
+
+export type RegularMessageFragment = (
+  { __typename?: 'Message' }
+  & Pick<Message, 'id' | 'text' | 'createdAt' | 'userId' | 'chatId'>
+);
 
 export type RegularNotificationFragment = (
   { __typename?: 'Notification' }
@@ -632,6 +668,19 @@ export type UpdateProfilePicMutation = (
   ) }
 );
 
+export type ChatQueryVariables = Exact<{
+  chatId: Scalars['Int'];
+}>;
+
+
+export type ChatQuery = (
+  { __typename?: 'Query' }
+  & { chat: (
+    { __typename?: 'Chat' }
+    & RegularChatFragment
+  ) }
+);
+
 export type FriendRequestsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -838,6 +887,22 @@ export type NewLikeSubscription = (
   ) }
 );
 
+export const RegularChatFragmentDoc = gql`
+    fragment RegularChat on Chat {
+  id
+  isPrivate
+  title
+}
+    `;
+export const RegularMessageFragmentDoc = gql`
+    fragment RegularMessage on Message {
+  id
+  text
+  createdAt
+  userId
+  chatId
+}
+    `;
 export const RegularNotificationFragmentDoc = gql`
     fragment RegularNotification on Notification {
   text
@@ -1665,6 +1730,39 @@ export function useUpdateProfilePicMutation(baseOptions?: Apollo.MutationHookOpt
 export type UpdateProfilePicMutationHookResult = ReturnType<typeof useUpdateProfilePicMutation>;
 export type UpdateProfilePicMutationResult = Apollo.MutationResult<UpdateProfilePicMutation>;
 export type UpdateProfilePicMutationOptions = Apollo.BaseMutationOptions<UpdateProfilePicMutation, UpdateProfilePicMutationVariables>;
+export const ChatDocument = gql`
+    query Chat($chatId: Int!) {
+  chat(chatId: $chatId) {
+    ...RegularChat
+  }
+}
+    ${RegularChatFragmentDoc}`;
+
+/**
+ * __useChatQuery__
+ *
+ * To run a query within a React component, call `useChatQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChatQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChatQuery({
+ *   variables: {
+ *      chatId: // value for 'chatId'
+ *   },
+ * });
+ */
+export function useChatQuery(baseOptions: Apollo.QueryHookOptions<ChatQuery, ChatQueryVariables>) {
+        return Apollo.useQuery<ChatQuery, ChatQueryVariables>(ChatDocument, baseOptions);
+      }
+export function useChatLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ChatQuery, ChatQueryVariables>) {
+          return Apollo.useLazyQuery<ChatQuery, ChatQueryVariables>(ChatDocument, baseOptions);
+        }
+export type ChatQueryHookResult = ReturnType<typeof useChatQuery>;
+export type ChatLazyQueryHookResult = ReturnType<typeof useChatLazyQuery>;
+export type ChatQueryResult = Apollo.QueryResult<ChatQuery, ChatQueryVariables>;
 export const FriendRequestsDocument = gql`
     query FriendRequests {
   friendRequests {

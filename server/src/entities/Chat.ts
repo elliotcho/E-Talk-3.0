@@ -22,6 +22,9 @@ export class Chat extends BaseEntity{
     @Column()
     isPrivate: boolean;
 
+    @Field()
+    title: string;
+
     @Field(() => String)
     @CreateDateColumn()
     createdAt : Date;
@@ -32,7 +35,8 @@ export class Chat extends BaseEntity{
 
     @OneToMany(() => Member, (member) => member.chat)
     members: Member[];
-
+    
+    @Field(() => [Message])
     @OneToMany(() => Message, (message) => message.chat)
     messages: Message[];
 }

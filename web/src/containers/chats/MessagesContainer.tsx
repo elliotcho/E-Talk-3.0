@@ -5,7 +5,7 @@ const Container = styled.div`
     background: #737373;
 `;
 
-const ChatContainer: React.FC<{}> = () => {
+const MessagesContainer: React.FC<{}> = () => {
     return (
         <Container>
             
@@ -13,4 +13,4 @@ const ChatContainer: React.FC<{}> = () => {
     )
 }
 
-export default ChatContainer;
+export default MessagesContainer;

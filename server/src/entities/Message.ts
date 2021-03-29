@@ -29,7 +29,6 @@ export class Message extends BaseEntity{
     @Column()
     chatId: number;
 
-    @Field(() => Chat)
     @ManyToOne(() => Chat, (chat) => chat.messages, {
         onDelete: 'CASCADE'
     })

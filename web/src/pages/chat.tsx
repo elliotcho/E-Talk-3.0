@@ -1,13 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { withApollo } from '../utils/withApollo';
 import AuthWrapper from '../containers/shared/AuthWrapper'
 import Layout from '../containers/shared/Layout';
 import Sidebar from '../containers/chats/Sidebar';
-//import ChatHeader from '../components/chats/ChatHeader';
-import ChatComposer from '../components/chats/ChatComposer';
-import ChatContainer from '../containers/chats/ChatContainer';
-import SendMessage from '../components/chats/SendMessage';
+import ChatWindow from '../containers/chats/ChatWindow';
 import { useRouter } from 'next/router';
 
 const Container = styled.div`
@@ -16,16 +13,13 @@ const Container = styled.div`
     height: 92vh;
 `;
 
-const Main = styled.div`
-    display: grid;
-    grid-template-rows: 1fr 8.5fr auto;
-    grid-row-gap: 0;
-`;
-
 const Chats: React.FC<{}> = () => {
-    //const { query: { id } } = useRouter();
+    const { query: { id } } = useRouter();
+    let chatId = -1;
 
-    const [recipients, setRecipients] = useState([]);
+    if(typeof id === 'string') {
+        chatId = parseInt(id);
+    }
 
     return (
         <AuthWrapper requiresAuth>
@@ -33,18 +27,7 @@ const Chats: React.FC<{}> = () => {
                 <Container>
                     <Sidebar />
                     
-                    <Main>
-                        <ChatComposer 
-                            setRecipients = {setRecipients}
-                            recipients = {recipients}
-                        />
-
-                        <ChatContainer />
-
-                        <SendMessage 
-                            recipients = {recipients}
-                        />
-                    </Main>
+                    <ChatWindow chatId = {chatId}/>
                 </Container>
             </Layout>
         </AuthWrapper>

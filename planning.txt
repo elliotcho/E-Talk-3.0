@@ -2,3 +2,10 @@ TODOS:
 
 Paginate likers
 Paginate comments
+
+             chat
+
+Sidebar      Main
+             Header / Composer
+             MessageContainer
+             SendMessage

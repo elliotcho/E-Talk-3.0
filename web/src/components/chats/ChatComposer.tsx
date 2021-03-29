@@ -54,12 +54,13 @@ const Image = styled.img`
 `;
 
 interface ChatComposerProps {
-    setRecipients: React.Dispatch<React.SetStateAction<any[]>>;
+    setRecipients(r: any[]): void;
     recipients: any[];
 }
 
 const ChatComposer: React.FC<ChatComposerProps> = ({ setRecipients, recipients }) => {
     const [query, setQuery] = useState('');
+    const [map, setMap] = useState({});
 
     const { data, refetch } = useSearchResultsQuery({
         variables: { query },
@@ -80,7 +81,10 @@ const ChatComposer: React.FC<ChatComposerProps> = ({ setRecipients, recipients }
                 onKeyDown = {(e: any) => {
                     if(e.keyCode === 8 && !query.length) {
                         const newRecipients = [...recipients];
-                        newRecipients.pop();
+                        const user = newRecipients.pop();
+
+                        delete map[user.id];
+                        setMap(map);
 
                         setRecipients(newRecipients);
                     }
@@ -93,12 +97,15 @@ const ChatComposer: React.FC<ChatComposerProps> = ({ setRecipients, recipients }
 
             <Stack>
                 {data?.searchResults.map(u => 
-                    !recipients[u.id]  && (
+                    !map[u.id]  && (
                         <Card 
                             key={u.id}
                             onClick = {() => {
                                 const newRecipients = [...recipients];
                                 newRecipients.push(u);
+
+                                map[u.id] = u;
+                                setMap(map);
 
                                 setRecipients(newRecipients);
                                 setQuery('');

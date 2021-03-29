@@ -1,0 +1,5 @@
+fragment RegularChat on Chat {
+    id
+    isPrivate
+    title
+}

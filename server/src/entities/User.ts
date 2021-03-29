@@ -45,6 +45,19 @@ export class User extends BaseEntity{
     @Column({ default: '' })
     bio: string;
 
+    
+    @Field()
+    friendStatus: number;
+
+    @Field()
+    isMe: boolean;
+
+    @Field()
+    unreadFriendRequests: number;
+
+    @Field()
+    unreadNotifications: number;
+
     @OneToMany(() => Post, (post) => post.user)
     posts: Post[];
 

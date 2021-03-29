@@ -13,11 +13,15 @@ const Span = styled.span`
     margin-left: 20px;
 `;
 
-const ChatHeader: React.FC<{}> = () => {
+interface ChatHeaderProps {
+    title: string;
+}
+
+const ChatHeader: React.FC<ChatHeaderProps> = ({ title }) => {
     return (
         <Header>
             <Span>
-                Title Here
+                {title}
             </Span>
         </Header>
     )

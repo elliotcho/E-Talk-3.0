@@ -1,38 +1,64 @@
 import {
     Arg,
     Ctx,
+    FieldResolver,
     Int,
     Mutation,
     Query,
-    Resolver
+    Resolver,
+    Root
 } from 'type-graphql';
 import { getConnection } from 'typeorm';
 import { Chat } from '../entities/Chat';
+import { Member } from '../entities/Member';
 import { MyContext } from '../types';
 
 @Resolver(Chat)
 export class ChatResolver {
-    @Query(() => [Chat])
-    async chats(
-        @Ctx() { req } : MyContext
-    ) : Promise<Chat[]> {
-        const chats = await getConnection().query(
+    @FieldResolver(() => String)
+    async title(
+        @Root() chat: Chat
+    ): Promise<string> {
+        const members = await getConnection().query(
             `
-                select c.* from chat as c
-                inner join member as m on m."chatId" = c.id
-                where m."userId" = $1
-            `, [req.session.uid]
+                select u.* from "user" as u 
+                inner join member as m on m."userId" = u.id
+                inner join chat as c on c.id = m."chatId"
+                where c.id = $1
+            `, [chat.id]
         );
+        
+        let output = '';
 
-        return chats;
+        for(let i=0;i<members.length;i++) {
+            output += `${members[i].firstName} ${members[i].lastName} `;
+        }
+    
+        return output;
     }
 
-    @Mutation(() => Boolean)
+    @Query(() => Chat)
+    async chat(
+        @Arg('chatId', () => Int) chatId: number,
+        @Ctx() { req } : MyContext
+    ): Promise<Chat | undefined> {
+        const { uid } = req.session;
+        const member = await Member.findOne({ chatId, userId: uid });
+
+        if(!member) {
+            return undefined;
+        }
+
+        return Chat.findOne(chatId);
+    }
+
+    @Mutation(() => Int)
     async createChat(
         @Arg('members', () => [Int]) members: number[],
         @Arg('text') text: string,
         @Ctx() { req } : MyContext
-    ) { 
+    ): Promise<number> { 
+        let chat: any;
         const isPrivate = members.length === 1;
         const { uid } = req.session;
 
@@ -41,8 +67,6 @@ export class ChatResolver {
         }
 
         await getConnection().transaction(async tm => {
-            let chat;
-
             const result = await tm.createQueryBuilder()
                     .insert()
                     .into(Chat)
@@ -69,6 +93,6 @@ export class ChatResolver {
             );
         });
 
-        return true;
+        return chat.id;
     }
 }

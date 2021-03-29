@@ -1,10 +1,14 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useMessagesQuery } from '../../generated/graphql';
+import MessageBubble from '../../components/chats/MessageBubble';
 
 const Container = styled.div`
-    background: black;
-    color: white;
+    display: flex;
+    flex-direction: column-reverse;
+    background: #8c8c8c;
+    overflow-x: hidden;
+    overflow-y: auto;
 `;
 
 interface MessagesContainerProps {
@@ -12,14 +16,17 @@ interface MessagesContainerProps {
 }
 
 const MessagesContainer: React.FC<MessagesContainerProps> = ({ chatId }) => {
-    const { data, refetch } = useMessagesQuery({
+    const { data } = useMessagesQuery({
         variables: { chatId }
     });
     
     return (
         <Container>
             {data?.messages.map(m => 
-                <h1 key={m.id}>{m.text}</h1>
+                <MessageBubble
+                    key = {m.id}
+                    text = {m.text}
+                />
             )}
         </Container>
     )

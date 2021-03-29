@@ -1,14 +1,26 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { useMessagesQuery } from '../../generated/graphql';
 
 const Container = styled.div`
-    background: #737373;
+    background: black;
+    color: white;
 `;
 
-const MessagesContainer: React.FC<{}> = () => {
+interface MessagesContainerProps {
+    chatId: number;
+}
+
+const MessagesContainer: React.FC<MessagesContainerProps> = ({ chatId }) => {
+    const { data, refetch } = useMessagesQuery({
+        variables: { chatId }
+    });
+    
     return (
         <Container>
-            
+            {data?.messages.map(m => 
+                <h1>{m.text}</h1>
+            )}
         </Container>
     )
 }

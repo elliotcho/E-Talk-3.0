@@ -11,6 +11,7 @@ import {
 import { getConnection } from 'typeorm';
 import { Chat } from '../entities/Chat';
 import { Member } from '../entities/Member';
+import { Message } from '../entities/Message';
 import { MyContext } from '../types';
 
 @Resolver(Chat)
@@ -37,6 +38,20 @@ export class ChatResolver {
         return output;
     }
 
+    @Query(() => [Message])
+    async messages(
+        @Arg('chatId', () => Int) chatId: number
+    ) : Promise<Message[]> {
+        const messages = await getConnection().query(
+            `
+                select m.* from message as m
+                where m."chatId" = $1  
+            `, [chatId]
+        );
+
+        return messages;
+    }
+
     @Query(() => Chat)
     async chat(
         @Arg('chatId', () => Int) chatId: number,
@@ -49,7 +64,8 @@ export class ChatResolver {
             return undefined;
         }
 
-        return Chat.findOne(chatId);
+        const chat = await Chat.findOne(chatId);
+        return chat;
     }
 
     @Mutation(() => Int)

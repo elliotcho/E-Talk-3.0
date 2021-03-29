@@ -35,7 +35,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chatId }) => {
         if(!!data) {
             setIsChat(true);
         }
-
+        
     }, [data]);
 
     return (
@@ -52,7 +52,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chatId }) => {
             )}
 
             {isChat? (
-                <ChatContainer />
+                <ChatContainer chatId={chatId}/>
             ): (
                 <EmptyContainer />
             )}

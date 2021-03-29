@@ -1,5 +1,6 @@
 fragment RegularChat on Chat {
     id
     isPrivate
+    createdAt
     title
 }

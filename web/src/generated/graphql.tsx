@@ -28,6 +28,7 @@ export type Query = {
   userPosts: PaginatedPosts;
   posts: PaginatedPosts;
   notifications: PaginatedNotifications;
+  messages: Array<Message>;
   chat: Chat;
   friendRequests: Array<User>;
   friends: Array<User>;
@@ -75,6 +76,11 @@ export type QueryPostsArgs = {
 export type QueryNotificationsArgs = {
   limit: Scalars['Int'];
   cursor?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryMessagesArgs = {
+  chatId: Scalars['Int'];
 };
 
 
@@ -154,16 +160,6 @@ export type Notification = {
 };
 
 
-export type Chat = {
-  __typename?: 'Chat';
-  id: Scalars['Float'];
-  isPrivate: Scalars['Boolean'];
-  title: Scalars['String'];
-  createdAt: Scalars['String'];
-  updatedAt: Scalars['String'];
-  messages: Array<Message>;
-};
-
 export type Message = {
   __typename?: 'Message';
   id: Scalars['Float'];
@@ -172,6 +168,16 @@ export type Message = {
   chatId: Scalars['Float'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
+};
+
+export type Chat = {
+  __typename?: 'Chat';
+  id: Scalars['Float'];
+  isPrivate: Scalars['Boolean'];
+  title: Scalars['String'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+  messages: Array<Message>;
 };
 
 export type Mutation = {
@@ -350,7 +356,7 @@ export type Subscription = {
 
 export type RegularChatFragment = (
   { __typename?: 'Chat' }
-  & Pick<Chat, 'id' | 'isPrivate' | 'title'>
+  & Pick<Chat, 'id' | 'isPrivate' | 'createdAt' | 'title'>
 );
 
 export type RegularMessageFragment = (
@@ -681,6 +687,19 @@ export type ChatQuery = (
   ) }
 );
 
+export type MessagesQueryVariables = Exact<{
+  chatId: Scalars['Int'];
+}>;
+
+
+export type MessagesQuery = (
+  { __typename?: 'Query' }
+  & { messages: Array<(
+    { __typename?: 'Message' }
+    & RegularMessageFragment
+  )> }
+);
+
 export type FriendRequestsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -891,6 +910,7 @@ export const RegularChatFragmentDoc = gql`
     fragment RegularChat on Chat {
   id
   isPrivate
+  createdAt
   title
 }
     `;
@@ -1763,6 +1783,39 @@ export function useChatLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ChatQ
 export type ChatQueryHookResult = ReturnType<typeof useChatQuery>;
 export type ChatLazyQueryHookResult = ReturnType<typeof useChatLazyQuery>;
 export type ChatQueryResult = Apollo.QueryResult<ChatQuery, ChatQueryVariables>;
+export const MessagesDocument = gql`
+    query Messages($chatId: Int!) {
+  messages(chatId: $chatId) {
+    ...RegularMessage
+  }
+}
+    ${RegularMessageFragmentDoc}`;
+
+/**
+ * __useMessagesQuery__
+ *
+ * To run a query within a React component, call `useMessagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMessagesQuery({
+ *   variables: {
+ *      chatId: // value for 'chatId'
+ *   },
+ * });
+ */
+export function useMessagesQuery(baseOptions: Apollo.QueryHookOptions<MessagesQuery, MessagesQueryVariables>) {
+        return Apollo.useQuery<MessagesQuery, MessagesQueryVariables>(MessagesDocument, baseOptions);
+      }
+export function useMessagesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MessagesQuery, MessagesQueryVariables>) {
+          return Apollo.useLazyQuery<MessagesQuery, MessagesQueryVariables>(MessagesDocument, baseOptions);
+        }
+export type MessagesQueryHookResult = ReturnType<typeof useMessagesQuery>;
+export type MessagesLazyQueryHookResult = ReturnType<typeof useMessagesLazyQuery>;
+export type MessagesQueryResult = Apollo.QueryResult<MessagesQuery, MessagesQueryVariables>;
 export const FriendRequestsDocument = gql`
     query FriendRequests {
   friendRequests {

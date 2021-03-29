@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useCreateChatMutation } from '../../generated/graphql';
+import { useCreateChatMutation, useSendMessageMutation } from '../../generated/graphql';
 import { handleEnterPress } from '../../utils/handleEnterPress';
 import { useRouter } from 'next/router'; 
 
@@ -32,7 +32,10 @@ interface SendMessageProps {
 const SendMessage : React.FC<SendMessageProps> = ({ recipients, isChat, chatId }) => {
     const [text, setText] = useState('');
     const [createChat] = useCreateChatMutation();
+    const [sendMessage] = useSendMessageMutation();
     const router = useRouter();
+
+    console.log(isChat)
 
     return (
         <Container>
@@ -45,7 +48,7 @@ const SendMessage : React.FC<SendMessageProps> = ({ recipients, isChat, chatId }
                 onKeyDown = {async (e) => {
                     const submit = handleEnterPress(e, 130);
 
-                    if(submit) {
+                    if(submit && !isChat) {
                         const members = recipients.map(r => r.id);
 
                         const response = await createChat({
@@ -57,6 +60,12 @@ const SendMessage : React.FC<SendMessageProps> = ({ recipients, isChat, chatId }
                         if(chatId) {
                             router.push(`/chat/${chatId}`)
                         }
+                    }
+
+                    if(submit && isChat) {
+                        await sendMessage({
+                            variables: { chatId, text }
+                        });
                     }
                 }}
             />

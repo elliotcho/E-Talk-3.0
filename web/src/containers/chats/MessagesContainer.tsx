@@ -19,7 +19,7 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({ chatId }) => {
     return (
         <Container>
             {data?.messages.map(m => 
-                <h1>{m.text}</h1>
+                <h1 key={m.id}>{m.text}</h1>
             )}
         </Container>
     )

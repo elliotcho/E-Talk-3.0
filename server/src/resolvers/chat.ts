@@ -39,6 +39,25 @@ export class ChatResolver {
         return output;
     }
 
+    @Mutation(() => Boolean)
+    async sendMessage(
+        @Arg('chatId', () => Int) chatId: number,
+        @Arg('text') text: string,
+        @Ctx() { req } : MyContext
+    ) : Promise<boolean> {
+        const { uid } = req.session;
+
+        await getConnection().query(
+            `
+                insert into message ("chatId", "userId", text)
+                values ($1, $2, $3)
+            `, [chatId, uid, text]
+        );
+
+        await Chat.update({ id: chatId }, {});
+        return true;
+    }
+
     @Query(() => [Chat])
     async chats(
         @Ctx() { req } : MyContext

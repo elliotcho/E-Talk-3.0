@@ -200,6 +200,7 @@ export type Mutation = {
   deletePost: Scalars['Boolean'];
   createPost: Post;
   readNotifications: Scalars['Boolean'];
+  sendMessage: Scalars['Boolean'];
   createChat: Scalars['Int'];
   readFriendRequests: Scalars['Boolean'];
   removeFriend: Scalars['Boolean'];
@@ -288,6 +289,12 @@ export type MutationDeletePostArgs = {
 
 export type MutationCreatePostArgs = {
   content: Scalars['String'];
+};
+
+
+export type MutationSendMessageArgs = {
+  text: Scalars['String'];
+  chatId: Scalars['Int'];
 };
 
 
@@ -413,6 +420,17 @@ export type CreateChatMutationVariables = Exact<{
 export type CreateChatMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'createChat'>
+);
+
+export type SendMessageMutationVariables = Exact<{
+  chatId: Scalars['Int'];
+  text: Scalars['String'];
+}>;
+
+
+export type SendMessageMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'sendMessage'>
 );
 
 export type AcceptFriendRequestMutationVariables = Exact<{
@@ -1025,6 +1043,37 @@ export function useCreateChatMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateChatMutationHookResult = ReturnType<typeof useCreateChatMutation>;
 export type CreateChatMutationResult = Apollo.MutationResult<CreateChatMutation>;
 export type CreateChatMutationOptions = Apollo.BaseMutationOptions<CreateChatMutation, CreateChatMutationVariables>;
+export const SendMessageDocument = gql`
+    mutation SendMessage($chatId: Int!, $text: String!) {
+  sendMessage(chatId: $chatId, text: $text)
+}
+    `;
+export type SendMessageMutationFn = Apollo.MutationFunction<SendMessageMutation, SendMessageMutationVariables>;
+
+/**
+ * __useSendMessageMutation__
+ *
+ * To run a mutation, you first call `useSendMessageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendMessageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendMessageMutation, { data, loading, error }] = useSendMessageMutation({
+ *   variables: {
+ *      chatId: // value for 'chatId'
+ *      text: // value for 'text'
+ *   },
+ * });
+ */
+export function useSendMessageMutation(baseOptions?: Apollo.MutationHookOptions<SendMessageMutation, SendMessageMutationVariables>) {
+        return Apollo.useMutation<SendMessageMutation, SendMessageMutationVariables>(SendMessageDocument, baseOptions);
+      }
+export type SendMessageMutationHookResult = ReturnType<typeof useSendMessageMutation>;
+export type SendMessageMutationResult = Apollo.MutationResult<SendMessageMutation>;
+export type SendMessageMutationOptions = Apollo.BaseMutationOptions<SendMessageMutation, SendMessageMutationVariables>;
 export const AcceptFriendRequestDocument = gql`
     mutation AcceptFriendRequest($senderId: Int!) {
   acceptFriendRequest(senderId: $senderId)

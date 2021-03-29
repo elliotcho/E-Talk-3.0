@@ -16,7 +16,7 @@ const Sidebar: React.FC<SidebarProps> = ({ chatId }) => {
     return (
         <Container>
             {data?.chats.map(c => 
-                <h1>{c.title}</h1>
+                <h1 key={c.id}>{c.title}</h1>
             )}
         </Container>
     )

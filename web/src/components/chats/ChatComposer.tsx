@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { User, useSearchResultsQuery } from '../../generated/graphql';
+import { useSearchResultsQuery } from '../../generated/graphql';
 
 const Container = styled.div`
     position: relative;

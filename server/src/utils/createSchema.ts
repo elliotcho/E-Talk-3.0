@@ -1,8 +1,8 @@
 import { buildSchema } from 'type-graphql';
 import { UserResolver } from '../resolvers/user';
 import { PostResolver, CommentResolver } from '../resolvers/post';
+import { ChatResolver, MessageResolver } from '../resolvers/chat';
 import { NotificationResolver } from '../resolvers/notification'; 
-import { ChatResolver } from '../resolvers/chat';
 import { FriendResolver } from '../resolvers/friend';
 
 export const createSchema = async () => (
@@ -12,6 +12,7 @@ export const createSchema = async () => (
             FriendResolver,
             CommentResolver,
             NotificationResolver,
+            MessageResolver,
             ChatResolver,
             PostResolver,
             UserResolver

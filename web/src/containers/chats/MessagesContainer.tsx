@@ -6,7 +6,7 @@ import MessageBubble from '../../components/chats/MessageBubble';
 const Container = styled.div`
     display: flex;
     flex-direction: column-reverse;
-    background: white;
+    background: #f2f2f2;
     overflow-x: hidden;
     overflow-y: auto;
 `;
@@ -25,7 +25,8 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({ chatId }) => {
             {data?.messages.map(m => 
                 <MessageBubble
                     key = {m.id}
-                    text = {m.text}
+                    {...m.user}
+                    {...m}
                 />
             )}
         </Container>

@@ -5,7 +5,7 @@ const Header = styled.h2`
     display: flex;
     align-items: center;
     border-bottom: 1px solid gray;
-    background: #f2f2f2;
+    background: white;
     margin: 0;
 `;
 

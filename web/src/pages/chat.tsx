@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 
 const Container = styled.div`
     display: grid;
-    grid-template-columns: 300px 1fr;
+    grid-template-columns: 400px 1fr;
     height: 92vh;
 `;
 
@@ -25,9 +25,11 @@ const Chats: React.FC<{}> = () => {
         <AuthWrapper requiresAuth>
             <Layout>
                 <Container>
-                    <Sidebar chatId = {chatId}/>
+                    <Sidebar chatId={chatId}/>
                     
-                    <ChatWindow chatId = {chatId}/>
+                    <>
+                        <ChatWindow chatId={chatId}/>
+                    </>
                 </Container>
             </Layout>
         </AuthWrapper>

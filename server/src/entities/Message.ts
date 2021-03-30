@@ -9,6 +9,7 @@ import {
    ManyToOne,
 } from 'typeorm';
 import { Chat } from './Chat';
+import { User } from './User';
 
 @ObjectType()
 @Entity()
@@ -28,6 +29,9 @@ export class Message extends BaseEntity{
     @Field()
     @Column()
     chatId: number;
+
+    @Field()
+    user: User;
 
     @ManyToOne(() => Chat, (chat) => chat.messages, {
         onDelete: 'CASCADE'

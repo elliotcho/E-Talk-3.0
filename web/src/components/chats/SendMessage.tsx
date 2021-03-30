@@ -16,11 +16,16 @@ const Button = styled.button`
     border-radius: 50%;
     height: 2.5rem;
     width: 2.5rem;
-    background: #ccd9ff;
+    background: #1ac6ff;
+    color: white;
     position: relative;
-    bottom: 2px;
+    bottom: 3px;
     font-size: 1.4rem;
     border: none;
+
+    &:hover {
+        box-shadow: 0 0 5px black;
+    }
 `;
 
 const Textarea = styled.textarea`

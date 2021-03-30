@@ -1,20 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
-import { formatDate } from '../../utils/formatDate';
 import NextLink from 'next/link';
 
 const Container  = styled.div`
-    cursor: pointer;
+    display: grid;
+    grid-template-columns: 6rem auto;
     background: #e6e6e6;
-    padding: 15px;
+    cursor: pointer;
+    padding: 12px;
 
     &:hover {
         background: lightblue;
     }
-`;
-
-const Flex = styled.div`
-    display: flex;
 `;
 
 const Image = styled.img`
@@ -24,29 +21,32 @@ const Image = styled.img`
 `;
 
 const Box = styled.div`
-    margin-left: 10px;
     color: black;
 `;
 
-
 const Header = styled.h4`
-    margin: 0 auto;
+    margin: 0px auto;
 `;
 
 const Text = styled.p`
-    margin: 0 auto;
+    margin: 5px auto;
 `;
 
 interface ChatCardProps {
-    route: string;
     text: string;
     isActive: boolean;
-    updatedAt: string;
+    route: string;
     picture: string;
     title: string;
 }
 
-const ChatCard: React.FC<ChatCardProps> = ({ route, updatedAt, text, picture, isActive, title }) => {
+const ChatCard: React.FC<ChatCardProps> = ({ 
+    text,
+    isActive,
+    route,
+    picture,
+    title
+}) => {
     let style = {};
 
     if(isActive) {
@@ -56,19 +56,17 @@ const ChatCard: React.FC<ChatCardProps> = ({ route, updatedAt, text, picture, is
     return (
         <NextLink href={route}>
             <Container style={style}>
-                <Flex>
-                    <Image src={picture} alt='Profile Pic'/>
 
-                    <Box>
-                        <Header>{title}</Header>
-                        
-                        <Text>
-                            {text}
-                        </Text>
+                <Image src={picture} alt='Profile Pic'/>
+
+                <Box>
+                    <Header>{title}</Header>
+                    
+                    <Text>
+                        {text}
+                    </Text>
+                </Box>
                 
-                        {formatDate(updatedAt)}
-                    </Box>
-                </Flex>
             </Container>
         </NextLink>
     )

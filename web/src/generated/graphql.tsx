@@ -27,10 +27,10 @@ export type Query = {
   post: Post;
   userPosts: PaginatedPosts;
   posts: PaginatedPosts;
-  notifications: PaginatedNotifications;
   chats: Array<Chat>;
   messages: Array<Message>;
-  chat: Chat;
+  chat?: Maybe<Chat>;
+  notifications: PaginatedNotifications;
   friendRequests: Array<User>;
   friends: Array<User>;
 };
@@ -74,12 +74,6 @@ export type QueryPostsArgs = {
 };
 
 
-export type QueryNotificationsArgs = {
-  limit: Scalars['Int'];
-  cursor?: Maybe<Scalars['String']>;
-};
-
-
 export type QueryMessagesArgs = {
   chatId: Scalars['Int'];
 };
@@ -87,6 +81,12 @@ export type QueryMessagesArgs = {
 
 export type QueryChatArgs = {
   chatId: Scalars['Int'];
+};
+
+
+export type QueryNotificationsArgs = {
+  limit: Scalars['Int'];
+  cursor?: Maybe<Scalars['String']>;
 };
 
 
@@ -141,6 +141,28 @@ export type PaginatedPosts = {
   hasMore: Scalars['Boolean'];
 };
 
+export type Chat = {
+  __typename?: 'Chat';
+  id: Scalars['Float'];
+  isPrivate: Scalars['Boolean'];
+  title: Scalars['String'];
+  picture: Scalars['String'];
+  lastMessage: Message;
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+};
+
+export type Message = {
+  __typename?: 'Message';
+  id: Scalars['Float'];
+  text: Scalars['String'];
+  userId: Scalars['Float'];
+  chatId: Scalars['Float'];
+  user: User;
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+};
+
 export type PaginatedNotifications = {
   __typename?: 'PaginatedNotifications';
   notifications: Array<Notification>;
@@ -161,27 +183,6 @@ export type Notification = {
 };
 
 
-export type Chat = {
-  __typename?: 'Chat';
-  id: Scalars['Float'];
-  isPrivate: Scalars['Boolean'];
-  title: Scalars['String'];
-  picture: Scalars['String'];
-  lastMessage: Message;
-  createdAt: Scalars['String'];
-  updatedAt: Scalars['String'];
-};
-
-export type Message = {
-  __typename?: 'Message';
-  id: Scalars['Float'];
-  text: Scalars['String'];
-  userId: Scalars['Float'];
-  chatId: Scalars['Float'];
-  createdAt: Scalars['String'];
-  updatedAt: Scalars['String'];
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
   updateEmail: Scalars['Boolean'];
@@ -201,9 +202,9 @@ export type Mutation = {
   editPost: Post;
   deletePost: Scalars['Boolean'];
   createPost: Post;
-  readNotifications: Scalars['Boolean'];
   sendMessage: Scalars['Boolean'];
   createChat: Scalars['Int'];
+  readNotifications: Scalars['Boolean'];
   readFriendRequests: Scalars['Boolean'];
   removeFriend: Scalars['Boolean'];
   acceptFriendRequest: Scalars['Boolean'];
@@ -375,6 +376,11 @@ export type RegularChatFragment = (
 export type RegularMessageFragment = (
   { __typename?: 'Message' }
   & Pick<Message, 'id' | 'text' | 'createdAt' | 'userId' | 'chatId'>
+  & { user: (
+    { __typename?: 'User' }
+    & Pick<User, 'isMe'>
+    & RegularUserFragment
+  ) }
 );
 
 export type RegularNotificationFragment = (
@@ -705,10 +711,10 @@ export type ChatQueryVariables = Exact<{
 
 export type ChatQuery = (
   { __typename?: 'Query' }
-  & { chat: (
+  & { chat?: Maybe<(
     { __typename?: 'Chat' }
     & RegularChatFragment
-  ) }
+  )> }
 );
 
 export type ChatsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -941,6 +947,18 @@ export type NewLikeSubscription = (
   ) }
 );
 
+export const RegularUserFragmentDoc = gql`
+    fragment RegularUser on User {
+  id
+  email
+  firstName
+  lastName
+  friendStatus
+  profileURL
+  profilePic
+  bio
+}
+    `;
 export const RegularMessageFragmentDoc = gql`
     fragment RegularMessage on Message {
   id
@@ -948,8 +966,12 @@ export const RegularMessageFragmentDoc = gql`
   createdAt
   userId
   chatId
+  user {
+    isMe
+    ...RegularUser
+  }
 }
-    `;
+    ${RegularUserFragmentDoc}`;
 export const RegularChatFragmentDoc = gql`
     fragment RegularChat on Chat {
   id
@@ -976,18 +998,6 @@ export const RegularNotificationFragmentDoc = gql`
     firstName
     lastName
   }
-}
-    `;
-export const RegularUserFragmentDoc = gql`
-    fragment RegularUser on User {
-  id
-  email
-  firstName
-  lastName
-  friendStatus
-  profileURL
-  profilePic
-  bio
 }
     `;
 export const RegularPostFragmentDoc = gql`

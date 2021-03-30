@@ -12,7 +12,18 @@ import { getConnection } from 'typeorm';
 import { Chat } from '../entities/Chat';
 import { Member } from '../entities/Member';
 import { Message } from '../entities/Message';
+import { User } from '../entities/User';
 import { MyContext } from '../types';
+
+@Resolver(Message)
+export class MessageResolver {
+    @FieldResolver(() => User)
+    async user(
+        @Root() message: Message
+    ) : Promise<User | undefined> {
+        return User.findOne(message.userId);
+    }
+}
 
 @Resolver(Chat)
 export class ChatResolver {
@@ -36,13 +47,13 @@ export class ChatResolver {
 
         for(let i=0;i<members.length;i++) {
             const member = members[i];
-            const { firstName, lastName } = member;
 
-            if(member.id === uid) {
+            if(uid === member.id) {
                 continue;
             }
 
-            output += `${firstName} ${lastName}`;
+            output += member.firstName + ' ';
+            output += member.lastName + ' ';
         }
     
         return output;
@@ -56,7 +67,7 @@ export class ChatResolver {
             `
                 select m.* from message as m
                 where m."chatId" = $1
-                order by m."createdAt" ASC
+                order by m."createdAt" DESC
             `, [chat.id]
         )
 
@@ -82,10 +93,8 @@ export class ChatResolver {
         let url = `${process.env.SERVER_URL}/images/default.png`;
 
         for(let i=0;i<members.length;i++) {
-            const member = members[i];
-
-            const profilePic = member.profilePic;
-            const isMe = member.id === uid;
+            const profilePic = members[i].profilePic;
+            const isMe = members[i].id === uid;
 
             if(!isMe && profilePic) {
                 url = `${process.env.SERVER_URL}/images/${profilePic}`;
@@ -138,13 +147,14 @@ export class ChatResolver {
             `
                 select m.* from message as m
                 where m."chatId" = $1  
+                order by m."createdAt" DESC
             `, [chatId]
         );
 
         return messages;
     }
 
-    @Query(() => Chat)
+    @Query(() => Chat, { nullable: true })
     async chat(
         @Arg('chatId', () => Int) chatId: number,
         @Ctx() { req } : MyContext

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useChatQuery } from '../../generated/graphql';
-import ChatContainer from './MessagesContainer';
+import MessagesContainer from './MessagesContainer';
 import ChatHeader from '../../components/chats/ChatHeader';
 import ChatComposer from '../../components/chats/ChatComposer';
 import SendMessage from '../../components/chats/SendMessage';
@@ -28,12 +28,12 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chatId }) => {
         variables: { chatId }
     });
 
-    const title = data?.chat.title || 'Loading...';
-    const picture = data?.chat.picture || '/loading.jpg';
+    const title = data?.chat?.title || 'Loading...';
+    const picture = data?.chat?.picture || '/loading.jpg';
 
     useEffect(() => {
 
-        if(!!data) {
+        if(!!data?.chat) {
             setIsChat(true);
         }
         
@@ -55,11 +55,8 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chatId }) => {
                 />
             )}
 
-            {isChat? (
-                <ChatContainer chatId={chatId} />
-            ): (
-                <EmptyContainer />
-            )}
+            {isChat && <MessagesContainer chatId={chatId} />}
+            {!isChat && <EmptyContainer />}
 
             <SendMessage 
                 isChat = {isChat}

@@ -4,4 +4,8 @@ fragment RegularMessage on Message {
     createdAt
     userId
     chatId
+    user {
+        isMe
+        ...RegularUser
+    }
 }

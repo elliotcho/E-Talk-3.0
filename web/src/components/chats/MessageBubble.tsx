@@ -14,7 +14,8 @@ const Box = styled.div`
     overflow-wrap: break-word;
     white-space: pre-wrap;
     border-radius: 11px;
-    background: red;
+    background: #d9d9d9;
+    color: black;
 `;
 
 const Image = styled.img`

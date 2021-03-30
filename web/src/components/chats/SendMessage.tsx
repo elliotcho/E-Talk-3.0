@@ -7,7 +7,20 @@ import { useRouter } from 'next/router';
 const Container = styled.div`
     display: grid; 
     grid-template-columns: 50px auto;
+    grid-gap: 30px;
+    background: #bfbfbf;
     padding: 20px;
+`;
+
+const Button = styled.button`
+    border-radius: 50%;
+    height: 2.5rem;
+    width: 2.5rem;
+    background: #ccd9ff;
+    position: relative;
+    bottom: 2px;
+    font-size: 1.4rem;
+    border: none;
 `;
 
 const Textarea = styled.textarea`
@@ -35,11 +48,11 @@ const SendMessage : React.FC<SendMessageProps> = ({ recipients, isChat, chatId }
     const [sendMessage] = useSendMessageMutation();
     const router = useRouter();
 
-    console.log(isChat)
-
     return (
         <Container>
-            <div></div>
+            <Button>
+                +
+            </Button>
 
             <Textarea
                 value = {text}

@@ -6,7 +6,7 @@ import MessageBubble from '../../components/chats/MessageBubble';
 const Container = styled.div`
     display: flex;
     flex-direction: column-reverse;
-    background: #8c8c8c;
+    background: white;
     overflow-x: hidden;
     overflow-y: auto;
 `;

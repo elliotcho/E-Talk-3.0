@@ -5,12 +5,11 @@ import NextLink from 'next/link';
 
 const Container  = styled.div`
     cursor: pointer;
-    border: 1px solid black;
-    background: lightgray;
+    background: #e6e6e6;
     padding: 15px;
 
     &:hover {
-        background: white;
+        background: lightblue;
     }
 `;
 
@@ -19,6 +18,7 @@ const Flex = styled.div`
 `;
 
 const Image = styled.img`
+    border-radius: 50%;
     height: 4rem;
     width: 4rem; 
 `;
@@ -50,7 +50,7 @@ const ChatCard: React.FC<ChatCardProps> = ({ route, updatedAt, text, picture, is
     let style = {};
 
     if(isActive) {
-        style = { background: 'white' };
+        style = { background: 'lightblue' };
     }
 
     return (

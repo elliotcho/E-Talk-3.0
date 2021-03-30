@@ -4,7 +4,7 @@ import { useChatsQuery } from '../../generated/graphql';
 import ChatCard from '../../components/chats/ChatCard';
 
 const Container = styled.div`
-    background: silver;
+    background: #e6e6e6;
 `;
 
 interface SidebarProps {

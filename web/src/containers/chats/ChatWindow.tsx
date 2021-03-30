@@ -13,7 +13,7 @@ const Main = styled.div`
 `;
 
 const EmptyContainer = styled.div`
-    background: #737373;
+    background: #ccc;
 `;
 
 interface ChatWindowProps {
@@ -29,6 +29,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chatId }) => {
     });
 
     const title = data?.chat.title || 'Loading...';
+    const picture = data?.chat.picture || '/loading.jpg';
 
     useEffect(() => {
 
@@ -41,7 +42,10 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chatId }) => {
     return (
         <Main>
             {isChat? (
-                <ChatHeader title={title}/>
+                <ChatHeader 
+                    title={title}
+                    picture = {picture}
+                />
             ) : (
                 <ChatComposer 
                     recipients = {recipients}
@@ -52,7 +56,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chatId }) => {
             )}
 
             {isChat? (
-                <ChatContainer chatId={chatId}/>
+                <ChatContainer chatId={chatId} />
             ): (
                 <EmptyContainer />
             )}

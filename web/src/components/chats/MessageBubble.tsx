@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const Container = styled.div`
     display: grid;
     grid-template-columns: 5rem auto;
-    margin: 0 auto 30px 50px;
+    margin: 0 50px 30px auto;
 `;
 
 const Box = styled.div`
@@ -12,8 +12,8 @@ const Box = styled.div`
     overflow-wrap: break-word;
     white-space: pre-wrap;
     border-radius: 11px;
-    background: #d9d9d9;
-    color: black;
+    background: #00ccff;
+    color: white;
 `;
 
 const Image = styled.img`
@@ -26,28 +26,41 @@ const Image = styled.img`
 interface MessageBubbleProps {
     isMe: boolean;
     profileURL: string;
+    hasImage: boolean;
     text: string;
 }
 
 const MessageBubble: React.FC<MessageBubbleProps> = ({ 
     isMe,
     profileURL,
+    hasImage,
     text
  }) => {
+    let visibility: 'hidden' | 'visible' | 'collapse';
 
     let color = '';
     let background = '';
     let margin = '';
 
-    if(isMe) {
-        margin = '0 50px 30px auto';
-        background = '#00ccff';
-        color = 'white';
+    if(!isMe) {
+        margin = '0 auto 30px 50px';
+        background = '#d9d9d9';
+        color = 'black';
+    }
+
+    if(!hasImage) {
+        visibility = 'hidden';
     }
 
     return (
         <Container style={{ margin }}>
-            {!isMe && <Image src={profileURL} alt='profile pic'/>}
+            {!isMe && (
+                <Image 
+                    src={profileURL} 
+                    style = {{ visibility }}
+                    alt='profile pic'
+                />
+            )}
 
             <Box style = {{ background, color }}>
                 {text}

@@ -21,6 +21,12 @@ const Header = styled.h3`
     color: black;
 `;
 
+const Secondary = styled.h3`
+    color: #737373;
+    text-align: center;
+    margin-top: 50px;
+`;
+
 const Box = styled.div`
     margin: 0 10px 0 auto;
     font-size: 1.5rem;
@@ -67,6 +73,12 @@ const Sidebar: React.FC<SidebarProps> = ({ chatId }) => {
                     />
                 )   
             })}
+
+            {!data?.chats.length && (
+                <Secondary>
+                    No chats available :(
+                </Secondary>
+            )}
         </Container>
     )
 }

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useCreateChatMutation, useSendMessageMutation } from '../../generated/graphql';
 import { handleEnterPress } from '../../utils/handleEnterPress';
+import { isServer } from '../../utils/isServer';
 import { useRouter } from 'next/router'; 
 
 const Container = styled.div`
@@ -33,12 +34,17 @@ const Textarea = styled.textarea`
     height: 35px;
     max-height: 130px;
     font-size: 1.2rem;
+    border-radius: 11px;
     overflow: hidden;
     resize: none;
 
     &:focus {
         outline: none;
     }
+`;
+
+const Input = styled.input`
+    display: none;
 `;
 
 interface SendMessageProps {
@@ -55,9 +61,23 @@ const SendMessage : React.FC<SendMessageProps> = ({ recipients, isChat, chatId }
 
     return (
         <Container>
-            <Button>
+            <Button
+                onClick = {() => {
+                    if(!isServer()) {
+                        document.getElementById('file').click();
+                    }
+                }}
+            >
                 +
             </Button>
+
+            <Input
+                id = 'file'
+                type = 'file'
+                onClick = {() => {
+                    
+                }}
+            />  
 
             <Textarea
                 value = {text}
@@ -78,12 +98,16 @@ const SendMessage : React.FC<SendMessageProps> = ({ recipients, isChat, chatId }
                         if(chatId) {
                             router.push(`/chat/${chatId}`)
                         }
+
+                        setText('');
                     }
 
                     if(submit && isChat) {
                         await sendMessage({
                             variables: { chatId, text }
                         });
+
+                        setText('');
                     }
                 }}
             />

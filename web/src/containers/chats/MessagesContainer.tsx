@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useMessagesQuery } from '../../generated/graphql';
 import MessageBubble from '../../components/chats/MessageBubble';
+import TypingBubble from '../../components/chats/TypingBubble';
 
 const Container = styled.div`
     display: flex;
@@ -16,19 +17,33 @@ interface MessagesContainerProps {
 }
 
 const MessagesContainer: React.FC<MessagesContainerProps> = ({ chatId }) => {
-    const { data } = useMessagesQuery({
-        variables: { chatId }
-    });
+    const { data } = useMessagesQuery({ variables: { chatId } });
+    const messages = data?.messages || [];
     
     return (
         <Container>
-            {data?.messages.map(m => 
-                <MessageBubble
-                    key = {m.id}
-                    {...m.user}
-                    {...m}
-                />
-            )}
+            <TypingBubble />
+
+            {messages.map((m, i) => { 
+                let hasImage: boolean;
+
+                if(i === 0) {
+                    hasImage = true;
+                } else if(messages[i].userId !== messages[i - 1].userId) {
+                    hasImage = true;
+                } else {
+                    hasImage = false;
+                }
+
+                return (
+                    <MessageBubble
+                        key = {m.id}
+                        hasImage = {hasImage}
+                        {...m.user}
+                        {...m}
+                    />
+                )
+            })}
         </Container>
     )
 }

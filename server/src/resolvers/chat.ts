@@ -18,8 +18,11 @@ import { MyContext } from '../types';
 export class ChatResolver {
     @FieldResolver(() => String)
     async title(
-        @Root() chat: Chat
+        @Root() chat: Chat,
+        @Ctx() { req } : MyContext
     ): Promise<string> {
+        const { uid } = req.session;
+
         const members = await getConnection().query(
             `
                 select u.* from "user" as u 
@@ -32,11 +35,65 @@ export class ChatResolver {
         let output = '';
 
         for(let i=0;i<members.length;i++) {
-            output += members[i].firstName;
-            output += members[i].lastName;
+            const member = members[i];
+            const { firstName, lastName } = member;
+
+            if(member.id === uid) {
+                continue;
+            }
+
+            output += `${firstName} ${lastName}`;
         }
     
         return output;
+    }
+
+    @FieldResolver(() => Message)
+    async lastMessage(
+        @Root() chat: Chat
+    ) : Promise<Message | undefined> {
+        const messages = await getConnection().query(
+            `
+                select m.* from message as m
+                where m."chatId" = $1
+                order by m."createdAt" ASC
+            `, [chat.id]
+        )
+
+        return messages[0];
+    }
+
+    @FieldResolver(() => String)
+    async picture(
+        @Root() chat: Chat,
+        @Ctx() { req } : MyContext
+    ) : Promise<string> {
+        const { uid } = req.session;
+
+        const members = await getConnection().query(
+            `
+                select u.* from "user" as u 
+                inner join member as m on m."userId" = u.id
+                inner join chat as c on c.id = m."chatId"
+                where c.id = $1
+            `, [chat.id]
+        );
+
+        let url = `${process.env.SERVER_URL}/images/default.png`;
+
+        for(let i=0;i<members.length;i++) {
+            const member = members[i];
+
+            const profilePic = member.profilePic;
+            const isMe = member.id === uid;
+
+            if(!isMe && profilePic) {
+                url = `${process.env.SERVER_URL}/images/${profilePic}`;
+                break;
+            }
+        }
+
+        return url;
     }
 
     @Mutation(() => Boolean)

@@ -25,6 +25,12 @@ export class Chat extends BaseEntity{
     @Field()
     title: string;
 
+    @Field()
+    picture: string;
+
+    @Field()
+    lastMessage: Message;
+
     @Field(() => String)
     @CreateDateColumn()
     createdAt : Date;

@@ -117,7 +117,7 @@ const SignedInLinks : React.FC<SignedInLinksProps> = ({
 
                     <Link>Messages</Link>
 
-                    <Box>129</Box>
+                    {/* <Box>129</Box> */}
                 </Item>
             </NextLink>
 

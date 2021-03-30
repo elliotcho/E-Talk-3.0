@@ -1,6 +1,10 @@
 fragment RegularChat on Chat {
     id
     isPrivate
-    createdAt
+    updatedAt
+    picture
     title
+    lastMessage {
+        ...RegularMessage
+    }
 }

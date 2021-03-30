@@ -166,6 +166,8 @@ export type Chat = {
   id: Scalars['Float'];
   isPrivate: Scalars['Boolean'];
   title: Scalars['String'];
+  picture: Scalars['String'];
+  lastMessage: Message;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -363,7 +365,11 @@ export type Subscription = {
 
 export type RegularChatFragment = (
   { __typename?: 'Chat' }
-  & Pick<Chat, 'id' | 'isPrivate' | 'createdAt' | 'title'>
+  & Pick<Chat, 'id' | 'isPrivate' | 'updatedAt' | 'picture' | 'title'>
+  & { lastMessage: (
+    { __typename?: 'Message' }
+    & RegularMessageFragment
+  ) }
 );
 
 export type RegularMessageFragment = (
@@ -935,14 +941,6 @@ export type NewLikeSubscription = (
   ) }
 );
 
-export const RegularChatFragmentDoc = gql`
-    fragment RegularChat on Chat {
-  id
-  isPrivate
-  createdAt
-  title
-}
-    `;
 export const RegularMessageFragmentDoc = gql`
     fragment RegularMessage on Message {
   id
@@ -952,6 +950,18 @@ export const RegularMessageFragmentDoc = gql`
   chatId
 }
     `;
+export const RegularChatFragmentDoc = gql`
+    fragment RegularChat on Chat {
+  id
+  isPrivate
+  updatedAt
+  picture
+  title
+  lastMessage {
+    ...RegularMessage
+  }
+}
+    ${RegularMessageFragmentDoc}`;
 export const RegularNotificationFragmentDoc = gql`
     fragment RegularNotification on Notification {
   text

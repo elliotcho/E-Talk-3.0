@@ -1,7 +1,5 @@
 fragment RegularChat on Chat {
     id
-    isPrivate
-    updatedAt
     picture
     title
     lastMessage {

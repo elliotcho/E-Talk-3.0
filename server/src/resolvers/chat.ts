@@ -65,8 +65,7 @@ export class ChatResolver {
     ) : Promise<Message | undefined> {
         const messages = await getConnection().query(
             `
-                select m.* from message as m
-                where m."chatId" = $1
+                select * from message as m where m."chatId" = $1
                 order by m."createdAt" DESC
             `, [chat.id]
         )
@@ -120,7 +119,6 @@ export class ChatResolver {
             `, [chatId, uid, text]
         );
 
-        await Chat.update({ id: chatId }, {});
         return true;
     }
 
@@ -145,8 +143,7 @@ export class ChatResolver {
     ) : Promise<Message[]> {
         const messages = await getConnection().query(
             `
-                select m.* from message as m
-                where m."chatId" = $1  
+                select * from message as m where m."chatId" = $1  
                 order by m."createdAt" DESC
             `, [chatId]
         );
@@ -177,7 +174,6 @@ export class ChatResolver {
         @Ctx() { req } : MyContext
     ): Promise<number> { 
         let chat: any;
-        const isPrivate = members.length === 1;
         const { uid } = req.session;
 
         if(uid && !members.includes(uid)) {
@@ -185,6 +181,8 @@ export class ChatResolver {
         }
 
         await getConnection().transaction(async tm => {
+            const isPrivate = members.length === 2;
+
             const result = await tm.createQueryBuilder()
                     .insert()
                     .into(Chat)
@@ -199,7 +197,8 @@ export class ChatResolver {
                     `
                         insert into member ("chatId", "userId")  
                         values ($1, $2)
-                    `, [chat.id, members[i]]
+                    `, 
+                    [chat.id, members[i]]
                 );
             }
 
@@ -207,7 +206,8 @@ export class ChatResolver {
                 `
                     insert into message ("chatId", "userId", "text")
                     values ($1, $2, $3)
-                `,[chat.id, req.session.uid, text]
+                `,
+                [chat.id, req.session.uid, text]
             );
         });
 

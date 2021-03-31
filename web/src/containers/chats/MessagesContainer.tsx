@@ -27,9 +27,10 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({ chatId }) => {
             {messages.map((m, i) => { 
                 let hasImage: boolean;
 
-                if(i === 0) {
-                    hasImage = true;
-                } else if(messages[i].userId !== messages[i - 1].userId) {
+                const currUser = messages[i]?.userId;
+                const prevUser = messages[i - 1]?.userId;
+
+                if((i === 0) || (currUser !== prevUser)) {
                     hasImage = true;
                 } else {
                     hasImage = false;

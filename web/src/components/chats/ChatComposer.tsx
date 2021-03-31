@@ -10,6 +10,7 @@ const Container = styled.div`
 const Input = styled.input`
     height: 100%;
     font-size: 1.4rem;
+    padding: 12px;
     border: none;
 
     &:focus {
@@ -49,8 +50,8 @@ const Span = styled.span`
 `;
 
 const Image = styled.img`
-    width: 4rem;
     height: 4rem;
+    width: 4rem;
 `;
 
 interface ChatComposerProps {
@@ -79,15 +80,17 @@ const ChatComposer: React.FC<ChatComposerProps> = ({ setRecipients, recipients }
                 type = 'text'
                 value = {query}
                 onKeyDown = {(e: any) => {
+
                     if(e.keyCode === 8 && !query.length) {
                         const newRecipients = [...recipients];
                         const user = newRecipients.pop();
 
+                        setRecipients(newRecipients);
+
                         delete map[user.id];
                         setMap(map);
-
-                        setRecipients(newRecipients);
                     }
+
                 }}
                 onChange = {async (e) => {
                     setQuery(e.target.value);

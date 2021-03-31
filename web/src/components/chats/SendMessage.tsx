@@ -8,21 +8,21 @@ import { useRouter } from 'next/router';
 const Container = styled.div`
     display: grid; 
     grid-template-columns: 50px auto;
-    grid-gap: 30px;
     background: #bfbfbf;
+    grid-gap: 30px;
     padding: 20px;
 `;
 
 const Button = styled.button`
-    border-radius: 50%;
+    color: white;
     height: 2.5rem;
     width: 2.5rem;
-    background: #1ac6ff;
-    color: white;
-    position: relative;
-    bottom: 3px;
     font-size: 1.4rem;
+    background: #1ac6ff;
+    border-radius: 50%;
+    position: relative;
     border: none;
+    bottom: 3px;
 
     &:hover {
         box-shadow: 0 0 5px black;
@@ -53,18 +53,44 @@ interface SendMessageProps {
     chatId: number;
 }
 
-const SendMessage : React.FC<SendMessageProps> = ({ recipients, isChat, chatId }) => {
+const SendMessage : React.FC<SendMessageProps> = ({ isChat, recipients, chatId }) => {
     const [text, setText] = useState('');
-    const [createChat] = useCreateChatMutation();
     const [sendMessage] = useSendMessageMutation();
+    const [createChat] = useCreateChatMutation();
     const router = useRouter();
+
+    const handleNewChat = async () => {
+        const members = recipients.map(r => r.id);
+
+        const response = await createChat({ 
+            variables: { members, text },
+            update: (cache) => {
+                cache.evict({ fieldName: 'chats' });
+            }
+        });
+
+        const chatId = response?.data?.createChat;            
+        router.push(`/chat/${chatId}`);
+    }
+
+    const handleNewMessage = async () => {
+        await sendMessage({
+            variables: { chatId, text },
+            update: (cache) => {
+                cache.evict({ fieldName: 'messages' });
+                cache.evict({ fieldName: 'chats' });
+            }
+        });
+    }
 
     return (
         <Container>
             <Button
                 onClick = {() => {
                     if(!isServer()) {
-                        document.getElementById('file').click();
+                        document
+                            .getElementById('file')
+                            .click();
                     }
                 }}
             >
@@ -72,8 +98,8 @@ const SendMessage : React.FC<SendMessageProps> = ({ recipients, isChat, chatId }
             </Button>
 
             <Input
-                id = 'file'
                 type = 'file'
+                id = 'file'
                 onClick = {() => {
                     
                 }}
@@ -86,29 +112,17 @@ const SendMessage : React.FC<SendMessageProps> = ({ recipients, isChat, chatId }
                 onKeyDown = {async (e) => {
                     const submit = handleEnterPress(e, 130);
 
-                    if(submit && !isChat) {
-                        const members = recipients.map(r => r.id);
-
-                        const response = await createChat({
-                            variables: { members, text }
-                        });
-
-                        const chatId = response?.data?.createChat;
-
-                        if(chatId) {
-                            router.push(`/chat/${chatId}`)
+                    if(submit) {
+                        if(isChat) {
+                            await handleNewMessage();
+                        } else {
+                            await handleNewChat();
                         }
 
                         setText('');
+                        return;
                     }
 
-                    if(submit && isChat) {
-                        await sendMessage({
-                            variables: { chatId, text }
-                        });
-
-                        setText('');
-                    }
                 }}
             />
         </Container>

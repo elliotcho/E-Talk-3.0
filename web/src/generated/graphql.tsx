@@ -366,7 +366,7 @@ export type Subscription = {
 
 export type RegularChatFragment = (
   { __typename?: 'Chat' }
-  & Pick<Chat, 'id' | 'isPrivate' | 'updatedAt' | 'picture' | 'title'>
+  & Pick<Chat, 'id' | 'picture' | 'title'>
   & { lastMessage: (
     { __typename?: 'Message' }
     & RegularMessageFragment
@@ -975,8 +975,6 @@ export const RegularMessageFragmentDoc = gql`
 export const RegularChatFragmentDoc = gql`
     fragment RegularChat on Chat {
   id
-  isPrivate
-  updatedAt
   picture
   title
   lastMessage {

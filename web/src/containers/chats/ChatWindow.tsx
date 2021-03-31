@@ -24,12 +24,10 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chatId }) => {
     const [recipients, setRecipients] = useState([]);
     const [isChat, setIsChat] = useState(false);
 
-    const { data } = useChatQuery({
-        variables: { chatId }
-    });
-
-    const title = data?.chat?.title || 'Loading...';
+    const { data } = useChatQuery({ variables: { chatId } });
+    
     const picture = data?.chat?.picture || '/loading.jpg';
+    const title = data?.chat?.title || 'Loading...';
 
     useEffect(() => {
 
@@ -41,12 +39,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chatId }) => {
 
     return (
         <Main>
-            {isChat? (
-                <ChatHeader 
-                    title={title}
-                    picture = {picture}
-                />
-            ) : (
+            {isChat && <ChatHeader picture={picture} title={title}/>}
+
+            {!isChat && (
                 <ChatComposer 
                     recipients = {recipients}
                     setRecipients = {(r: any[]) => {

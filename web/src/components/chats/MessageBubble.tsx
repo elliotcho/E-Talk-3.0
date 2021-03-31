@@ -36,9 +36,8 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
     hasImage,
     text
  }) => {
-    let visibility: 'hidden' | 'visible' | 'collapse';
-
     let color = '';
+    let visibility: 'hidden';
     let background = '';
     let margin = '';
 

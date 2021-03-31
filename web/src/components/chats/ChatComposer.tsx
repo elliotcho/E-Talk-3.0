@@ -98,31 +98,33 @@ const ChatComposer: React.FC<ChatComposerProps> = ({ setRecipients, recipients }
                 }}
             />  
 
-            <Stack>
-                {data?.searchResults.map(u => 
-                    !map[u.id]  && (
-                        <Card 
-                            key={u.id}
-                            onClick = {() => {
-                                const newRecipients = [...recipients];
-                                newRecipients.push(u);
+            {data && (
+                <Stack>
+                    {data?.searchResults.map(u => 
+                        !map[u.id]  && (
+                            <Card 
+                                key={u.id}
+                                onClick = {() => {
+                                    const newRecipients = [...recipients];
+                                    newRecipients.push(u);
 
-                                map[u.id] = u;
-                                setMap(map);
+                                    map[u.id] = u;
+                                    setMap(map);
 
-                                setRecipients(newRecipients);
-                                setQuery('');
-                            }}    
-                        >  
-                            <Image src={u.profileURL} alt='profile pic'/>
+                                    setRecipients(newRecipients);
+                                    setQuery('');
+                                }}    
+                            >  
+                                <Image src={u.profileURL} alt='profile pic'/>
 
-                            <Span>
-                                {u.firstName} {u.lastName}
-                            </Span>
-                        </Card> 
-                    )
-                )}
-            </Stack>
+                                <Span>
+                                    {u.firstName} {u.lastName}
+                                </Span>
+                            </Card> 
+                        )
+                    )}
+                </Stack>
+            )}
         </Container>
     )
 }

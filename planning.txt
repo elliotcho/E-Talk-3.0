@@ -1,11 +1,4 @@
-TODOS:
+TODOS: 
 
-Paginate likers
+Paginate Likers
 Paginate comments
-
-             chat
-
-Sidebar      Main
-             Header / Composer
-             MessageContainer
-             SendMessage

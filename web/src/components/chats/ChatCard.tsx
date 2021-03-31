@@ -48,9 +48,14 @@ const ChatCard: React.FC<ChatCardProps> = ({
     title
 }) => {
     let style = {};
+    let textSnippet = text;
 
     if(isActive) {
         style = { background: 'lightblue' };
+    }
+
+    if(textSnippet.length > 30) {
+        textSnippet = `${text.substring(0, 28)}...`;
     }
 
     return (
@@ -63,7 +68,7 @@ const ChatCard: React.FC<ChatCardProps> = ({
                     <Header>{title}</Header>
                     
                     <Text>
-                        {text}
+                        {textSnippet}
                     </Text>
                 </Box>
                 

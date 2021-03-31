@@ -88,9 +88,7 @@ const SendMessage : React.FC<SendMessageProps> = ({ isChat, recipients, chatId }
             <Button
                 onClick = {() => {
                     if(!isServer()) {
-                        document
-                            .getElementById('file')
-                            .click();
+                        document.getElementById('file').click();
                     }
                 }}
             >
@@ -100,8 +98,12 @@ const SendMessage : React.FC<SendMessageProps> = ({ isChat, recipients, chatId }
             <Input
                 type = 'file'
                 id = 'file'
-                onClick = {() => {
-                    
+                onChange = {async () => {
+                    if(isChat) {
+                        await handleNewMessage();
+                    } else {
+                        await handleNewChat();
+                    }
                 }}
             />  
 

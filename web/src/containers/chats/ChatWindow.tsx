@@ -9,7 +9,7 @@ import SendMessage from '../../components/chats/SendMessage';
 const Main = styled.div`
     display: grid;
     grid-template-rows: 1fr 8.5fr auto;
-    grid-row-gap: 0;
+    overflow: hidden;
 `;
 
 const EmptyContainer = styled.div`
@@ -25,7 +25,6 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chatId }) => {
     const [isChat, setIsChat] = useState(false);
 
     const { data } = useChatQuery({ variables: { chatId } });
-    
     const picture = data?.chat?.picture || '/loading.jpg';
     const title = data?.chat?.title || 'Loading...';
 

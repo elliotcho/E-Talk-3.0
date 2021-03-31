@@ -13,6 +13,7 @@ import { Chat } from '../entities/Chat';
 import { Member } from '../entities/Member';
 import { Message } from '../entities/Message';
 import { User } from '../entities/User';
+import { formatChatTitle } from '../utils/formatChatTitle';
 import { MyContext } from '../types';
 
 @Resolver(Message)
@@ -42,21 +43,8 @@ export class ChatResolver {
                 where c.id = $1
             `, [chat.id]
         );
-        
-        let output = '';
-
-        for(let i=0;i<members.length;i++) {
-            const member = members[i];
-
-            if(uid === member.id) {
-                continue;
-            }
-
-            output += member.firstName + ' ';
-            output += member.lastName + ' ';
-        }
     
-        return output;
+        return formatChatTitle(uid, members);
     }
 
     @FieldResolver(() => Message)
@@ -119,6 +107,7 @@ export class ChatResolver {
             `, [chatId, uid, text]
         );
 
+        await Chat.update({ id: chatId }, {});
         return true;
     }
 
@@ -129,8 +118,9 @@ export class ChatResolver {
         const chats = await getConnection().query(
             `
                 select c.* from chat as c
-                inner join member as m on m."chatId" = c.id
-                where m."userId" = $1
+                inner join member on member."chatId" = c.id
+                where member."userId" = $1 
+                order by c."updatedAt" DESC
             `, [req.session.uid]
         );
 

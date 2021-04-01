@@ -1,3 +1,3 @@
-mutation CreateChat($members: [Int!]!, $text: String!) {
-    createChat(members: $members, text: $text)
+mutation CreateChat($members: [Int!]!, $file: Upload, $text: String) {
+    createChat(members: $members, file: $file, text: $text)
 }

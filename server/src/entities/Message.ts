@@ -18,9 +18,15 @@ export class Message extends BaseEntity{
     @PrimaryGeneratedColumn()
     id! : number;
 
-    @Field()
-    @Column()
+    @Field(() => String, { nullable: true })
+    @Column({ default: '' })
     text: string;
+
+    @Column({ default: '' })
+    photo: string;
+
+    @Field()
+    photoURL: string;
 
     @Field()
     @Column()

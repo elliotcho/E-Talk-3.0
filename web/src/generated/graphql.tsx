@@ -155,7 +155,8 @@ export type Chat = {
 export type Message = {
   __typename?: 'Message';
   id: Scalars['Float'];
-  text: Scalars['String'];
+  text?: Maybe<Scalars['String']>;
+  photoURL: Scalars['String'];
   userId: Scalars['Float'];
   chatId: Scalars['Float'];
   user: User;
@@ -296,7 +297,8 @@ export type MutationCreatePostArgs = {
 
 
 export type MutationSendMessageArgs = {
-  text: Scalars['String'];
+  text?: Maybe<Scalars['String']>;
+  file?: Maybe<Scalars['Upload']>;
   chatId: Scalars['Int'];
 };
 
@@ -375,7 +377,7 @@ export type RegularChatFragment = (
 
 export type RegularMessageFragment = (
   { __typename?: 'Message' }
-  & Pick<Message, 'id' | 'text' | 'createdAt' | 'userId' | 'chatId'>
+  & Pick<Message, 'id' | 'text' | 'photoURL' | 'createdAt' | 'userId' | 'chatId'>
   & { user: (
     { __typename?: 'User' }
     & Pick<User, 'isMe'>
@@ -436,7 +438,8 @@ export type CreateChatMutation = (
 
 export type SendMessageMutationVariables = Exact<{
   chatId: Scalars['Int'];
-  text: Scalars['String'];
+  file?: Maybe<Scalars['Upload']>;
+  text?: Maybe<Scalars['String']>;
 }>;
 
 
@@ -963,6 +966,7 @@ export const RegularMessageFragmentDoc = gql`
     fragment RegularMessage on Message {
   id
   text
+  photoURL
   createdAt
   userId
   chatId
@@ -1062,8 +1066,8 @@ export type CreateChatMutationHookResult = ReturnType<typeof useCreateChatMutati
 export type CreateChatMutationResult = Apollo.MutationResult<CreateChatMutation>;
 export type CreateChatMutationOptions = Apollo.BaseMutationOptions<CreateChatMutation, CreateChatMutationVariables>;
 export const SendMessageDocument = gql`
-    mutation SendMessage($chatId: Int!, $text: String!) {
-  sendMessage(chatId: $chatId, text: $text)
+    mutation SendMessage($chatId: Int!, $file: Upload, $text: String) {
+  sendMessage(chatId: $chatId, file: $file, text: $text)
 }
     `;
 export type SendMessageMutationFn = Apollo.MutationFunction<SendMessageMutation, SendMessageMutationVariables>;
@@ -1082,6 +1086,7 @@ export type SendMessageMutationFn = Apollo.MutationFunction<SendMessageMutation,
  * const [sendMessageMutation, { data, loading, error }] = useSendMessageMutation({
  *   variables: {
  *      chatId: // value for 'chatId'
+ *      file: // value for 'file'
  *      text: // value for 'text'
  *   },
  * });

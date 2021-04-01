@@ -73,9 +73,13 @@ const SendMessage : React.FC<SendMessageProps> = ({ isChat, recipients, chatId }
         router.push(`/chat/${chatId}`);
     }
 
-    const handleNewMessage = async () => {
+    const handleNewMessage = async (variables: {
+        chatId: number;
+        text?: string;
+        file?: any;
+    }) => {
         await sendMessage({
-            variables: { chatId, text },
+            variables,
             update: (cache) => {
                 cache.evict({ fieldName: 'messages' });
                 cache.evict({ fieldName: 'chats' });
@@ -98,9 +102,11 @@ const SendMessage : React.FC<SendMessageProps> = ({ isChat, recipients, chatId }
             <Input
                 type = 'file'
                 id = 'file'
-                onChange = {async () => {
+                onChange = {async (e) => {
+                    const file = e.target.files[0];
+
                     if(isChat) {
-                        await handleNewMessage();
+                        await handleNewMessage({ chatId, file });
                     } else {
                         await handleNewChat();
                     }
@@ -116,7 +122,7 @@ const SendMessage : React.FC<SendMessageProps> = ({ isChat, recipients, chatId }
 
                     if(submit) {
                         if(isChat) {
-                            await handleNewMessage();
+                            await handleNewMessage({ chatId, text });
                         } else {
                             await handleNewChat();
                         }

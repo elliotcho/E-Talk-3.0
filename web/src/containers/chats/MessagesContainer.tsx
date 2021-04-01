@@ -12,6 +12,11 @@ const Container = styled.div`
     overflow-y: auto;
 `;
 
+const Space  = styled.div`
+    background: #f2f2f2;
+    min-height: 30px;
+`;
+
 interface MessagesContainerProps {
     chatId: number;
 }
@@ -25,15 +30,14 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({ chatId }) => {
             <TypingBubble />
 
             {messages.map((m, i) => { 
-                let hasImage: boolean;
+                let hasImage = true;
+                
                 const prevUser = messages[i - 1]?.userId;
                 const currUser = messages[i]?.userId;
 
                 if((i !== 0) && (currUser === prevUser)) {
                     hasImage = false;
-                } else {
-                    hasImage = true;
-                }
+                } 
 
                 return (
                     <MessageBubble
@@ -44,6 +48,8 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({ chatId }) => {
                     />
                 )
             })}
+
+            <Space />
         </Container>
     )
 }

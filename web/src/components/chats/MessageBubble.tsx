@@ -25,13 +25,15 @@ const Image = styled.img`
 interface MessageBubbleProps {
     isMe: boolean;
     profileURL: string;
+    photoURL?: string;
     hasImage: boolean;
-    text: string;
+    text?: string;
 }
 
 const MessageBubble: React.FC<MessageBubbleProps> = ({ 
     isMe,
     profileURL,
+    photoURL,
     hasImage,
     text
  }) => {
@@ -60,7 +62,8 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
             />
 
             <Box style = {{ background, color }}>
-                {text}
+                {photoURL && <Image src={photoURL} alt='content' />}
+                {!photoURL && text}
             </Box>
         </Container>
     );

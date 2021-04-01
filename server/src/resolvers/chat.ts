@@ -8,16 +8,31 @@ import {
     Resolver,
     Root
 } from 'type-graphql';
+import { v4 } from 'uuid';
+import { GraphQLUpload } from 'graphql-upload';
 import { getConnection } from 'typeorm';
 import { Chat } from '../entities/Chat';
 import { Member } from '../entities/Member';
 import { Message } from '../entities/Message';
 import { User } from '../entities/User';
 import { formatChatTitle } from '../utils/formatChatTitle';
-import { MyContext } from '../types';
+import { uploadFile } from '../utils/uploadFile';
+import { MyContext, Upload } from '../types';
+import path from 'path';
 
 @Resolver(Message)
 export class MessageResolver {
+    @FieldResolver()
+    async photoURL(
+        @Root() { photo }: Message
+    ) : Promise<string> {
+        if(photo) {
+            return `${process.env.SERVER_URL}/images/${photo}`;
+        }
+
+        return '';
+    }
+
     @FieldResolver(() => User)
     async user(
         @Root() message: Message
@@ -95,19 +110,40 @@ export class ChatResolver {
     @Mutation(() => Boolean)
     async sendMessage(
         @Arg('chatId', () => Int) chatId: number,
-        @Arg('text') text: string,
+        @Arg('file', () => GraphQLUpload, { nullable: true }) file : Upload,
+        @Arg('text', { nullable: true }) text: string,
         @Ctx() { req } : MyContext
     ) : Promise<boolean> {
         const { uid } = req.session;
+        let replacements: any[];
+        let query: string;
 
-        await getConnection().query(
-            `
+        if(file) {
+            const photo = 'MESSAGE-' + v4() + path.extname(file.filename);
+            const pathname = path.join(__dirname, `../../images/${photo}`);
+
+            await uploadFile(file.createReadStream, pathname);
+            
+            replacements = [chatId, uid, photo];
+
+            query = `
+                insert into message ("chatId", "userId", photo)
+                values ($1, $2, $3)
+            `;
+        }
+        
+        else {
+            replacements = [chatId, uid, text];
+
+            query = `
                 insert into message ("chatId", "userId", text)
                 values ($1, $2, $3)
-            `, [chatId, uid, text]
-        );
+            `;
+        }
 
+        await getConnection().query(query, replacements);
         await Chat.update({ id: chatId }, {});
+        
         return true;
     }
 

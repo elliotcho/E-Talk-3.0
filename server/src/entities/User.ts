@@ -45,7 +45,6 @@ export class User extends BaseEntity{
     @Column({ default: '' })
     bio: string;
 
-    
     @Field()
     friendStatus: number;
 

@@ -60,15 +60,13 @@ const Sidebar: React.FC<SidebarProps> = ({ chatId }) => {
             {data?.chats.map(c => {
                 const route = `/chat/${c.id}`;
                 const isActive = c.id === chatId;
-                
-                const { text } = c.lastMessage;
-
+   
                 return (
                     <ChatCard
                         key = {c.id}
-                        text = {text}
-                        isActive = {isActive}
                         route = {route}
+                        isActive = {isActive}
+                        {...c.lastMessage}
                         {...c}
                     />
                 )   

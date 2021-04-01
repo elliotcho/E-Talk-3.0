@@ -15,11 +15,16 @@ const Box = styled.div`
     color: black;
 `;
 
-const Image = styled.img`
+const CircleImage = styled.img`
     width: 3rem;
     height: 3rem;
     border-radius: 50%;
     margin: auto;
+`;
+
+const Image = styled.img`
+    height: 10rem;
+    width: 10rem;
 `;
 
 interface MessageBubbleProps {
@@ -55,7 +60,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
 
     return (
         <Container style={{ margin }}>
-             <Image 
+             <CircleImage 
                 src={profileURL} 
                 style = {{ visibility }}
                 alt='profile pic'

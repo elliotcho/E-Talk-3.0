@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faImage } from '@fortawesome/free-solid-svg-icons';
 import NextLink from 'next/link';
 
 const Container  = styled.div`
@@ -32,8 +34,13 @@ const Text = styled.p`
     margin: 5px auto;
 `;
 
+const Span = styled.span`
+    margin-left: 10px;
+`;
+
 interface ChatCardProps {
-    text: string;
+    text?: string;
+    photoURL?: string;
     isActive: boolean;
     route: string;
     picture: string;
@@ -42,6 +49,7 @@ interface ChatCardProps {
 
 const ChatCard: React.FC<ChatCardProps> = ({ 
     text,
+    photoURL,
     isActive,
     route,
     picture,
@@ -54,7 +62,7 @@ const ChatCard: React.FC<ChatCardProps> = ({
         style = { background: 'lightblue' };
     }
 
-    if(textSnippet.length > 30) {
+    if(textSnippet && textSnippet.length > 30) {
         textSnippet = `${text.substring(0, 28)}...`;
     }
 
@@ -67,8 +75,15 @@ const ChatCard: React.FC<ChatCardProps> = ({
                 <Box>
                     <Header>{title}</Header>
                     
-                    <Text>
-                        {textSnippet}
+                    <Text>   
+                        {!photoURL && textSnippet}
+
+                        {photoURL && (
+                            <>
+                                <FontAwesomeIcon icon={faImage}/>
+                                <Span>IMAGE</Span>
+                            </>
+                        )}
                     </Text>
                 </Box>
                 

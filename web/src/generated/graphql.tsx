@@ -304,8 +304,7 @@ export type MutationSendMessageArgs = {
 
 
 export type MutationCreateChatArgs = {
-  text?: Maybe<Scalars['String']>;
-  file?: Maybe<Scalars['Upload']>;
+  text: Scalars['String'];
   members: Array<Scalars['Int']>;
 };
 
@@ -428,8 +427,7 @@ export type RegularUserResponseFragment = (
 
 export type CreateChatMutationVariables = Exact<{
   members: Array<Scalars['Int']> | Scalars['Int'];
-  file?: Maybe<Scalars['Upload']>;
-  text?: Maybe<Scalars['String']>;
+  text: Scalars['String'];
 }>;
 
 
@@ -1037,8 +1035,8 @@ export const RegularUserResponseFragmentDoc = gql`
     ${RegularUserFragmentDoc}
 ${RegularErrorFragmentDoc}`;
 export const CreateChatDocument = gql`
-    mutation CreateChat($members: [Int!]!, $file: Upload, $text: String) {
-  createChat(members: $members, file: $file, text: $text)
+    mutation CreateChat($members: [Int!]!, $text: String!) {
+  createChat(members: $members, text: $text)
 }
     `;
 export type CreateChatMutationFn = Apollo.MutationFunction<CreateChatMutation, CreateChatMutationVariables>;
@@ -1057,7 +1055,6 @@ export type CreateChatMutationFn = Apollo.MutationFunction<CreateChatMutation, C
  * const [createChatMutation, { data, loading, error }] = useCreateChatMutation({
  *   variables: {
  *      members: // value for 'members'
- *      file: // value for 'file'
  *      text: // value for 'text'
  *   },
  * });

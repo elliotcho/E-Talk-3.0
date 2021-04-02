@@ -8,14 +8,17 @@ import {
     Resolver,
     Root
 } from 'type-graphql';
+import { v4 } from 'uuid';
 import { GraphQLUpload } from 'graphql-upload';
 import { getConnection } from 'typeorm';
 import { Chat } from '../entities/Chat';
 import { Member } from '../entities/Member';
 import { Message } from '../entities/Message';
 import { User } from '../entities/User';
-import { createMessage } from '../utils/createMessage';
+import { formatChatTitle } from '../utils/formatChatTitle';
+import { uploadFile } from '../utils/uploadFile';
 import { MyContext, Upload } from '../types';
+import path from 'path';
 
 @Resolver(Message)
 export class MessageResolver {
@@ -56,20 +59,7 @@ export class ChatResolver {
             `, [chat.id]
         );
     
-        let output = '';
-    
-        for(let i=0;i<members.length;i++) {
-            const member = members[i];
-    
-            if(members.length !== 1 && uid === member.id) {
-                continue;
-            }
-    
-            output += member.firstName + ' ';
-            output += member.lastName + ', ';
-        }
-    
-        return output.substring(0, output.length - 2);
+        return formatChatTitle(uid, members);
     }
 
     @FieldResolver(() => Message)
@@ -125,10 +115,33 @@ export class ChatResolver {
         @Ctx() { req } : MyContext
     ) : Promise<boolean> {
         const { uid } = req.session;
-        
-        const [query, replacements] = await createMessage(chatId, uid, file, text);
-        await getConnection().query(query, replacements);
+        let replacements: any[];
+        let query: string;
 
+        if(file) {
+            const photo = 'MESSAGE-' + v4() + path.extname(file.filename);
+            const pathname = path.join(__dirname, `../../images/${photo}`);
+
+            await uploadFile(file.createReadStream, pathname);
+            
+            replacements = [chatId, uid, photo];
+
+            query = `
+                insert into message ("chatId", "userId", photo)
+                values ($1, $2, $3)
+            `;
+        }
+        
+        else {
+            replacements = [chatId, uid, text];
+
+            query = `
+                insert into message ("chatId", "userId", text)
+                values ($1, $2, $3)
+            `;
+        }
+
+        await getConnection().query(query, replacements);
         await Chat.update({ id: chatId }, {});
         
         return true;
@@ -183,8 +196,7 @@ export class ChatResolver {
     @Mutation(() => Int)
     async createChat(
         @Arg('members', () => [Int]) members: number[],
-        @Arg('file', () => GraphQLUpload, { nullable: true }) file: Upload,
-        @Arg('text', { nullable: true }) text: string,
+        @Arg('text') text: string,
         @Ctx() { req } : MyContext
     ): Promise<number> { 
         let chat: any;
@@ -211,12 +223,18 @@ export class ChatResolver {
                     `
                         insert into member ("chatId", "userId")  
                         values ($1, $2)
-                    `, [chat.id, members[i]]
+                    `, 
+                    [chat.id, members[i]]
                 );
             }
 
-            const [query, replacements] = await createMessage(chat.id, uid, file, text);
-            await tm.query(query, replacements);
+            await tm.query(
+                `
+                    insert into message ("chatId", "userId", "text")
+                    values ($1, $2, $3)
+                `,
+                [chat.id, req.session.uid, text]
+            );
         });
 
         return chat.id;

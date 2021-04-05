@@ -3,6 +3,7 @@ fragment RegularMessage on Message {
     text
     photoURL
     createdAt
+    isRead
     userId
     chatId
     user {

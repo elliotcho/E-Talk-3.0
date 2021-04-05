@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { useMessagesQuery } from '../../generated/graphql';
+import { useMessagesQuery, useReadChatMutation } from '../../generated/graphql';
 import MessageBubble from '../../components/chats/MessageBubble';
 import TypingBubble from '../../components/chats/TypingBubble';
 
@@ -22,8 +22,22 @@ interface MessagesContainerProps {
 }
 
 const MessagesContainer: React.FC<MessagesContainerProps> = ({ chatId }) => {
+    const [readChat] = useReadChatMutation();
     const { data } = useMessagesQuery({ variables: { chatId } });
     const messages = data?.messages || [];
+
+    useEffect(() => {
+        const onMount = async () => {
+            await readChat({
+                variables: { chatId },
+                update: (cache) => {
+                    cache.evict({ fieldName: 'chats' });
+                }
+            });
+        }
+
+        onMount();
+    }, [chatId])
     
     return (
         <Container>

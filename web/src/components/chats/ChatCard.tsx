@@ -42,8 +42,9 @@ interface ChatCardProps {
     text?: string;
     photoURL?: string;
     isActive: boolean;
-    route: string;
+    isRead: boolean;
     picture: string;
+    route: string;
     title: string;
 }
 
@@ -51,31 +52,37 @@ const ChatCard: React.FC<ChatCardProps> = ({
     text,
     photoURL,
     isActive,
-    route,
+    isRead,
     picture,
+    route,
     title
 }) => {
-    let style = {};
+    let background = '';
     let textSnippet = text;
-
+    let fontWeight : any;
+    
     if(isActive) {
-        style = { background: 'lightblue' };
+        background = 'lightblue';
     }
 
     if(textSnippet && textSnippet.length > 30) {
         textSnippet = `${text.substring(0, 28)}...`;
     }
 
+    if(!isRead) {
+        fontWeight = 'bold';
+    }
+
     return (
         <NextLink href={route}>
-            <Container style={style}>
+            <Container style={{ background }}>
 
                 <Image src={picture} alt='Profile Pic'/>
 
                 <Box>
                     <Header>{title}</Header>
                     
-                    <Text>   
+                    <Text style={{ fontWeight }}>   
                         {!photoURL && textSnippet}
 
                         {photoURL && (

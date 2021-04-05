@@ -159,6 +159,7 @@ export type Message = {
   photoURL: Scalars['String'];
   userId: Scalars['Float'];
   chatId: Scalars['Float'];
+  isRead: Scalars['Boolean'];
   user: User;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
@@ -203,6 +204,7 @@ export type Mutation = {
   editPost: Post;
   deletePost: Scalars['Boolean'];
   createPost: Post;
+  readChat: Scalars['Boolean'];
   sendMessage: Scalars['Boolean'];
   createChat: Scalars['Int'];
   readNotifications: Scalars['Boolean'];
@@ -296,6 +298,11 @@ export type MutationCreatePostArgs = {
 };
 
 
+export type MutationReadChatArgs = {
+  chatId: Scalars['Int'];
+};
+
+
 export type MutationSendMessageArgs = {
   text?: Maybe<Scalars['String']>;
   file?: Maybe<Scalars['Upload']>;
@@ -304,7 +311,8 @@ export type MutationSendMessageArgs = {
 
 
 export type MutationCreateChatArgs = {
-  text: Scalars['String'];
+  text?: Maybe<Scalars['String']>;
+  file?: Maybe<Scalars['Upload']>;
   members: Array<Scalars['Int']>;
 };
 
@@ -377,7 +385,7 @@ export type RegularChatFragment = (
 
 export type RegularMessageFragment = (
   { __typename?: 'Message' }
-  & Pick<Message, 'id' | 'text' | 'photoURL' | 'createdAt' | 'userId' | 'chatId'>
+  & Pick<Message, 'id' | 'text' | 'photoURL' | 'createdAt' | 'isRead' | 'userId' | 'chatId'>
   & { user: (
     { __typename?: 'User' }
     & Pick<User, 'isMe'>
@@ -427,13 +435,24 @@ export type RegularUserResponseFragment = (
 
 export type CreateChatMutationVariables = Exact<{
   members: Array<Scalars['Int']> | Scalars['Int'];
-  text: Scalars['String'];
+  file?: Maybe<Scalars['Upload']>;
+  text?: Maybe<Scalars['String']>;
 }>;
 
 
 export type CreateChatMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'createChat'>
+);
+
+export type ReadChatMutationVariables = Exact<{
+  chatId: Scalars['Int'];
+}>;
+
+
+export type ReadChatMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'readChat'>
 );
 
 export type SendMessageMutationVariables = Exact<{
@@ -968,6 +987,7 @@ export const RegularMessageFragmentDoc = gql`
   text
   photoURL
   createdAt
+  isRead
   userId
   chatId
   user {
@@ -1035,8 +1055,8 @@ export const RegularUserResponseFragmentDoc = gql`
     ${RegularUserFragmentDoc}
 ${RegularErrorFragmentDoc}`;
 export const CreateChatDocument = gql`
-    mutation CreateChat($members: [Int!]!, $text: String!) {
-  createChat(members: $members, text: $text)
+    mutation CreateChat($members: [Int!]!, $file: Upload, $text: String) {
+  createChat(members: $members, file: $file, text: $text)
 }
     `;
 export type CreateChatMutationFn = Apollo.MutationFunction<CreateChatMutation, CreateChatMutationVariables>;
@@ -1055,6 +1075,7 @@ export type CreateChatMutationFn = Apollo.MutationFunction<CreateChatMutation, C
  * const [createChatMutation, { data, loading, error }] = useCreateChatMutation({
  *   variables: {
  *      members: // value for 'members'
+ *      file: // value for 'file'
  *      text: // value for 'text'
  *   },
  * });
@@ -1065,6 +1086,36 @@ export function useCreateChatMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateChatMutationHookResult = ReturnType<typeof useCreateChatMutation>;
 export type CreateChatMutationResult = Apollo.MutationResult<CreateChatMutation>;
 export type CreateChatMutationOptions = Apollo.BaseMutationOptions<CreateChatMutation, CreateChatMutationVariables>;
+export const ReadChatDocument = gql`
+    mutation ReadChat($chatId: Int!) {
+  readChat(chatId: $chatId)
+}
+    `;
+export type ReadChatMutationFn = Apollo.MutationFunction<ReadChatMutation, ReadChatMutationVariables>;
+
+/**
+ * __useReadChatMutation__
+ *
+ * To run a mutation, you first call `useReadChatMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useReadChatMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [readChatMutation, { data, loading, error }] = useReadChatMutation({
+ *   variables: {
+ *      chatId: // value for 'chatId'
+ *   },
+ * });
+ */
+export function useReadChatMutation(baseOptions?: Apollo.MutationHookOptions<ReadChatMutation, ReadChatMutationVariables>) {
+        return Apollo.useMutation<ReadChatMutation, ReadChatMutationVariables>(ReadChatDocument, baseOptions);
+      }
+export type ReadChatMutationHookResult = ReturnType<typeof useReadChatMutation>;
+export type ReadChatMutationResult = Apollo.MutationResult<ReadChatMutation>;
+export type ReadChatMutationOptions = Apollo.BaseMutationOptions<ReadChatMutation, ReadChatMutationVariables>;
 export const SendMessageDocument = gql`
     mutation SendMessage($chatId: Int!, $file: Upload, $text: String) {
   sendMessage(chatId: $chatId, file: $file, text: $text)

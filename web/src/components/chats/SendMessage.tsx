@@ -59,11 +59,13 @@ const SendMessage : React.FC<SendMessageProps> = ({ isChat, recipients, chatId }
     const [createChat] = useCreateChatMutation();
     const router = useRouter();
 
-    const handleNewChat = async () => {
-        const members = recipients.map(r => r.id);
-
+    const handleNewChat = async (variables: {
+        members: number[],
+        text?: string;
+        file?: any;
+    }) => {
         const response = await createChat({ 
-            variables: { members, text },
+            variables,
             update: (cache) => {
                 cache.evict({ fieldName: 'chats' });
             }
@@ -104,11 +106,12 @@ const SendMessage : React.FC<SendMessageProps> = ({ isChat, recipients, chatId }
                 id = 'file'
                 onChange = {async (e) => {
                     const file = e.target.files[0];
+                    const members= recipients.map(r => r.id);
 
                     if(isChat) {
                         await handleNewMessage({ chatId, file });
                     } else {
-                        await handleNewChat();
+                        await handleNewChat({ members, file });
                     }
                 }}
             />  
@@ -121,10 +124,12 @@ const SendMessage : React.FC<SendMessageProps> = ({ isChat, recipients, chatId }
                     const submit = handleEnterPress(e, 130);
 
                     if(submit) {
+                        const members= recipients.map(r => r.id);
+
                         if(isChat) {
                             await handleNewMessage({ chatId, text });
                         } else {
-                            await handleNewChat();
+                            await handleNewChat({ members, text });
                         }
 
                         setText('');

@@ -7,7 +7,9 @@ import {
    CreateDateColumn,
    UpdateDateColumn,
    ManyToOne,
+   OneToMany,
 } from 'typeorm';
+import { Read } from './Read';
 import { Chat } from './Chat';
 import { User } from './User';
 
@@ -37,12 +39,19 @@ export class Message extends BaseEntity{
     chatId: number;
 
     @Field()
+    @Column({ default: false })
+    isRead: boolean;
+
+    @Field()
     user: User;
 
     @ManyToOne(() => Chat, (chat) => chat.messages, {
         onDelete: 'CASCADE'
     })
     chat: Chat;
+
+    @OneToMany(() => Read, (read) => read.message)
+    readReceipts: Read[];
 
     @Field(() => String)
     @CreateDateColumn()

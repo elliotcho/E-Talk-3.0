@@ -27,6 +27,7 @@ export type Query = {
   post: Post;
   userPosts: PaginatedPosts;
   posts: PaginatedPosts;
+  readReceipts: Array<User>;
   chats: Array<Chat>;
   messages: Array<Message>;
   chat?: Maybe<Chat>;
@@ -71,6 +72,11 @@ export type QueryUserPostsArgs = {
 export type QueryPostsArgs = {
   limit: Scalars['Int'];
   cursor?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryReadReceiptsArgs = {
+  messageId: Scalars['Int'];
 };
 
 
@@ -760,6 +766,19 @@ export type MessagesQuery = (
   & { messages: Array<(
     { __typename?: 'Message' }
     & RegularMessageFragment
+  )> }
+);
+
+export type ReadReceiptsQueryVariables = Exact<{
+  messageId: Scalars['Int'];
+}>;
+
+
+export type ReadReceiptsQuery = (
+  { __typename?: 'Query' }
+  & { readReceipts: Array<(
+    { __typename?: 'User' }
+    & RegularUserFragment
   )> }
 );
 
@@ -1982,6 +2001,39 @@ export function useMessagesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<M
 export type MessagesQueryHookResult = ReturnType<typeof useMessagesQuery>;
 export type MessagesLazyQueryHookResult = ReturnType<typeof useMessagesLazyQuery>;
 export type MessagesQueryResult = Apollo.QueryResult<MessagesQuery, MessagesQueryVariables>;
+export const ReadReceiptsDocument = gql`
+    query ReadReceipts($messageId: Int!) {
+  readReceipts(messageId: $messageId) {
+    ...RegularUser
+  }
+}
+    ${RegularUserFragmentDoc}`;
+
+/**
+ * __useReadReceiptsQuery__
+ *
+ * To run a query within a React component, call `useReadReceiptsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useReadReceiptsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useReadReceiptsQuery({
+ *   variables: {
+ *      messageId: // value for 'messageId'
+ *   },
+ * });
+ */
+export function useReadReceiptsQuery(baseOptions: Apollo.QueryHookOptions<ReadReceiptsQuery, ReadReceiptsQueryVariables>) {
+        return Apollo.useQuery<ReadReceiptsQuery, ReadReceiptsQueryVariables>(ReadReceiptsDocument, baseOptions);
+      }
+export function useReadReceiptsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ReadReceiptsQuery, ReadReceiptsQueryVariables>) {
+          return Apollo.useLazyQuery<ReadReceiptsQuery, ReadReceiptsQueryVariables>(ReadReceiptsDocument, baseOptions);
+        }
+export type ReadReceiptsQueryHookResult = ReturnType<typeof useReadReceiptsQuery>;
+export type ReadReceiptsLazyQueryHookResult = ReturnType<typeof useReadReceiptsLazyQuery>;
+export type ReadReceiptsQueryResult = Apollo.QueryResult<ReadReceiptsQuery, ReadReceiptsQueryVariables>;
 export const FriendRequestsDocument = gql`
     query FriendRequests {
   friendRequests {

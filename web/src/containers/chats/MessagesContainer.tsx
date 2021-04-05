@@ -37,7 +37,7 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({ chatId }) => {
         }
 
         onMount();
-    }, [chatId])
+    }, [chatId, data])
     
     return (
         <Container>
@@ -56,6 +56,7 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({ chatId }) => {
                 return (
                     <MessageBubble
                         key = {m.id}
+                        messageId = {m.id}
                         hasImage = {hasImage}
                         {...m.user}
                         {...m}

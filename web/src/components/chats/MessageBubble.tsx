@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import ReadReceipts from './ReadReceipts';
 
 const Container = styled.div`
     display: grid;
@@ -29,6 +30,7 @@ const Image = styled.img`
 
 interface MessageBubbleProps {
     isMe: boolean;
+    messageId: number;
     profileURL: string;
     photoURL?: string;
     hasImage: boolean;
@@ -37,6 +39,7 @@ interface MessageBubbleProps {
 
 const MessageBubble: React.FC<MessageBubbleProps> = ({ 
     isMe,
+    messageId,
     profileURL,
     photoURL,
     hasImage,
@@ -69,6 +72,10 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
             <Box style = {{ background, color }}>
                 {photoURL && <Image src={photoURL} alt='content' />}
                 {!photoURL && text}
+
+                {isMe && hasImage && (
+                    <ReadReceipts messageId={messageId}/>
+                )}
             </Box>
         </Container>
     );

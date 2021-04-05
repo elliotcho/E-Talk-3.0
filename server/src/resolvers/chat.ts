@@ -11,6 +11,7 @@ import {
 import { GraphQLUpload } from 'graphql-upload';
 import { getConnection } from 'typeorm';
 import { Chat } from '../entities/Chat';
+import { Read } from '../entities/Read';
 import { Member } from '../entities/Member';
 import { Message } from '../entities/Message';
 import { User } from '../entities/User';
@@ -19,6 +20,21 @@ import { MyContext, Upload } from '../types';
 
 @Resolver(Message)
 export class MessageResolver {
+    @FieldResolver()
+    async isRead(
+        @Root() { id } : Message,
+        @Ctx() { req } : MyContext
+    ): Promise<boolean> {
+        const isRead = await Read.findOne({
+            where: {
+                userId: req.session.uid,
+                messageId: id
+            }
+        });
+
+        return !!isRead;
+    }
+
     @FieldResolver()
     async photoURL(
         @Root() { photo }: Message
@@ -117,6 +133,25 @@ export class ChatResolver {
         return url;
     }
 
+    @Query(() => [User])
+    async readReceipts(
+        @Arg('messageId', () => Int) messageId: number,
+        @Ctx() { req } : MyContext
+    ) : Promise<User[]> {
+        const { uid } = req.session;
+
+        const readReceipts = await getConnection().query(
+            `
+                select u.* from "user" as u
+                inner join read as r on r."userId" = u.id 
+                where r."messageId" = $1 and u.id != $2
+                limit 10
+            `, [messageId, uid]
+        );
+
+        return readReceipts;
+    }
+
     @Mutation(() => Boolean)
     async readChat(
         @Arg('chatId', () => Int) chatId: number,
@@ -125,34 +160,30 @@ export class ChatResolver {
         const messages = await getConnection().query(
             `
                 select m.* from message as m
-                inner join chat as c on m."chatId" = c.id
-                where m."isRead" = false
-                and c.id = $1
+                where m."chatId" = $1
             `, [chatId]
         );
 
-        for(let i=0;i<messages.length;i++) {
-            const messageId = messages[i].id;
-
             await getConnection().transaction(async (tm) => {
-                await tm.query(
-                    `
-                        insert into read ("userId", "messageId")
-                        values ($1, $2)
-                    `,
-                    [req.session.uid, messageId]
-                );
-
-                await tm.query(
-                    `
-                        update message
-                        set "isRead" = true
-                        where id = $1
-                    `,
-                    [messageId]
-                );
+                for(let i=0;i<messages.length;i++) {
+                    const { id: messageId } = messages[i];
+                    
+                    const isRead = await Read.findOne({ where: {
+                        userId: req.session.uid,
+                        messageId
+                    }});
+                    
+                    if(!isRead) {
+                        await tm.query(
+                            `
+                                insert into read ("userId", "messageId")
+                                values ($1, $2)
+                            `,
+                            [req.session.uid, messageId]
+                        );
+                    }
+                }
             });
-        }
 
         return true;
     }

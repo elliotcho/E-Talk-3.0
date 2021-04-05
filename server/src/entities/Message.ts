@@ -39,7 +39,6 @@ export class Message extends BaseEntity{
     chatId: number;
 
     @Field()
-    @Column({ default: false })
     isRead: boolean;
 
     @Field()

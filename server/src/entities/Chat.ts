@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { Member } from './Member';
 import { Message } from './Message';
+import { Seen } from './Seen';
 
 @ObjectType()
 @Entity()
@@ -38,6 +39,9 @@ export class Chat extends BaseEntity{
     @Field(() => String)
     @UpdateDateColumn()
     updatedAt: Date;
+
+    @OneToMany(() => Seen, (seen) => seen.chat)
+    seenBy: Seen[];
 
     @OneToMany(() => Member, (member) => member.chat)
     members: Member[];

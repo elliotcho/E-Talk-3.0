@@ -113,6 +113,7 @@ export type User = {
   isMe: Scalars['Boolean'];
   unreadFriendRequests: Scalars['Float'];
   unreadNotifications: Scalars['Float'];
+  unreadChats: Scalars['Float'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -169,6 +170,7 @@ export type Message = {
   user: User;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
+  isOwner: Scalars['Boolean'];
 };
 
 export type PaginatedNotifications = {
@@ -210,6 +212,7 @@ export type Mutation = {
   editPost: Post;
   deletePost: Scalars['Boolean'];
   createPost: Post;
+  seeChats: Scalars['Boolean'];
   readChat: Scalars['Boolean'];
   sendMessage: Scalars['Boolean'];
   createChat: Scalars['Int'];
@@ -392,7 +395,7 @@ export type RegularChatFragment = (
 
 export type RegularMessageFragment = (
   { __typename?: 'Message' }
-  & Pick<Message, 'id' | 'text' | 'photoURL' | 'createdAt' | 'isRead' | 'userId' | 'chatId'>
+  & Pick<Message, 'id' | 'text' | 'photoURL' | 'createdAt' | 'isOwner' | 'isRead' | 'userId' | 'chatId'>
   & { user: (
     { __typename?: 'User' }
     & Pick<User, 'isMe'>
@@ -460,6 +463,14 @@ export type ReadChatMutationVariables = Exact<{
 export type ReadChatMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'readChat'>
+);
+
+export type SeeChatsMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SeeChatsMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'seeChats'>
 );
 
 export type SendMessageMutationVariables = Exact<{
@@ -912,7 +923,7 @@ export type MeQuery = (
   { __typename?: 'Query' }
   & { me?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'unreadFriendRequests' | 'unreadNotifications'>
+    & Pick<User, 'unreadFriendRequests' | 'unreadNotifications' | 'unreadChats'>
     & RegularUserFragment
   )> }
 );
@@ -1018,6 +1029,7 @@ export const RegularMessageFragmentDoc = gql`
   text
   photoURL
   createdAt
+  isOwner
   isRead
   userId
   chatId
@@ -1147,6 +1159,35 @@ export function useReadChatMutation(baseOptions?: Apollo.MutationHookOptions<Rea
 export type ReadChatMutationHookResult = ReturnType<typeof useReadChatMutation>;
 export type ReadChatMutationResult = Apollo.MutationResult<ReadChatMutation>;
 export type ReadChatMutationOptions = Apollo.BaseMutationOptions<ReadChatMutation, ReadChatMutationVariables>;
+export const SeeChatsDocument = gql`
+    mutation SeeChats {
+  seeChats
+}
+    `;
+export type SeeChatsMutationFn = Apollo.MutationFunction<SeeChatsMutation, SeeChatsMutationVariables>;
+
+/**
+ * __useSeeChatsMutation__
+ *
+ * To run a mutation, you first call `useSeeChatsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSeeChatsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [seeChatsMutation, { data, loading, error }] = useSeeChatsMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useSeeChatsMutation(baseOptions?: Apollo.MutationHookOptions<SeeChatsMutation, SeeChatsMutationVariables>) {
+        return Apollo.useMutation<SeeChatsMutation, SeeChatsMutationVariables>(SeeChatsDocument, baseOptions);
+      }
+export type SeeChatsMutationHookResult = ReturnType<typeof useSeeChatsMutation>;
+export type SeeChatsMutationResult = Apollo.MutationResult<SeeChatsMutation>;
+export type SeeChatsMutationOptions = Apollo.BaseMutationOptions<SeeChatsMutation, SeeChatsMutationVariables>;
 export const SendMessageDocument = gql`
     mutation SendMessage($chatId: Int!, $file: Upload, $text: String) {
   sendMessage(chatId: $chatId, file: $file, text: $text)
@@ -2338,6 +2379,7 @@ export const MeDocument = gql`
     ...RegularUser
     unreadFriendRequests
     unreadNotifications
+    unreadChats
   }
 }
     ${RegularUserFragmentDoc}`;

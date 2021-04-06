@@ -42,6 +42,7 @@ interface ChatCardProps {
     text?: string;
     photoURL?: string;
     isActive: boolean;
+    isOwner: boolean;
     isRead: boolean;
     picture: string;
     route: string;
@@ -52,6 +53,7 @@ const ChatCard: React.FC<ChatCardProps> = ({
     text,
     photoURL,
     isActive,
+    isOwner,
     isRead,
     picture,
     route,
@@ -69,7 +71,7 @@ const ChatCard: React.FC<ChatCardProps> = ({
         textSnippet = `${text.substring(0, 28)}...`;
     }
 
-    if(!isRead) {
+    if(!isOwner && !isRead) {
         fontWeight = 'bold';
     }
 

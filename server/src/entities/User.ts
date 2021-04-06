@@ -57,6 +57,9 @@ export class User extends BaseEntity{
     @Field()
     unreadNotifications: number;
 
+    @Field()
+    unreadChats: number;
+
     @OneToMany(() => Post, (post) => post.user)
     posts: Post[];
 

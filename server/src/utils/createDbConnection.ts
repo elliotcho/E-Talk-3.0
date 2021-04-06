@@ -9,13 +9,14 @@ import { User } from '../entities/User';
 import { Post } from '../entities/Post';
 import { Like } from '../entities/Like';
 import { Read } from '../entities/Read';
+import { Seen } from '../entities/Seen';
 
 export const createDbConnection = async () => {
     await createConnection({
         type: 'postgres',
         url: process.env.DB_URL,
         synchronize: true,
-        logging: false,
+        logging: true,
         entities: [
             Friend,
             Notification,
@@ -26,7 +27,8 @@ export const createDbConnection = async () => {
             Post,
             User,
             Like,
-            Read
+            Read,
+            Seen
         ]
     });
 }

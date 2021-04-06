@@ -11,6 +11,7 @@ import { Nav } from 'react-bootstrap';
 import { formatCount } from '../../utils/formatCount';
 import NavDropdown from './NavDropdown';
 import NextLink from 'next/link';
+import { format } from 'path';
 
 const Item = styled.div`
     position: relative;
@@ -73,19 +74,21 @@ const Box = styled.div`
 `;
 
 interface SignedInLinksProps {
-    userId: number;
+    chats: number;
     friendRequests: number;
     notifications: number;
     firstName: string;
     lastName: string;
+    userId: number;
 }
 
 const SignedInLinks : React.FC<SignedInLinksProps> = ({ 
-    userId, 
+    chats,
     friendRequests,
     notifications,
     firstName, 
-    lastName 
+    lastName,
+    userId
 }) => {
     const [open, setOpen] = useState(false);
 
@@ -117,7 +120,11 @@ const SignedInLinks : React.FC<SignedInLinksProps> = ({
 
                     <Link>Messages</Link>
 
-                    {/* <Box>129</Box> */}
+                    {!!chats && (
+                        <Box>
+                            {formatCount(chats)}
+                        </Box>
+                    )}
                 </Item>
             </NextLink>
 

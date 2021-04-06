@@ -41,6 +41,7 @@ const Index: React.FC<{}> = () => {
         
         else {
             const userId = data?.me?.id || -1;
+            const chats = data?.me?.unreadChats;
             const friendRequests = data?.me?.unreadFriendRequests;
             const notifications = data?.me?.unreadNotifications;
             const firstName = data?.me?.firstName || '';
@@ -49,11 +50,12 @@ const Index: React.FC<{}> = () => {
             body = (
                 <SubscriptionWrapper>
                      <SignedInLinks 
-                        userId = {userId}
+                        chats = {chats}
                         friendRequests = {friendRequests}
                         notifications = {notifications}
                         firstName = {firstName}
                         lastName = {lastName}    
+                        userId = {userId}
                     />
                 </SubscriptionWrapper>
             );

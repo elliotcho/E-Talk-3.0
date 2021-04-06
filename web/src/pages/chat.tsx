@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { useSeeChatsMutation } from '../generated/graphql';
 import { withApollo } from '../utils/withApollo';
 import AuthWrapper from '../containers/shared/AuthWrapper'
 import Layout from '../containers/shared/Layout';
@@ -14,8 +15,21 @@ const Container = styled.div`
 `;
 
 const Chats: React.FC<{}> = () => {
+    const [seeChats] = useSeeChatsMutation();
     const { query: { id } } = useRouter();
     let chatId = -1;
+
+    useEffect(() => {
+        const onMount = async () => {
+            await seeChats({
+                update: (cache) => {
+                    cache.evict({ fieldName: 'me' });
+                }
+            });
+        }
+
+        onMount();
+    }, [])
 
     if(typeof id === 'string') {
         chatId = parseInt(id);

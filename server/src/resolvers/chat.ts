@@ -18,6 +18,7 @@ import { Read } from '../entities/Read';
 import { Member } from '../entities/Member';
 import { Message } from '../entities/Message';
 import { User } from '../entities/User';
+import { Seen } from '../entities/Seen';
 import { createMessage } from '../utils/createMessage';
 import { filterSubscription } from '../utils/filterSubscription';
 import { MyContext, SubscriptionPayload, Upload} from '../types';
@@ -26,6 +27,14 @@ const NEW_MESSAGE_EVENT = 'NEW_MESSAGE_EVENT';
 
 @Resolver(Message)
 export class MessageResolver {
+    @FieldResolver()
+    isOwner(
+        @Root() { userId } : Message,
+        @Ctx() { req } : MyContext
+    ): boolean {
+        return req.session.uid === userId;
+    }
+
     @FieldResolver()
     async isRead(
         @Root() { id } : Message,
@@ -153,6 +162,44 @@ export class ChatResolver {
         }});
     }
 
+    @Mutation(() => Boolean)
+    async seeChats(
+        @Ctx() { req } : MyContext
+    ) : Promise<boolean> {
+        const { uid } = req.session;
+
+        const chats = await getConnection().query(
+            `
+                select c.* from chat as c
+                inner join member as m on m."chatId" = c.id
+                where m."userId" = $1
+            `, [uid]
+        );
+
+        await getConnection().transaction(async (tm) => {
+
+            for(let i=0;i<chats.length;i++) {
+                const seen = await Seen.findOne({ where: {
+                    chatId: chats[i].id ,
+                    userId: uid
+                }});
+
+                if(!seen) {
+                    await tm.query(
+                        `
+                            insert into seen ("chatId", "userId")
+                            values ($1, $2)
+                        `,
+                        [chats[i].id, uid]
+                    );
+                }
+            }
+
+        });
+
+        return true;
+    }
+
     @Query(() => [User])
     async readReceipts(
         @Arg('messageId', () => Int) messageId: number,
@@ -225,6 +272,14 @@ export class ChatResolver {
             receiverId: chatId,
             isChat: true
         });
+
+        await getConnection().query(
+            `
+                delete from seen as s
+                where s."chatId" = $1 and
+                s."userId" != $2
+            `, [chatId, uid]
+        );
 
         return true;
     }
@@ -322,7 +377,6 @@ export class ChatResolver {
             isChat: true
         });
         
-
         return chatId;
     }
 }

@@ -3,5 +3,6 @@ query Me {
         ...RegularUser
         unreadFriendRequests
         unreadNotifications
+        unreadChats
     }
 }

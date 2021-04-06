@@ -19,6 +19,7 @@ import { v4 } from 'uuid';
 import { sendEmail } from '../utils/sendEmail';
 import { uploadFile } from '../utils/uploadFile';
 import { User } from '../entities/User';
+import { Seen } from '../entities/Seen';
 import { MyContext, Upload } from '../types';
 import { isAuth } from '../middleware/isAuth';
 import fs from 'fs';
@@ -68,6 +69,38 @@ export class UserResolver{
         @Ctx() { req } : MyContext
     ) : boolean {
         return user.id === req.session.uid;
+    }
+
+    @FieldResolver(() => Int)
+    async unreadChats (
+        @Root() user: User,
+        @Ctx() { req } : MyContext
+    ) : Promise<number | undefined> {
+        if(user.id !== req.session.uid) {
+            return undefined;
+        }
+
+        let total = 0;
+
+        const chats = await getConnection().query(
+            `
+                select c.* from chat as c 
+                inner join member as m on m."chatId" = c.id
+                where m."userId" = $1
+            `,
+            [req.session.uid] 
+        );
+
+        for(let i=0;i<chats.length;i++) {
+            let seen = await Seen.findOne({ where: { 
+                userId: req.session.uid,
+                chatId: chats[i].id
+            }});
+
+            if(!seen) total++;
+        }
+
+        return total;
     }
 
     @FieldResolver(() => Int)

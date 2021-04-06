@@ -52,11 +52,13 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chatId }) => {
             {isChat && <MessagesContainer chatId={chatId} />}
             {!isChat && <EmptyContainer />}
 
-            <SendMessage 
-                isChat = {isChat}
-                recipients = {recipients}
-                chatId = {chatId}
-            />
+            {(!!recipients.length || isChat) && (
+                <SendMessage 
+                    isChat = {isChat}
+                    recipients = {recipients}
+                    chatId = {chatId}
+                />
+            )}
         </Main>
     )
 }

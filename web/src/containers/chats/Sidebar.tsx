@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-import { useChatsQuery } from '../../generated/graphql';
+import { useChatsQuery, useSeeChatsMutation } from '../../generated/graphql';
 import ChatCard from '../../components/chats/ChatCard';
 import NextLink from 'next/link';
 
@@ -43,7 +43,20 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ chatId }) => {
+    const [seeChats] = useSeeChatsMutation();
     const { data, loading } = useChatsQuery();
+
+    useEffect(() => {
+        const onMount = async () => {
+            await seeChats({
+                update: (cache) => {
+                    cache.evict({ fieldName: 'me' });
+                }
+            });
+        }
+
+        onMount();
+    }, [data])
 
     return (
         <Container>

@@ -153,12 +153,11 @@ export class ChatResolver {
         filter: filterSubscription
     })
     async newMessage (
-        @Root() { receiverId } : SubscriptionPayload,
-        @Ctx() { req } : MyContext
+        @Root() { senderId, receiverId } : SubscriptionPayload
     ) : Promise<Message | undefined> {
         return Message.findOne({ where: {
-            userId: req.session.uid,
-            chatId: receiverId
+            chatId: receiverId,
+            userId: senderId
         }});
     }
 
@@ -230,26 +229,26 @@ export class ChatResolver {
             `, [chatId]
         );
 
-            await getConnection().transaction(async (tm) => {
-                for(let i=0;i<messages.length;i++) {
-                    const { id: messageId } = messages[i];
-                    
-                    const isRead = await Read.findOne({ where: {
-                        userId: req.session.uid,
-                        messageId
-                    }});
-                    
-                    if(!isRead) {
-                        await tm.query(
-                            `
-                                insert into read ("userId", "messageId")
-                                values ($1, $2)
-                            `,
-                            [req.session.uid, messageId]
-                        );
-                    }
+        await getConnection().transaction(async (tm) => {
+            for(let i=0;i<messages.length;i++) {
+                const { id: messageId } = messages[i];
+                
+                const isRead = await Read.findOne({ where: {
+                    userId: req.session.uid,
+                    messageId
+                }});
+                
+                if(!isRead) {
+                    await tm.query(
+                        `
+                            insert into read ("userId", "messageId")
+                            values ($1, $2)
+                        `,
+                        [req.session.uid, messageId]
+                    );
                 }
-            });
+            }
+        });
 
         return true;
     }
@@ -267,12 +266,6 @@ export class ChatResolver {
         const [query, replacements] = await createMessage(chatId, uid, file, text);
         await getConnection().query(query, replacements);
 
-        await pubSub.publish(NEW_MESSAGE_EVENT, {
-            senderId: uid,
-            receiverId: chatId,
-            isChat: true
-        });
-
         await getConnection().query(
             `
                 delete from seen as s
@@ -280,6 +273,12 @@ export class ChatResolver {
                 s."userId" != $2
             `, [chatId, uid]
         );
+
+        await pubSub.publish(NEW_MESSAGE_EVENT, {
+            senderId: uid,
+            receiverId: chatId,
+            isChat: true
+        });
 
         return true;
     }

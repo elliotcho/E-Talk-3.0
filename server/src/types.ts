@@ -11,8 +11,9 @@ export type MyContext = {
 }
 
 export type SubscriptionPayload = {
-    receiverId: number;
     senderId: number;
+    receiverId: number;
+    isChat?: boolean;
     postId?: number;
 }
 

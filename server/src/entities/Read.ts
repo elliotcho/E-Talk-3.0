@@ -15,7 +15,9 @@ export class Read extends BaseEntity {
     @PrimaryColumn()
     messageId: number;
 
-    @ManyToOne(() => Message, (message) => message.readReceipts)
+    @ManyToOne(() => Message, (message) => message.readReceipts, {
+        onDelete: 'CASCADE'
+    })
     message: Message;
 
     @CreateDateColumn()

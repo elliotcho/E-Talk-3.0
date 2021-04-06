@@ -376,6 +376,7 @@ export type Subscription = {
   __typename?: 'Subscription';
   newComment: Notification;
   newLike: Notification;
+  newMessage: Message;
   newFriendRequest: User;
   newFriend: Notification;
 };
@@ -941,6 +942,17 @@ export type UserQuery = (
     { __typename?: 'User' }
     & Pick<User, 'isMe'>
     & RegularUserFragment
+  ) }
+);
+
+export type NewMessageSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type NewMessageSubscription = (
+  { __typename?: 'Subscription' }
+  & { newMessage: (
+    { __typename?: 'Message' }
+    & RegularMessageFragment
   ) }
 );
 
@@ -2422,6 +2434,34 @@ export function useUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserQ
 export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
 export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
 export type UserQueryResult = Apollo.QueryResult<UserQuery, UserQueryVariables>;
+export const NewMessageDocument = gql`
+    subscription NewMessage {
+  newMessage {
+    ...RegularMessage
+  }
+}
+    ${RegularMessageFragmentDoc}`;
+
+/**
+ * __useNewMessageSubscription__
+ *
+ * To run a query within a React component, call `useNewMessageSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useNewMessageSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNewMessageSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useNewMessageSubscription(baseOptions?: Apollo.SubscriptionHookOptions<NewMessageSubscription, NewMessageSubscriptionVariables>) {
+        return Apollo.useSubscription<NewMessageSubscription, NewMessageSubscriptionVariables>(NewMessageDocument, baseOptions);
+      }
+export type NewMessageSubscriptionHookResult = ReturnType<typeof useNewMessageSubscription>;
+export type NewMessageSubscriptionResult = Apollo.SubscriptionResult<NewMessageSubscription>;
 export const NewFriendDocument = gql`
     subscription NewFriend {
   newFriend {

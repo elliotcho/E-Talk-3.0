@@ -43,7 +43,7 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ chatId }) => {
-    const { data } = useChatsQuery();
+    const { data, loading } = useChatsQuery();
 
     return (
         <Container>
@@ -56,6 +56,12 @@ const Sidebar: React.FC<SidebarProps> = ({ chatId }) => {
                     </NextLink>
                 </Box>
             </Flex>
+
+            {loading && (
+                <Secondary>
+                    Loading...
+                </Secondary>
+            )}
 
             {data?.chats.map(c => {
                 const route = `/chat/${c.id}`;
@@ -72,7 +78,7 @@ const Sidebar: React.FC<SidebarProps> = ({ chatId }) => {
                 )   
             })}
 
-            {!data?.chats.length && (
+            {!data?.chats.length && !loading && (
                 <Secondary>
                     No chats available :(
                 </Secondary>

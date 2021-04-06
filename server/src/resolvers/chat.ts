@@ -4,9 +4,12 @@ import {
     FieldResolver,
     Int,
     Mutation,
+    PubSub,
+    PubSubEngine,
     Query,
     Resolver,
-    Root
+    Root,
+    Subscription
 } from 'type-graphql';
 import { GraphQLUpload } from 'graphql-upload';
 import { getConnection } from 'typeorm';
@@ -16,7 +19,10 @@ import { Member } from '../entities/Member';
 import { Message } from '../entities/Message';
 import { User } from '../entities/User';
 import { createMessage } from '../utils/createMessage';
-import { MyContext, Upload } from '../types';
+import { filterSubscription } from '../utils/filterSubscription';
+import { MyContext, SubscriptionPayload, Upload} from '../types';
+
+const NEW_MESSAGE_EVENT = 'NEW_MESSAGE_EVENT';
 
 @Resolver(Message)
 export class MessageResolver {
@@ -133,6 +139,20 @@ export class ChatResolver {
         return url;
     }
 
+    @Subscription(() => Message,{
+        topics: NEW_MESSAGE_EVENT,
+        filter: filterSubscription
+    })
+    async newMessage (
+        @Root() { receiverId } : SubscriptionPayload,
+        @Ctx() { req } : MyContext
+    ) : Promise<Message | undefined> {
+        return Message.findOne({ where: {
+            userId: req.session.uid,
+            chatId: receiverId
+        }});
+    }
+
     @Query(() => [User])
     async readReceipts(
         @Arg('messageId', () => Int) messageId: number,
@@ -145,7 +165,6 @@ export class ChatResolver {
                 select u.* from "user" as u
                 inner join read as r on r."userId" = u.id 
                 where r."messageId" = $1 and u.id != $2
-                limit 10
             `, [messageId, uid]
         );
 
@@ -190,6 +209,7 @@ export class ChatResolver {
 
     @Mutation(() => Boolean)
     async sendMessage(
+        @PubSub() pubSub: PubSubEngine,
         @Arg('chatId', () => Int) chatId: number,
         @Arg('file', () => GraphQLUpload, { nullable: true }) file : Upload,
         @Arg('text', { nullable: true }) text: string,
@@ -200,8 +220,12 @@ export class ChatResolver {
         const [query, replacements] = await createMessage(chatId, uid, file, text);
         await getConnection().query(query, replacements);
 
-        await Chat.update({ id: chatId }, {});
-        
+        await pubSub.publish(NEW_MESSAGE_EVENT, {
+            senderId: uid,
+            receiverId: chatId,
+            isChat: true
+        });
+
         return true;
     }
 
@@ -253,12 +277,13 @@ export class ChatResolver {
 
     @Mutation(() => Int)
     async createChat(
+        @PubSub() pubSub: PubSubEngine,
         @Arg('members', () => [Int]) members: number[],
         @Arg('file', () => GraphQLUpload, { nullable: true }) file: Upload,
         @Arg('text', { nullable: true }) text: string,
         @Ctx() { req } : MyContext
     ): Promise<number> { 
-        let chat: any;
+        let chatId: any;
         const { uid } = req.session;
 
         if(uid && !members.includes(uid)) {
@@ -275,21 +300,29 @@ export class ChatResolver {
                     .returning('*')
                     .execute();
 
-            chat = result.raw[0];
+            chatId = result.raw[0].id;
 
             for(let i=0;i<members.length;i++) {
                 await tm.query(
                     `
                         insert into member ("chatId", "userId")  
                         values ($1, $2)
-                    `, [chat.id, members[i]]
+                    `, [chatId, members[i]]
                 );
             }
 
-            const [query, replacements] = await createMessage(chat.id, uid, file, text);
+            const [query, replacements] = await createMessage(chatId, uid, file, text);
             await tm.query(query, replacements);
         });
 
-        return chat.id;
+      
+        await pubSub.publish(NEW_MESSAGE_EVENT, {
+            senderId: uid,
+            receiverId: chatId,
+            isChat: true
+        });
+        
+
+        return chatId;
     }
 }

@@ -10,7 +10,7 @@ export const filterSubscription = async ({ context, payload } : any) => {
         let filter = false;
 
         const members = await Member.find({ where: { 
-                chatId: payload.receiverId
+            chatId: payload.receiverId
         }});
 
         for(let i=0;i<members.length;i++) {

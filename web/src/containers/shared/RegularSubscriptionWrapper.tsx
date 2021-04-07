@@ -4,27 +4,24 @@ import {
     useNewCommentSubscription,
     useNewFriendSubscription,
     useNewFriendRequestSubscription,
-    useNewMessageSubscription,
-    useNewLikeSubscription
+    useNewLikeSubscription,
 } from '../../generated/graphql';   
 import { createToast } from '../../utils/createToast';
 import Toast from '../../components/shared/Toast';
 
-const SubscriptionWrapper: React.FC<{}> = ({ children }) => {
+const RegularSubscriptionWrapper: React.FC<{}> = ({ children }) => {
     const { cache } = useApolloClient();
 
     const { data: newLikeData } = useNewLikeSubscription();
     const { data: newCommentData } = useNewCommentSubscription();
     const { data: newRequestData } = useNewFriendRequestSubscription();
     const { data: newFriendData } = useNewFriendSubscription();
-    const { data: newMessageData } = useNewMessageSubscription();
 
     const subscriptionData = [
         newLikeData, 
         newCommentData, 
         newFriendData, 
-        newRequestData,
-        newMessageData
+        newRequestData
     ];
 
     useEffect(() => {
@@ -67,11 +64,6 @@ const SubscriptionWrapper: React.FC<{}> = ({ children }) => {
             createToast(data, Toast, route, type);
         }
 
-        if(newMessageData) {
-            cache.evict({ fieldName: 'chats' });
-            cache.evict({ fieldName: 'messages' });
-        }
-
     }, subscriptionData);
 
     return (
@@ -81,4 +73,4 @@ const SubscriptionWrapper: React.FC<{}> = ({ children }) => {
     )
 }
 
-export default SubscriptionWrapper;
+export default RegularSubscriptionWrapper;

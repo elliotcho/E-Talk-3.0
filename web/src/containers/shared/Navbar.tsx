@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { Navbar } from 'react-bootstrap';
 import { useMeQuery } from '../../generated/graphql';
 import { isServer } from '../../utils/isServer';
-import SubscriptionWrapper from '../../containers/shared/SubscriptionWrapper';
+import RegularSubscriptionWrapper from './RegularSubscriptionWrapper';
+import MessageSubscriptionWrapper from './MessageSubscriptionWrapper';
 import SignedOutLinks from '../../components/shared/SignedOutLinks';
 import SignedInLinks from '../../components/shared/SignedInLinks';
 import Searchbar from '../../components/shared/Searchbar';
@@ -48,16 +49,18 @@ const Index: React.FC<{}> = () => {
             const lastName = data?.me?.lastName || ''
 
             body = (
-                <SubscriptionWrapper>
-                     <SignedInLinks 
-                        chats = {chats}
-                        friendRequests = {friendRequests}
-                        notifications = {notifications}
-                        firstName = {firstName}
-                        lastName = {lastName}    
-                        userId = {userId}
-                    />
-                </SubscriptionWrapper>
+                <RegularSubscriptionWrapper>
+                     <MessageSubscriptionWrapper>
+                        <SignedInLinks 
+                            chats = {chats}
+                            friendRequests = {friendRequests}
+                            notifications = {notifications}
+                            firstName = {firstName}
+                            lastName = {lastName}    
+                            userId = {userId}
+                        />
+                     </MessageSubscriptionWrapper>
+                </RegularSubscriptionWrapper>
             );
         }
     }

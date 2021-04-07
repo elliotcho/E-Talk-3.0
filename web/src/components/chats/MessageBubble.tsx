@@ -73,7 +73,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
                 {photoURL && <Image src={photoURL} alt='content' />}
                 {!photoURL && text}
 
-                {isMe && hasImage && (
+                {isMe && (
                     <ReadReceipts messageId={messageId}/>
                 )}
             </Box>

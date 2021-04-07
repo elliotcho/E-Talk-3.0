@@ -24,6 +24,7 @@ import { filterSubscription } from '../utils/filterSubscription';
 import { MyContext, SubscriptionPayload, Upload} from '../types';
 
 const NEW_MESSAGE_EVENT = 'NEW_MESSAGE_EVENT';
+const NEW_READ_RECEIPT_EVENT = 'NEW_READ_RECEIPT_EVENT';
 
 @Resolver(Message)
 export class MessageResolver {
@@ -148,6 +149,14 @@ export class ChatResolver {
         return url;
     }
 
+    @Subscription(() => Boolean, {
+        topics: NEW_READ_RECEIPT_EVENT,
+        filter: filterSubscription
+    })
+    newReadReceipt() : boolean {
+        return true;
+    }
+
     @Subscription(() => Message,{
         topics: NEW_MESSAGE_EVENT,
         filter: filterSubscription
@@ -219,6 +228,7 @@ export class ChatResolver {
 
     @Mutation(() => Boolean)
     async readChat(
+        @PubSub() pubSub : PubSubEngine,
         @Arg('chatId', () => Int) chatId: number,
         @Ctx() { req } : MyContext
     ) : Promise<boolean> {
@@ -248,6 +258,12 @@ export class ChatResolver {
                     );
                 }
             }
+        });
+
+        await pubSub.publish(NEW_READ_RECEIPT_EVENT, {
+            senderId: req.session.uid,
+            receiverId: chatId,
+            isChat: true
         });
 
         return true;

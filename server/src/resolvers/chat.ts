@@ -21,6 +21,7 @@ import { User } from '../entities/User';
 import { Seen } from '../entities/Seen';
 import { createMessage } from '../utils/createMessage';
 import { filterSubscription } from '../utils/filterSubscription';
+import { verifyChat } from '../utils/verifyChat';
 import { MyContext, SubscriptionPayload, Upload} from '../types';
 
 const NEW_MESSAGE_EVENT = 'NEW_MESSAGE_EVENT';
@@ -428,10 +429,10 @@ export class ChatResolver {
         @Arg('members', () => [Int]) members: number[],
         @Arg('file', () => GraphQLUpload, { nullable: true }) file: Upload,
         @Arg('text', { nullable: true }) text: string,
-        @Ctx() { req } : MyContext
+        @Ctx() context : MyContext
     ): Promise<number> { 
         let chatId: any;
-        const { uid } = req.session;
+        const { uid } = context.req.session;
 
         if(uid && !members.includes(uid)) {
             members.push(uid);
@@ -439,6 +440,17 @@ export class ChatResolver {
 
         await getConnection().transaction(async tm => {
             const isPrivate = members.length <= 2;
+
+            if(isPrivate) {
+                chatId = await verifyChat(members, uid);
+
+                console.log(chatId)
+
+                if(chatId) {
+                    await this.sendMessage(pubSub, chatId, file, text, context);
+                    return;
+                }
+            }
 
             const result = await tm.createQueryBuilder()
                     .insert()

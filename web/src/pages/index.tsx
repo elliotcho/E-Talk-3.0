@@ -9,6 +9,10 @@ import CreatePostForm from '../containers/posts/CreatePostForm';
 import Post from '../containers/posts/Post';
 import Button from '../components/shared/Button';
 
+const Main = styled.div`
+   overflow: none;
+`;
+
 const Header = styled.h3`
    margin-top: 20px;
    text-align: center;
@@ -29,46 +33,46 @@ const Index : React.FC<{}> = () => {
    return (
       <AuthWrapper requiresAuth>
          <Layout>
-            <CreatePostForm />
+               <CreatePostForm />
 
-            {loading && (
-               <Header>
-                  Loading...
-               </Header>
-            )}
+               {loading && (
+                  <Header>
+                     Loading...
+                  </Header>
+               )}
 
-            {!loading && !data?.posts?.posts.length && (
-               <Header>
-                  No posts available
-               </Header>
-            )}
+               {!loading && !data?.posts?.posts.length && (
+                  <Header>
+                     No posts available
+                  </Header>
+               )}
 
-            {data?.posts?.posts?.map(p => 
-               <Post {...mapPostProps(p)}/>
-            )}
+               {data?.posts?.posts?.map(p => 
+                  <Post {...mapPostProps(p)}/>
+               )}
 
-            {data?.posts?.hasMore && (
-               <Container>
-                  <Button 
-                     bg = 'lightslategray'
-                     isLoading={loading}
-                     onClick = {async () => {
-                        let cursor = data.posts.posts[data.posts.posts.length - 1]?.createdAt;
-                        const limit = variables?.limit;
+               {data?.posts?.hasMore && (
+                  <Container>
+                     <Button 
+                        bg = 'lightslategray'
+                        isLoading={loading}
+                        onClick = {async () => {
+                           let cursor = data.posts.posts[data.posts.posts.length - 1]?.createdAt;
+                           const limit = variables?.limit;
 
-                        if(!cursor) {
-                           cursor = null;
-                        }
+                           if(!cursor) {
+                              cursor = null;
+                           }
 
-                        await fetchMore({
-                           variables: { cursor, limit }
-                        });
-                     }}
-                  >
-                     Load More
-                  </Button>
-               </Container>
-            )}
+                           await fetchMore({
+                              variables: { cursor, limit }
+                           });
+                        }}
+                     >
+                        Load More
+                     </Button>
+                  </Container>
+               )}
          </Layout>
       </AuthWrapper>
    )

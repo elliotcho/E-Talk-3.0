@@ -137,14 +137,12 @@ const SendMessage : React.FC<SendMessageProps> = ({ isChat, recipients, chatId }
                 value = {text}
                 placeholder = 'Your message here...'
                 onChange = {async (e) => {
+
                     setText(e.target.value);
                     
                     if(e.target.value) {
                         await startTyping({ variables: { chatId } });
-
-                        if(tO) {
-                            clearTimeout(tO);
-                        }
+                        if(tO) clearTimeout(tO);
                         
                         tO = setTimeout(handleStopTyping, 5000);
                     } 
@@ -152,6 +150,7 @@ const SendMessage : React.FC<SendMessageProps> = ({ isChat, recipients, chatId }
                     else {
                         await handleStopTyping();
                     }
+                    
                 }}
                 onKeyDown = {async (e) => {
                     const submit = handleEnterPress(e, 130);

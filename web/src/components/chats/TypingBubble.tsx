@@ -23,10 +23,14 @@ const Image = styled.img`
     margin: auto;
 `;
 
-const TypingBubble: React.FC<{}> = () => {
+interface TypingBubbleProps {
+    profileURL: string;
+}
+
+const TypingBubble: React.FC<TypingBubbleProps> = ({ profileURL }) => {
     return (
         <Container>
-            <Image src='/loading.jpg' alt='profile pic'/>
+            <Image src={profileURL} alt='profile pic'/>
 
             <Box>
                 <FontAwesomeIcon icon={faEllipsisH} />

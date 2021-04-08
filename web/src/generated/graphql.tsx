@@ -27,6 +27,7 @@ export type Query = {
   post: Post;
   userPosts: PaginatedPosts;
   posts: PaginatedPosts;
+  usersTyping: Array<User>;
   readReceipts: Array<User>;
   chats: Array<Chat>;
   messages: Array<Message>;
@@ -72,6 +73,11 @@ export type QueryUserPostsArgs = {
 export type QueryPostsArgs = {
   limit: Scalars['Int'];
   cursor?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryUsersTypingArgs = {
+  chatId: Scalars['Int'];
 };
 
 
@@ -212,6 +218,8 @@ export type Mutation = {
   editPost: Post;
   deletePost: Scalars['Boolean'];
   createPost: Post;
+  stopTyping: Scalars['Boolean'];
+  startTyping: Scalars['Boolean'];
   seeChats: Scalars['Boolean'];
   readChat: Scalars['Boolean'];
   sendMessage: Scalars['Boolean'];
@@ -307,6 +315,16 @@ export type MutationCreatePostArgs = {
 };
 
 
+export type MutationStopTypingArgs = {
+  chatId: Scalars['Int'];
+};
+
+
+export type MutationStartTypingArgs = {
+  chatId: Scalars['Int'];
+};
+
+
 export type MutationReadChatArgs = {
   chatId: Scalars['Int'];
 };
@@ -379,6 +397,7 @@ export type Subscription = {
   __typename?: 'Subscription';
   newComment: Notification;
   newLike: Notification;
+  newTyping: Scalars['Boolean'];
   newReadReceipt: Scalars['Boolean'];
   newMessage: Message;
   newFriendRequest: User;
@@ -484,6 +503,26 @@ export type SendMessageMutationVariables = Exact<{
 export type SendMessageMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'sendMessage'>
+);
+
+export type StartTypingMutationVariables = Exact<{
+  chatId: Scalars['Int'];
+}>;
+
+
+export type StartTypingMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'startTyping'>
+);
+
+export type StopTypingMutationVariables = Exact<{
+  chatId: Scalars['Int'];
+}>;
+
+
+export type StopTypingMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'stopTyping'>
 );
 
 export type AcceptFriendRequestMutationVariables = Exact<{
@@ -795,6 +834,19 @@ export type ReadReceiptsQuery = (
   )> }
 );
 
+export type UsersTypingQueryVariables = Exact<{
+  chatId: Scalars['Int'];
+}>;
+
+
+export type UsersTypingQuery = (
+  { __typename?: 'Query' }
+  & { usersTyping: Array<(
+    { __typename?: 'User' }
+    & RegularUserFragment
+  )> }
+);
+
 export type FriendRequestsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -974,6 +1026,14 @@ export type NewReadReceiptSubscriptionVariables = Exact<{ [key: string]: never; 
 export type NewReadReceiptSubscription = (
   { __typename?: 'Subscription' }
   & Pick<Subscription, 'newReadReceipt'>
+);
+
+export type NewTypingSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type NewTypingSubscription = (
+  { __typename?: 'Subscription' }
+  & Pick<Subscription, 'newTyping'>
 );
 
 export type NewFriendSubscriptionVariables = Exact<{ [key: string]: never; }>;
@@ -1229,6 +1289,66 @@ export function useSendMessageMutation(baseOptions?: Apollo.MutationHookOptions<
 export type SendMessageMutationHookResult = ReturnType<typeof useSendMessageMutation>;
 export type SendMessageMutationResult = Apollo.MutationResult<SendMessageMutation>;
 export type SendMessageMutationOptions = Apollo.BaseMutationOptions<SendMessageMutation, SendMessageMutationVariables>;
+export const StartTypingDocument = gql`
+    mutation StartTyping($chatId: Int!) {
+  startTyping(chatId: $chatId)
+}
+    `;
+export type StartTypingMutationFn = Apollo.MutationFunction<StartTypingMutation, StartTypingMutationVariables>;
+
+/**
+ * __useStartTypingMutation__
+ *
+ * To run a mutation, you first call `useStartTypingMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useStartTypingMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [startTypingMutation, { data, loading, error }] = useStartTypingMutation({
+ *   variables: {
+ *      chatId: // value for 'chatId'
+ *   },
+ * });
+ */
+export function useStartTypingMutation(baseOptions?: Apollo.MutationHookOptions<StartTypingMutation, StartTypingMutationVariables>) {
+        return Apollo.useMutation<StartTypingMutation, StartTypingMutationVariables>(StartTypingDocument, baseOptions);
+      }
+export type StartTypingMutationHookResult = ReturnType<typeof useStartTypingMutation>;
+export type StartTypingMutationResult = Apollo.MutationResult<StartTypingMutation>;
+export type StartTypingMutationOptions = Apollo.BaseMutationOptions<StartTypingMutation, StartTypingMutationVariables>;
+export const StopTypingDocument = gql`
+    mutation StopTyping($chatId: Int!) {
+  stopTyping(chatId: $chatId)
+}
+    `;
+export type StopTypingMutationFn = Apollo.MutationFunction<StopTypingMutation, StopTypingMutationVariables>;
+
+/**
+ * __useStopTypingMutation__
+ *
+ * To run a mutation, you first call `useStopTypingMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useStopTypingMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [stopTypingMutation, { data, loading, error }] = useStopTypingMutation({
+ *   variables: {
+ *      chatId: // value for 'chatId'
+ *   },
+ * });
+ */
+export function useStopTypingMutation(baseOptions?: Apollo.MutationHookOptions<StopTypingMutation, StopTypingMutationVariables>) {
+        return Apollo.useMutation<StopTypingMutation, StopTypingMutationVariables>(StopTypingDocument, baseOptions);
+      }
+export type StopTypingMutationHookResult = ReturnType<typeof useStopTypingMutation>;
+export type StopTypingMutationResult = Apollo.MutationResult<StopTypingMutation>;
+export type StopTypingMutationOptions = Apollo.BaseMutationOptions<StopTypingMutation, StopTypingMutationVariables>;
 export const AcceptFriendRequestDocument = gql`
     mutation AcceptFriendRequest($senderId: Int!) {
   acceptFriendRequest(senderId: $senderId)
@@ -2096,6 +2216,39 @@ export function useReadReceiptsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type ReadReceiptsQueryHookResult = ReturnType<typeof useReadReceiptsQuery>;
 export type ReadReceiptsLazyQueryHookResult = ReturnType<typeof useReadReceiptsLazyQuery>;
 export type ReadReceiptsQueryResult = Apollo.QueryResult<ReadReceiptsQuery, ReadReceiptsQueryVariables>;
+export const UsersTypingDocument = gql`
+    query UsersTyping($chatId: Int!) {
+  usersTyping(chatId: $chatId) {
+    ...RegularUser
+  }
+}
+    ${RegularUserFragmentDoc}`;
+
+/**
+ * __useUsersTypingQuery__
+ *
+ * To run a query within a React component, call `useUsersTypingQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUsersTypingQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUsersTypingQuery({
+ *   variables: {
+ *      chatId: // value for 'chatId'
+ *   },
+ * });
+ */
+export function useUsersTypingQuery(baseOptions: Apollo.QueryHookOptions<UsersTypingQuery, UsersTypingQueryVariables>) {
+        return Apollo.useQuery<UsersTypingQuery, UsersTypingQueryVariables>(UsersTypingDocument, baseOptions);
+      }
+export function useUsersTypingLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UsersTypingQuery, UsersTypingQueryVariables>) {
+          return Apollo.useLazyQuery<UsersTypingQuery, UsersTypingQueryVariables>(UsersTypingDocument, baseOptions);
+        }
+export type UsersTypingQueryHookResult = ReturnType<typeof useUsersTypingQuery>;
+export type UsersTypingLazyQueryHookResult = ReturnType<typeof useUsersTypingLazyQuery>;
+export type UsersTypingQueryResult = Apollo.QueryResult<UsersTypingQuery, UsersTypingQueryVariables>;
 export const FriendRequestsDocument = gql`
     query FriendRequests {
   friendRequests {
@@ -2539,6 +2692,32 @@ export function useNewReadReceiptSubscription(baseOptions?: Apollo.SubscriptionH
       }
 export type NewReadReceiptSubscriptionHookResult = ReturnType<typeof useNewReadReceiptSubscription>;
 export type NewReadReceiptSubscriptionResult = Apollo.SubscriptionResult<NewReadReceiptSubscription>;
+export const NewTypingDocument = gql`
+    subscription NewTyping {
+  newTyping
+}
+    `;
+
+/**
+ * __useNewTypingSubscription__
+ *
+ * To run a query within a React component, call `useNewTypingSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useNewTypingSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNewTypingSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useNewTypingSubscription(baseOptions?: Apollo.SubscriptionHookOptions<NewTypingSubscription, NewTypingSubscriptionVariables>) {
+        return Apollo.useSubscription<NewTypingSubscription, NewTypingSubscriptionVariables>(NewTypingDocument, baseOptions);
+      }
+export type NewTypingSubscriptionHookResult = ReturnType<typeof useNewTypingSubscription>;
+export type NewTypingSubscriptionResult = Apollo.SubscriptionResult<NewTypingSubscription>;
 export const NewFriendDocument = gql`
     subscription NewFriend {
   newFriend {

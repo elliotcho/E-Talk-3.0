@@ -47,7 +47,7 @@ const Sidebar: React.FC<SidebarProps> = ({ chatId }) => {
     const { data, loading } = useChatsQuery();
 
     useEffect(() => {
-        const onMount = async () => {
+        const onUpdate = async () => {
             await seeChats({
                 update: (cache) => {
                     cache.evict({ fieldName: 'me' });
@@ -55,7 +55,7 @@ const Sidebar: React.FC<SidebarProps> = ({ chatId }) => {
             });
         }
 
-        onMount();
+        onUpdate();
     }, [data])
 
     return (

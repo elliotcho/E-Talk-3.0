@@ -25,6 +25,8 @@ import { MyContext, SubscriptionPayload, Upload} from '../types';
 
 const NEW_MESSAGE_EVENT = 'NEW_MESSAGE_EVENT';
 const NEW_READ_RECEIPT_EVENT = 'NEW_READ_RECEIPT_EVENT';
+const NEW_TYPING_EVENT = 'NEW_TYPING_EVENT';
+const IS_TYPING_PREFIX = 'IS_TYPING';
 
 @Resolver(Message)
 export class MessageResolver {
@@ -150,6 +152,14 @@ export class ChatResolver {
     }
 
     @Subscription(() => Boolean, {
+        topics: NEW_TYPING_EVENT,
+        filter: filterSubscription
+    })
+    newTyping() : boolean {
+        return true;
+    }
+
+    @Subscription(() => Boolean, {
         topics: NEW_READ_RECEIPT_EVENT,
         filter: filterSubscription
     })
@@ -168,6 +178,73 @@ export class ChatResolver {
             chatId: receiverId,
             userId: senderId
         }});
+    }
+
+    @Query(() => [User])
+    async usersTyping(
+        @Arg('chatId', () => Int) chatId: number,
+        @Ctx() { req, redis } : MyContext
+    ) : Promise<User[]> {
+        const result = [] as User[];
+
+        const members = await getConnection().query(
+            `
+                select * from member as m
+                where m."userId" != $1
+                and m."chatId" = $2 
+            `,[req.session.uid, chatId]
+        );
+
+        for(let i=0;i<members.length;i++) {
+            const key = IS_TYPING_PREFIX + members[i].userId;
+            const cachedId = await redis.get(key);
+
+            if(parseInt(cachedId!) === chatId) {
+                const user = await User.findOne(members[i].userId);
+                result.push(user!);
+            }
+        }
+
+        return result;
+    }
+
+    @Mutation(() => Boolean)
+    async stopTyping(
+        @PubSub() pubsub: PubSubEngine,
+        @Arg('chatId', () => Int) chatId: number,
+        @Ctx() { req, redis } : MyContext
+    ) : Promise<boolean> {
+        const key = IS_TYPING_PREFIX + req.session.uid;
+    
+        await redis.del(key);
+
+        await pubsub.publish(NEW_TYPING_EVENT, {
+            receiverId: chatId,
+            senderId: req.session.uid,
+            isChat: true
+        });
+
+        return true;
+    }
+
+    @Mutation(() => Boolean)
+    async startTyping(
+        @PubSub() pubsub: PubSubEngine,
+        @Arg('chatId',() => Int) chatId: number,
+        @Ctx() { req, redis } : MyContext
+    ) : Promise<boolean> {
+        const { uid } = req.session;
+        const key = IS_TYPING_PREFIX + uid;
+
+        await redis.set(key, chatId);
+
+        await pubsub.publish(NEW_TYPING_EVENT, {
+            receiverId: chatId,
+            senderId: uid,
+            isChat: true
+        });
+
+        return true;
     }
 
     @Mutation(() => Boolean)
@@ -218,7 +295,7 @@ export class ChatResolver {
         const readReceipts = await getConnection().query(
             `
                 select u.* from "user" as u
-                inner join read as r on r."userId" = u.id 
+                inner join read as r on r."userId" = u.id
                 where r."messageId" = $1 and u.id != $2
             `, [messageId, uid]
         );

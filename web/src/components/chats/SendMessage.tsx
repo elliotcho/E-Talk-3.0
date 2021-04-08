@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useCreateChatMutation, useSendMessageMutation } from '../../generated/graphql';
+import { 
+    useCreateChatMutation, 
+    useSendMessageMutation,
+    useStartTypingMutation,
+    useStopTypingMutation
+} from '../../generated/graphql';
 import { handleEnterPress } from '../../utils/handleEnterPress';
 import { isServer } from '../../utils/isServer';
 import { useRouter } from 'next/router'; 
@@ -11,6 +16,10 @@ const Container = styled.div`
     background: #bfbfbf;
     grid-gap: 30px;
     padding: 20px;
+`;
+
+const Input = styled.input`
+    display: none;
 `;
 
 const Button = styled.button`
@@ -43,9 +52,7 @@ const Textarea = styled.textarea`
     }
 `;
 
-const Input = styled.input`
-    display: none;
-`;
+let tO: any;
 
 interface SendMessageProps {
     isChat: boolean;
@@ -55,9 +62,17 @@ interface SendMessageProps {
 
 const SendMessage : React.FC<SendMessageProps> = ({ isChat, recipients, chatId }) => {
     const [text, setText] = useState('');
-    const [sendMessage] = useSendMessageMutation();
     const [createChat] = useCreateChatMutation();
+    const [sendMessage] = useSendMessageMutation();
+    const [startTyping] = useStartTypingMutation();
+    const [stopTyping ] = useStopTypingMutation();
     const router = useRouter();
+
+    const handleStopTyping = async () => {
+        await stopTyping({
+            variables: { chatId }
+        });
+    }
 
     const handleNewChat = async (variables: {
         members: number[],
@@ -80,6 +95,8 @@ const SendMessage : React.FC<SendMessageProps> = ({ isChat, recipients, chatId }
         text?: string;
         file?: any;
     }) => {
+        await handleStopTyping();
+
         await sendMessage({
             variables,
             update: (cache) => {
@@ -119,7 +136,23 @@ const SendMessage : React.FC<SendMessageProps> = ({ isChat, recipients, chatId }
             <Textarea
                 value = {text}
                 placeholder = 'Your message here...'
-                onChange = {(e) => setText(e.target.value)}
+                onChange = {async (e) => {
+                    setText(e.target.value);
+                    
+                    if(e.target.value) {
+                        await startTyping({ variables: { chatId } });
+
+                        if(tO) {
+                            clearTimeout(tO);
+                        }
+                        
+                        tO = setTimeout(handleStopTyping, 5000);
+                    } 
+                    
+                    else {
+                        await handleStopTyping();
+                    }
+                }}
                 onKeyDown = {async (e) => {
                     const submit = handleEnterPress(e, 130);
 
@@ -135,7 +168,6 @@ const SendMessage : React.FC<SendMessageProps> = ({ isChat, recipients, chatId }
                         setText('');
                         return;
                     }
-
                 }}
             />
         </Container>

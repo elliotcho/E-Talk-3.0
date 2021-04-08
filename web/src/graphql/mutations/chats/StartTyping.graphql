@@ -1,0 +1,3 @@
+mutation StartTyping($chatId: Int!) {
+    startTyping(chatId: $chatId)
+}

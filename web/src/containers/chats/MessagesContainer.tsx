@@ -1,6 +1,10 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { useMessagesQuery, useReadChatMutation } from '../../generated/graphql';
+import { 
+    useMessagesQuery,
+    useUsersTypingQuery, 
+    useReadChatMutation 
+} from '../../generated/graphql';
 import MessageBubble from '../../components/chats/MessageBubble';
 import TypingBubble from '../../components/chats/TypingBubble';
 
@@ -26,8 +30,12 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({ chatId }) => {
     const { data } = useMessagesQuery({ variables: { chatId } });
     const messages = data?.messages || [];
 
+    const response = useUsersTypingQuery({
+        variables: { chatId }
+    });
+
     useEffect(() => {
-        const onMount = async () => {
+        const onUpdate = async () => {
             await readChat({
                 variables: { chatId },
                 update: (cache) => {
@@ -36,12 +44,14 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({ chatId }) => {
             });
         }
 
-        onMount();
-    }, [chatId, data])
+        onUpdate();
+    }, [chatId, data]);
     
     return (
         <Container>
-            <TypingBubble />
+            {response?.data?.usersTyping.map(u => 
+                <TypingBubble key={u.id} {...u} />
+            )}
 
             {messages.map((m, i) => { 
                 let hasImage = true;
